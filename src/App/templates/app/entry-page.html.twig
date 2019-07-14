@@ -1,0 +1,70 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}{{ entry.current.title }}{% endblock %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ host }}{{ path('entry', {id: entry.current.id}) }}" />
+    <meta property="og:url"         content="{{ host }}{{ path('entry', {id: entry.current.id}) }}" />
+    <meta property="og:type"        content="article" />
+    <meta property="og:title"       content="{{ entry.current.title }}" />
+    <meta property="og:description" content="{{ entry.current.body|length > 100 ? entry.current.body|slice(0, 100) ~ '...' : entry.current.body  }}" />
+    {% if entry.current.poster %}
+    <meta property="og:image"       content="{{ host }}/img/original/{{ entry.current.poster.name }}" />
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if user_session %}
+        <a href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
+    {% endif %}
+
+    <div class="row">
+        <div class="col">
+            {% if entry.current.poster %}
+                <img src="/img/original/{{ entry.current.poster.name }}" />
+            {% endif %}
+        </div>
+        <div class="col">
+            <ul>
+                {% for author in entry.current.authors %}
+                    <li><h2>{{ author.name }}</h2></li>
+                {% endfor %}
+            </ul>
+
+            <h3>{{ entry.current.title }}</h3>
+
+            {% markdown %}
+                {{ entry.current.body }}
+            {% endmarkdown %}
+
+            <ul>
+                {% for image in entry.current.gallery %}
+                    <li><img src="/img/thumb/{{ image.name }}" /> </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col">
+            {% if entry.previous %}
+                <a href="{{ path('entry', {id: entry.previous.id}) }}">
+                {% if entry.previous.poster %}
+                    <img src="/img/thumb/{{ entry.previous.poster.name }}" />
+                {% endif %}
+                {{ entry.previous.title }}</a>
+            {% endif %}
+        </div>
+
+        <div class="col">
+            {% if entry.next %}
+                <a href="{{ path('entry', {id: entry.next.id}) }}">{{ entry.next.title }}
+                {% if entry.next.poster %}
+                    <img src="/img/thumb/{{ entry.next.poster.name }}" />
+                {% endif %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

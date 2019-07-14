@@ -1,0 +1,25 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <main>
+        {% if author.id is defined %}
+        <a href="{{ path('delete-author', {id: author.id}) }}" class="btn btn-danger">Delete</a>
+        {% endif %}
+
+        {% if author.id is defined %}
+        <form method="post" action="{{ path('save-author', {id: author.id}) }}">
+        {% else %}
+        <form method="post" action="{{ path('new-author', {}) }}">
+        {% endif %}
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control" id="name" aria-describedby="name" value="{{ author.name is defined ? author.name : null}}">
+                <small id="emailHelp" class="form-text text-muted">Full name of author</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{ path('authors') }}">Cancel</a>
+        </form>
+    </main>
+{% endblock %}

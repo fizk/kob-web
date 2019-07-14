@@ -1,0 +1,41 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}Shows {{ year }}{% endblock %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ host }}{{ path('list', {year: year}) }}" />
+    <meta property="og:url"                content="{{ host }}{{ path('list', {year: year}) }}" />
+    <meta property="og:type"               content="website" />
+    <meta property="og:title"              content="Shows {{ year }}" />
+{% endblock %}
+
+{% block content %}
+    <h2>{{ year }}</h2>
+    <ul>
+    {% for item in list %}
+        <li class="row">
+            <div class="col-2">
+                <hr />
+                {% if item.poster %}
+                <a href="{{ path('entry', {id: item.id}) }}">
+                    <img src="/img/thumb/{{ item.poster.name }}" />
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-10">
+                <hr />
+                <time>{{ item.from }} - {{ item.to }}</time>
+                <ul>
+                    {% for author in item.authors %}
+                        <li><h3>{{ author.name }}</h3></li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ path('entry', {id: item.id}) }}">
+                    <h4>{{ item.title }}</h4>
+                </a>
+
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

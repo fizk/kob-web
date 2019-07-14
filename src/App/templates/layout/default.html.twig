@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <link rel="shortcut icon" href="https://framework.zend.com/ico/favicon.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" />
+    <style>
+        body { padding-top: 70px; }
+        .app { min-height: 100vh; }
+        .app-footer { padding-bottom: 1em; }
+        .zf-green, h2 a { color: #68b604; }
+
+        {% block style %}{% endblock %}
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="app">
+    <header class="app-header">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="#navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Brand -->
+                    <a class="navbar-brand" href="{{ path('home') }}">
+                        <img src="/images/header-logo.png" alt="Zend Expressive" height="28" />
+                    </a>
+                </div>
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="app-content">
+        <main class="container">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <hr />
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    {% block footer %}
+                        <p>
+                            &copy; 2005 - {{ "now"|date("Y") }} by Kling&amp;Bang.
+                        </p>
+                        <address>Grandagarður 20 - 101 Reykjavík kob@this.is</address>
+                        <ul>
+                            <li>Wed to Sun: 12 – 18</li>
+                            <li>Thu: 12 – 21</li>
+                            <li>Mondays/Tuesdays: Closed</li>
+                        </ul>
+
+                    {% endblock %}
+                </div>
+                <div class="col">
+                    <ul>
+                        <li><a href="{{ path('authors') }}">Listamenn</a></li>
+                        <li><a href="{{ path('about') }}">Um Kling&amp;Bang</a></li>
+                    </ul>
+                </div>
+                <div class="col">
+                    {% for item in entry_years %}
+                        <a href="{{ path('list', {year: item.year}) }}">{{ item.year }}</a>
+                    {% endfor %}
+                </div>
+                <div class="col">
+                    <ul>
+                    {% if user_session %}
+                        <li><a href="{{ path('logout-submit') }}">logout {{ user_session.name }}</a></li>
+                        <li><a href="{{ path('update') }}">Dashboard</a></li>
+                        <li><a href="{{ path('create-entry') }}">Create new Entry</a></li>
+                        <li><a href="{{ path('create-author') }}">Create new Author</a></li>
+                    {% else %}
+                        <li><a href="{{ path('login') }}">login</a></li>
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const isDragOver = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.add('drag-over--active');
+        };
+        const isNotDragOver = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('drag-over--active');
+        };
+        const removePoster = (event) => {
+            event.preventDefault();
+            const parent = event.target.parentNode;
+            parent.parentNode.removeChild(parent);
+        };
+        const uploadImages = (files, container, progressbar, caption, templateName) => {
+            const formData = new FormData();
+
+            for (let i = 0; files.length > i; i++) {
+                formData.append(`image${i}`, files[i]);
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('post', '/image');
+            xhr.upload.addEventListener("progress", function(e) {
+                document.querySelector(progressbar).style.width = `${(e.loaded * 100.0 / e.total) || 100}%`;
+            });
+            xhr.upload.addEventListener("loadstart", function(e) {
+                document.querySelector(progressbar).style.width = `0%`;
+                document.querySelector(progressbar).style.backgroundColor = '#007bff';
+                document.querySelector(caption).innerHTML = 'Uploading';
+            });
+            xhr.upload.addEventListener("loadend", function(e) {
+                document.querySelector(progressbar).style.width = `100%`;
+                document.querySelector(caption).innerHTML = 'Processing images';
+            });
+            xhr.addEventListener('error', () => {
+                document.querySelector(progressbar).style.backgroundColor = '#d7352b';
+                document.querySelector(caption).innerHTML = 'Error';
+            });
+            xhr.addEventListener('load', (event) => {
+                if (event.target.status === 200) {
+                    try {
+                        const result = JSON.parse(event.target.response);
+                        document.querySelector(progressbar).style.backgroundColor = '#28d776';
+                        document.querySelector(caption).innerHTML = 'Done';
+                        result.map(item => {
+                            const template = document.querySelector(templateName);
+                            const clone = document.importNode(template.content, true);
+
+                            clone.querySelector('input').value = item.id;
+                            clone.querySelector('span').appendChild(document.createTextNode(item.name));
+                            clone.querySelector('img').src = `/img/thumb/${item.name}`;
+
+                            document.querySelector(container).appendChild(clone);
+                        });
+                    } catch (e) {
+                        document.querySelector(progressbar).style.backgroundColor = '#d7352b';
+                        document.querySelector(caption).innerHTML = 'Error';
+                    }
+                } else {
+                    document.querySelector(progressbar).style.backgroundColor = '#d7352b';
+                    document.querySelector(caption).innerHTML = 'Error';
+                }
+            });
+            xhr.send(formData);
+        };
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {% block javascript %}{% endblock %}
+</body>
+</html>

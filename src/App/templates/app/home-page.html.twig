@@ -1,0 +1,28 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% for item in list %}
+    <div class="row">
+        <div class="col">
+            {% if item.poster %}
+                <img src="/img/original/{{ item.poster.name }}" />
+            {% endif %}
+        </div>
+        <div class="col">
+            <ul>
+                {% for author in item.authors %}
+                    <li><h2>{{ author.name }}</h2></li>
+                {% endfor %}
+            </ul>
+            <h3>
+                <a href="{{ path('entry', {id: item.id}) }}">{{ item.title }}</a>
+            </h3>
+            {% markdown %}
+                {{ item.body|length > 250 ? item.body|slice(0, 250) ~ '...' : item.body  }}
+            {% endmarkdown %}
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

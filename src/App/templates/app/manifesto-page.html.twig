@@ -1,0 +1,32 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}About Kling&amp;Bang{% endblock %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ host }}{{ path('about') }}" />
+    <meta property="og:url"   content="{{ host }}{{ path('about') }}" />
+    <meta property="og:type"  content="article" />
+    <meta property="og:title" content="About Kling&amp;Bang" />
+{% endblock %}
+
+{% block content %}
+    {% if user_session %}
+        <a href="{{ path('update-manifesto') }}">edit</a>
+    {% endif %}
+    <div class="row">
+        <div class="col">
+            <ul>
+            {% for image in manifesto.gallery %}
+                <li>
+                    <img src="/img/thumb/{{ image.name }}"/>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            {% markdown %}
+                {{ manifesto.body }}
+            {% endmarkdown %}
+        </div>
+    </div>
+{% endblock %}
