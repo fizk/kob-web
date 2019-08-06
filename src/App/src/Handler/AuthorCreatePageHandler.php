@@ -26,7 +26,7 @@ class AuthorCreatePageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Author $author,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->author   = $author;
@@ -35,10 +35,8 @@ class AuthorCreatePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'author' => []
-        ];
-
-        return new HtmlResponse($this->template->render('app::author-update-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::author-update-page', ['author' => []])
+        );
     }
 }

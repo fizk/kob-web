@@ -26,7 +26,7 @@ class AuthorsPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Author $author,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->author   = $author;
@@ -35,10 +35,10 @@ class AuthorsPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'list' => $this->author->fetchList()
-        ];
-
-        return new HtmlResponse($this->template->render('app::authors-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::authors-page', [
+                'list' => $this->author->fetchList()
+            ])
+        );
     }
 }

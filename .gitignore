@@ -118,3 +118,8 @@ demos/
 extras/documentation
 
 # End of https://www.gitignore.io/api/osx,phpstorm,zendframework
+
+## Project ##
+
+public/img/*
+!public/img/.gitkeep

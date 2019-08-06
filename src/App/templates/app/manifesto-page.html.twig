@@ -1,32 +1,51 @@
 {% extends '@layout/default.html.twig' %}
 
-{% block title %}About Kling&amp;Bang{% endblock %}
+{% block title %}
+    {% if language == 'is' %}
+        Um Kling&amp;Bang
+    {% else %}
+        About Kling&amp;Bang
+    {% endif %}
+{% endblock %}
 
 {% block meta %}
-    <link rel="canonical" href="{{ host }}{{ path('about') }}" />
-    <meta property="og:url"   content="{{ host }}{{ path('about') }}" />
+    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
+    <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
     <meta property="og:type"  content="article" />
-    <meta property="og:title" content="About Kling&amp;Bang" />
+    <meta property="og:title" content="{{ language == 'is' ? 'Um' : 'About' }} Kling&amp;Bang" />
+{% endblock %}
+
+{% block language_switch %}
+    {% if language == 'is' %}
+        <li><a href="{{ path('about') }}">English</a></li>
+    {% else %}
+        <li><a href="{{ path('um') }}">Íslenska</a></li>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if user_session %}
-        <a href="{{ path('update-manifesto') }}">edit</a>
-    {% endif %}
-    <div class="row">
-        <div class="col">
-            <ul>
-            {% for image in manifesto.gallery %}
-                <li>
-                    <img src="/img/thumb/{{ image.name }}"/>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
-        <div class="col">
-            {% markdown %}
-                {{ manifesto.body }}
-            {% endmarkdown %}
-        </div>
-    </div>
+    <main>
+        <article class="article">
+            <aside class="article__aside">
+                <ul class="article__images">
+                    {% for image in manifesto.gallery %}
+                        <li class="article__images-item">
+                            <img class="article__image" src="{{ path('asset', {size: '600x', name: image.name}) }}"/>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </aside>
+            <div class="article__body">
+                {% include '@partials/header.html.twig' %}
+                {% if user_session %}
+                    <a class="entry__edit-button" href="{{ path('update-manifesto', {id: manifesto.id}) }}">edit</a>
+                {% endif %}
+                <div class="article__body-text markdown-text">
+                {% markdown %}
+                    {{ manifesto.body|raw }}
+                {% endmarkdown %}
+                </div>
+            </div>
+        </article>
+    </main>
 {% endblock %}

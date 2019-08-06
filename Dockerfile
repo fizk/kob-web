@@ -22,7 +22,18 @@ RUN pecl install -o -f imagick-3.4.4 \
     && rm -rf /tmp/pear \
     && docker-php-ext-enable imagick
 
+COPY ./auto/php/php.ini /usr/local/etc/php/php.ini
+
+WORKDIR /var/www
+
+COPY ./composer.json .
+COPY ./composer.lock .
+#COPY ./phpcs.xml .
+#COPY ./phpunit.xml.dist .
+
+RUN /usr/local/bin/composer install --prefer-source --no-interaction \
+    && /usr/local/bin/composer dump-autoload -o
 
 EXPOSE 80
 
-WORKDIR /var/www
+

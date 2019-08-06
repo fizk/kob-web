@@ -9,7 +9,8 @@ CREATE TABLE `Entry` (
   `created` datetime DEFAULT NULL,
   `affected` datetime DEFAULT NULL,
   `type` varchar(4) not NULL default 'show',
-  `body` text DEFAULT NULL,
+  `body_is` text DEFAULT NULL,
+  `body_en` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -23,7 +24,8 @@ select
     `c_date` as `created`, 
     `a_date` as `affected`,
     'show' as `type`,
-    trim(concat(COALESCE(`artist_is`, ''), '\n\n', COALESCE(`artist_en`, ''), '\n\n', COALESCE(`info_is`, ''), '\n\n', COALESCE(`info_en`, ''))) as `body`
+    trim(concat(COALESCE(`artist_is`, ''), '\n\n',  COALESCE(`info_is`, ''))) as `body_is`,
+    trim(concat(COALESCE(`artist_en`, ''), '\n\n', COALESCE(`info_en`, ''))) as `body_en`
 from kob_archive;
 
 DROP TABLE IF EXISTS `Author`;
@@ -110,14 +112,18 @@ DROP TABLE IF EXISTS `Manifesto`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Manifesto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `body` text DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `type` varchar(10) not NULL,
+  `body_is` text DEFAULT NULL,
+  `body_en` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  unique index (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 insert into `Manifesto`
-select id,  
-	trim(concat(COALESCE(`info_is`, ''), '\n\n', COALESCE(`info_en`, ''))) as `body`
+select id,  'manifesto' as `type`,
+`info_is` as body_is,
+`info_en` as body_en
 from kob_manifesto;
 
 

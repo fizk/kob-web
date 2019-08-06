@@ -26,7 +26,7 @@ class LoginPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router        = $router;
         $this->entry         = $entry;
@@ -35,10 +35,10 @@ class LoginPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'list' => $this->entry->fetchList()
-        ];
-
-        return new HtmlResponse($this->template->render('app::login-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::login-page', [
+                'list' => $this->entry->fetchList()
+            ])
+        );
     }
 }

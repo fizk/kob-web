@@ -26,16 +26,21 @@ class EntrySavePageHandler implements RequestHandlerInterface
     /** @var \App\Service\Image */
     private $image;
 
+    /** @var \App\Service\Search */
+    private $search;
+
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
         Service\Author $author,
-        Service\Image $image
+        Service\Image $image,
+        Service\Search $search
     ) {
         $this->router = $router;
         $this->entry  = $entry;
         $this->author = $author;
         $this->image  = $image;
+        $this->search = $search;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -46,7 +51,8 @@ class EntrySavePageHandler implements RequestHandlerInterface
         $data = [
             'id' => $id,
             'title' => $post['title'],
-            'body' => $post['body'],
+            'body_is' => $post['body_is'],
+            'body_en' => $post['body_en'],
             'from' => $post['from'],
             'to' => $post['to'],
             'type' => $post['type'],
@@ -56,11 +62,15 @@ class EntrySavePageHandler implements RequestHandlerInterface
             'created' => (new DateTime())->format('Y-m-d H:i:s'),
         ]);
 
-        $id = $this->entry->save($data);
-        $this->entry->attachAuthors((string) $id, $post['author']);
-        $this->entry->attachImages((string) $id, isset($post['poster']) ? $post['poster'] : [], 1);
-        $this->entry->attachImages((string) $id, isset($post['gallery']) ? $post['gallery'] : [], 2);
+        $insertedId = $this->entry->save($data);
+        $this->entry->attachAuthors((string) $insertedId, isset($post['author']) ? $post['author'] : []);
+        $this->entry->attachImages((string) $insertedId, isset($post['poster']) ? $post['poster'] : [], 1);
+        $this->entry->attachImages((string) $insertedId, isset($post['gallery']) ? $post['gallery'] : [], 2);
 
-        return new RedirectResponse($this->router->generateUri('entry', ['id' => $id]));
+        $entry = $this->entry->get((string) $insertedId);
+
+        $this->search->save($entry);
+
+        return new RedirectResponse($this->router->generateUri('entry', ['id' => $insertedId]));
     }
 }

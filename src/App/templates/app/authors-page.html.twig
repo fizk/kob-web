@@ -1,32 +1,53 @@
 {% extends '@layout/default.html.twig' %}
 
-{% block title %}Artists{% endblock %}
+{% block title %}
+    {% if language == 'is' %}
+        Listamenn
+    {% else %}
+        Artists
+    {% endif %}
+{% endblock %}
 
 {% block meta %}
-    <link rel="canonical" href="{{ host }}{{ path('authors') }}" />
-    <meta property="og:url"                content="{{ host }}{{ path('authors') }}" />
+    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'listamenn' : 'authors') }}" />
+    <meta property="og:url"                content="{{ host }}{{ path(language == 'is' ? 'listamenn' : 'authors') }}" />
     <meta property="og:type"               content="article" />
-    <meta property="og:title"              content="Artists" />
+    <meta property="og:title"              content="{{ language == 'is' ? 'Listamenn' : 'Artists'}}" />
+{% endblock %}
+
+{% block language_switch %}
+{% if language == 'is' %}
+    <li><a href="{{ path('authors') }}">English</a></li>
+{% else %}
+    <li><a href="{{ path('listamenn') }}">Íslenska</a></li>
+{% endif %}
 {% endblock %}
 
 {% block content %}
-    <main>
-        <ul>
-        {% for author in list %}
-            <li>
-                {{ author.name }}
-                {% if user_session %}
-                    <a href="{{ path('update-author', {id: author.id}) }}">edit</a>
-                {% endif %}
-                <ul>
-                {% for entry in author.entries %}
-                    <li>
-                        <a href="{{ path('entry', {id: entry.id}) }}">{{ entry.title }}</a>
-                    </li>
-                {% endfor %}
+    <div class="container" style="max-width: 960px; margin: auto">
+        <div class="row" style="display: flex">
+            <div class="col">
+                <ul class="author-list">
+                    {% for author in list %}
+                        <li class="author-list__item">
+                            {{ author.name }}
+                            {% if user_session %}
+                                <a href="{{ path('update-author', {id: author.id}) }}">edit</a>
+                            {% endif %}
+                            <ul class="author-list__entries-list">
+                                {% for entry in author.entries %}
+                                    <li class="author-list__entries-item">
+                                        <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.title|slug(entry.id)}) }}">{{ entry.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
                 </ul>
-            </li>
-        {% endfor %}
-        </ul>
-    </main>
+            </div>
+            <div class="col">
+                {% include '@partials/header.html.twig' %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

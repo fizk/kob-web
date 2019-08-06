@@ -26,7 +26,7 @@ class EntryUpdatePageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->entry    = $entry;
@@ -35,10 +35,10 @@ class EntryUpdatePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'entry' => $this->entry->get($request->getAttribute('id'))
-        ];
-
-        return new HtmlResponse($this->template->render('app::entry-update-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::entry-update-page', [
+                'entry' => $this->entry->get($request->getAttribute('id'))
+            ])
+        );
     }
 }

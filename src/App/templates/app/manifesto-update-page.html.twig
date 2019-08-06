@@ -1,15 +1,9 @@
-{% extends '@layout/default.html.twig' %}
+{% extends '@layout/admin.html.twig' %}
 
 {% block title %}Manifesto{% endblock %}
 
 {% block style %}
-    .drag-over {
-        border: 1px solid transparent;
-        padding: 16px;
-    }
-    .drag-over--active {
-        border: 1px dashed #ced4da;
-    }
+<style>
     .image-list {
         list-style: none;
         padding-left: 0;
@@ -17,100 +11,104 @@
     .image-list li {
         margin: 8px 0;
     }
+</style>
 
 {% endblock %}
 
 {% block content %}
-    <main>
-        <form method="post" action="{{ path('new-manifesto') }}">
-            <div class="row">
-                <div class="col-9">
-                    <div class="form-group">
-                        <label for="body">Title</label>
-                        <textarea class="form-control" id="body" name="body" rows="20">{{ manifesto.body is defined ? manifesto.body : null}}</textarea>
-                        <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
-                    </div>
-                </div>
-                <div class="col-3">
-
-                    <label for="body">Gallery</label>
-                    <template id="gallery-result-entry">
-                        <li>
-                            <input type="hidden" name="gallery[]" />
-                            <img src="#" />
-                            <span></span>
-                            <a href="#" onclick="removePoster(event)">(remove)</a>
-                        </li>
-                    </template>
-                    <div class="form-group drag-over"
-                         ondrop="onDropGallery(event)"
-                         ondragover="isDragOver(event)"
-                         ondragenter="isDragOver(event)"
-                         ondragleave="isNotDragOver(event)"
-                         ondragend="isNotDragOver(event)">
-                        <p>
-                            <a href="#" onclick="selectGallery(event)">Select or drag images</a>
-                        </p>
-                        <div class="progress" style="height: 2px;">
-                            <div class="progress-bar" data-gallery-progress-bar
-                                 role="progressbar" style="width: 0" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    <main class="container">
+        <div class="row">
+            <div class="col-2">
+                {% include '@partials/dashboard-menu.html.twig' %}
+            </div>
+            <div class="col-10">
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="display-4">
+                                Update "{{ manifesto.type }}" Page
+                            </h1>
                         </div>
-                        <small data-gallery-progress-bar-text class="form-text text-muted">&nbsp;</small>
-
-                        <ul data-gallery class="image-list">
-                            {% if manifesto.gallery is defined %}
-                                {% for image in manifesto.gallery %}
-                                    <li>
-                                        <input type="hidden" name="gallery[]" value="{{ image.id }}">
-                                        <img src="/img/thumb/{{ image.name }}" />
-                                        <span>{{ image.name }}</span>
-                                        <a href="#" onclick="removePoster(event)">(remove)</a>
-                                    </li>
-                                {% endfor %}
-                            {% endif %}
-                        </ul>
+                        <div class="col">
+                            <p>
+                                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
+                                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
+                            </p>
+                            <p>
+                                Images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
+                                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
+                                before you save the entry.
+                            </p>
+                        </div>
                     </div>
-                    <script>
-                        const onDropGallery = (event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            uploadImages(
-                                event.dataTransfer.files,
-                                '[data-gallery]',
-                                '[data-gallery-progress-bar]',
-                                '[data-gallery-progress-bar-text]',
-                                '#gallery-result-entry'
-                            );
-                        };
-                        const selectGallery = (event) => {
-                            event.preventDefault();
-                            const input = document.createElement('input');
-                            input.type = 'file';
-                            input.multiple = true;
-                            input.accept = 'image/*';
-                            input.style.position = 'absolute';
-                            input.style.top = '-100px';
-                            input.addEventListener('change', (event) => {
-                                event.preventDefault();
-                                uploadImages(
-                                    event.target.files,
-                                    '[data-gallery]',
-                                    '[data-gallery-progress-bar]',
-                                    '[data-gallery-progress-bar-text]',
-                                    '#gallery-result-entry'
-                                )
-                            });
-                            document.body.appendChild(input);
-                            input.click();
-                        };
-                    </script>
                 </div>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <a href="{{ path('about') }}">Cancel</a>
+                <form method="post" action="{{ path('new-manifesto', {id: manifesto.id}) }}">
+                    <input type="hidden" name="type" value="{{ manifesto.type }}">
+                    <div class="row">
+                        <div class="col-3">
+                            <template id="image-entry-template">
+                                <li>
+                                    <input type="hidden" name="gallery[]"/>
+                                    <img src="#" />
+                                    <span></span>
+                                    <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                </li>
+                            </template>
+                            <label for="gallery">Gallery</label>
+                            <file-uploader data-file-uploader-gallery>
+                                <ul data-gallery class="image-list">
+                                    {% if manifesto.gallery is defined %}
+                                        {% for image in manifesto.gallery %}
+                                            <li>
+                                                <input type="hidden" name="gallery[]" value="{{ image.id }}">
+                                                <img src="{{ path('asset', {size: '100x100', name: image.name}) }}" />
+                                                <span>{{ image.name }}</span>
+                                                <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </file-uploader>
+                        </div>
+                        <div class="col-9">
+                            <div class="form-group">
+                                <label for="body_is">Body Icelandic</label>
+                                <textarea class="form-control" id="body_is" name="body_is" rows="20">{{ manifesto.body_is is defined ? manifesto.body_is : null}}</textarea>
+                                <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="body_en">Body English</label>
+                                <textarea class="form-control" id="body_en" name="body_en" rows="20">{{ manifesto.body_en is defined ? manifesto.body_en : null}}</textarea>
+                                <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="{{ path('about') }}">Cancel</a>
+                    </div>
+                </form>
             </div>
 
-        </form>
+        </div>
+
+        <script>
+            const removeImageItem = (event) => {
+                event.preventDefault();
+                const parent = event.target.parentNode;
+                parent.parentNode.removeChild(parent);
+            };
+            document.querySelector('[data-file-uploader-gallery]').addEventListener('result', (event) => {
+                const list = event.target.querySelector('ul');
+                const template = document.querySelector('#image-entry-template');
+                event.detail.map(item => {
+                    const clone = document.importNode(template.content, true);
+                    clone.querySelector('input').value = item.id;
+                    clone.querySelector('span').appendChild(document.createTextNode(item.name));
+                    clone.querySelector('img').src = item.thumb;
+                    list.appendChild(clone);
+                });
+            });
+        </script>
     </main>
 {% endblock %}

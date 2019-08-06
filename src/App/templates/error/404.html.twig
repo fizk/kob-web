@@ -3,11 +3,17 @@
 {% block title %}404 Not Found{% endblock %}
 
 {% block content %}
-    <h1>Oops!</h1>
-    <h2>This is awkward.</h2>
-    <p>We encountered a 404 Not Found error.</p>
-    <p>
-        You are looking for something that doesn't exist or may have moved. Check out one of the links on this page
-        or head back to <a href="{{ path('home') }}">Home</a>.
-    </p>
+    <main class="four-o-four">
+        <h1>Oops! 404</h1>
+        {% if language == 'is' %}
+            <h2>Tu veist, tu getur alltaf farid <a href="{{ path('heim') }}">heim</a></h2>
+        {% else %}
+            <h2>I know, you can always go <a href="{{ path('home') }}">home</a></h2>
+        {% endif %}
+
+        <form method="get" action="{{ path(language == 'is' ? 'leit' : 'search') }}">
+            <input type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language == 'is' ? 'Leit...' : 'Search...' }}" />
+            <button>{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
+        </form>
+    </main>
 {% endblock %}

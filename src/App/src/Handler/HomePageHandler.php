@@ -27,7 +27,7 @@ class HomePageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->entry    = $entry;
@@ -36,10 +36,18 @@ class HomePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'list' => $this->entry->fetchByDate(new DateTime()),
-        ];
+        $current = $this->entry->fetchByDate(new DateTime());
+        $upcoming = $this->entry->fetchAfter(new DateTime());
 
-        return new HtmlResponse($this->template->render('app::home-page', $data));
+        $list = empty($current) ? $upcoming : $current;
+        $next = empty($current) ? [] : $upcoming;
+        $fallback = empty($list) && empty($next) ? $this->entry->fetchFallback() : null;
+
+        return new HtmlResponse(
+            $this->template->render('app::home-page', [
+                'list' => $fallback ? : $list,
+                'upcoming' => $next,
+            ])
+        );
     }
 }

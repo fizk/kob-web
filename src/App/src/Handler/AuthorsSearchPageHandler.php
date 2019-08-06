@@ -27,7 +27,7 @@ class AuthorsSearchPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Author $author,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->author   = $author;

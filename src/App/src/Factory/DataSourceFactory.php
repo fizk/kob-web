@@ -2,15 +2,17 @@
 namespace App\Factory;
 
 use PDO;
+use Psr\Container\ContainerInterface;
 
 class DataSourceFactory
 {
-    public function __invoke()
+    public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('config');
         return new PDO(
-            "mysql:host=database;port=3306;dbname=klingogbang",
-            'root',
-            'example',
+            $config['pdo']['dsn'],
+            $config['pdo']['user'],
+            $config['pdo']['password'],
             [
                 PDO::MYSQL_ATTR_INIT_COMMAND =>
                     "SET NAMES 'utf8', ".

@@ -39,10 +39,12 @@
     },
     "require": {
         "php": "^7.1",
+        "ext-iconv": "*",
         "ext-pdo": "*",
         "aptoma/twig-markdown": "^3.2",
+        "elasticsearch/elasticsearch": "^7.1",
+        "erusev/parsedown": "^1.7",
         "imagine/imagine": "^1.2",
-        "michelf/php-markdown": "^1.8",
         "zendframework/zend-authentication": "^2.7",
         "zendframework/zend-component-installer": "^2.1.1",
         "zendframework/zend-config-aggregator": "^1.0",

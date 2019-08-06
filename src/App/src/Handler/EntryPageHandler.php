@@ -26,7 +26,7 @@ class EntryPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->entry    = $entry;
@@ -35,7 +35,9 @@ class EntryPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $entry = $this->entry->fetch($request->getAttribute('id'));
+        $result = [];
+        preg_match('/[0-9]*$/', $request->getAttribute('id'), $result);
+        $entry = $this->entry->fetch($result[0], $request->getAttribute('language', 'is'));
         return $entry
             ? new HtmlResponse($this->template->render('app::entry-page', ['entry' => $entry]))
             : new HtmlResponse($this->template->render('error::404'), 404);

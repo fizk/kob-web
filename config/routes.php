@@ -36,33 +36,113 @@ use App\Middleware;
  * );
  */
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
-    $app->get('/', Handler\HomePageHandler::class, 'home');
-    $app->get('/list/:year', Handler\EntriesPageHandler::class, 'list');
-    $app->get('/items', Handler\EntriesPageHandler::class, 'entries');
-    $app->get('/items/:id', Handler\EntryPageHandler::class, 'entry');
-    $app->get('/authors', Handler\AuthorsPageHandler::class, 'authors');
-    $app->get('/about', Handler\ManifestoPageHandler::class, 'about');
+    $app->get('/', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\HomePageHandler::class
+    ], 'heim');
+    $app->get('/home', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\HomePageHandler::class
+    ], 'home');
+
+    $app->get('/listi/:year', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\EntriesPageHandler::class
+    ], 'listi');
+    $app->get('/list/:year', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\EntriesPageHandler::class
+    ], 'list');
+
+    $app->get('/verkefni', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\ProjectsPageHandler::class
+    ], 'verkefni');
+    $app->get('/projects', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\ProjectsPageHandler::class
+    ], 'projects');
+
+    $app->get('/syningar', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\EntriesPageHandler::class
+    ], 'syningar');
+    $app->get('/shows', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\EntriesPageHandler::class
+    ], 'entries');
+
+    $app->get('/syningar/:id', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\EntryPageHandler::class
+    ], 'syning');
+    $app->get('/shows/:id', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\EntryPageHandler::class
+    ], 'entry');
+
+    $app->get('/listamenn', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\AuthorsPageHandler::class
+    ], 'listamenn');
+    $app->get('/authors', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\AuthorsPageHandler::class
+    ], 'authors');
+
+    $app->get('/um', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\ManifestoPageHandler::class
+    ], 'um');
+    $app->get('/about', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\ManifestoPageHandler::class
+    ], 'about');
+
+    $app->get('/verslun', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\StorePageHandler::class
+    ], 'verslun');
+    $app->get('/store', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\StorePageHandler::class
+    ], 'store');
+
+    $app->get('/leit', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\SearchPageHandler::class
+    ], 'leit');
+    $app->get('/search', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\SearchPageHandler::class
+    ], 'search');
+
     $app->get('/login', Handler\LoginPageHandler::class, 'login');
     $app->post('/login', Handler\LoginSubmitPageHandler::class, 'login-submit');
     $app->get('/logout', Handler\LogoutSubmitPageHandler::class, 'logout-submit');
 
+    $app->get('/img/:size/:name', Handler\AssetPageHandler::class, 'asset');
     $app->post('/image', Handler\ImageSavePageHandler::class, 'images-save');
     $app->get('/api/author/search', Handler\AuthorsSearchPageHandler::class, 'author-search');
 
     $app->get('/update', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\DashboardPageHandler::class
     ], 'update');
     $app->get('/update/entry', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\EntryCreatePageHandler::class
     ], 'create-entry');
     $app->get('/update/entry/:id', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\EntryUpdatePageHandler::class
     ], 'update-entry');
     $app->get('/delete/entry/:id', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\EntryDeletePageHandler::class
     ], 'delete-entry');
     $app->post('/update/entry/:id', [
@@ -78,6 +158,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 
     $app->get('/update/author/:id', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\AuthorUpdatePageHandler::class
     ], 'update-author');
     $app->post('/update/author/:id', [
@@ -87,6 +168,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     ], 'save-author');
     $app->get('/update/author', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\AuthorCreatePageHandler::class
     ], 'create-author');
     $app->post('/update/author', [
@@ -96,18 +178,23 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     ], 'new-author');
     $app->get('/delete/author/:id', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\AuthorDeletePageHandler::class
     ], 'delete-author');
-
-    $app->get('/update/manifesto', [
+    $app->get('/update/manifesto/:id', [
         Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
         Handler\ManifestoUpdatePageHandler::class
     ], 'update-manifesto');
-    $app->post('/update/manifesto', [
+    $app->post('/update/manifesto/:id', [
         Middleware\AuthenticationMiddleware::class,
         BodyParamsMiddleware::class,
         Handler\ManifestoSavePageHandler::class
     ], 'new-manifesto');
+    $app->post('/update/image/:id', [
+        Middleware\AuthenticationMiddleware::class,
+        BodyParamsMiddleware::class,
+        Handler\ImageUpdatePageHandler::class
+    ], 'update-image');
 
-    $app->get('/api/ping', App\Handler\PingHandler::class, 'api.ping');
 };

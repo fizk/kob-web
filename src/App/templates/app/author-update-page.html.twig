@@ -1,25 +1,83 @@
-{% extends '@layout/default.html.twig' %}
+{% extends '@layout/admin.html.twig' %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <main>
-        {% if author.id is defined %}
-        <a href="{{ path('delete-author', {id: author.id}) }}" class="btn btn-danger">Delete</a>
-        {% endif %}
-
-        {% if author.id is defined %}
-        <form method="post" action="{{ path('save-author', {id: author.id}) }}">
-        {% else %}
-        <form method="post" action="{{ path('new-author', {}) }}">
-        {% endif %}
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" class="form-control" id="name" aria-describedby="name" value="{{ author.name is defined ? author.name : null}}">
-                <small id="emailHelp" class="form-text text-muted">Full name of author</small>
+    <main class="container">
+        <div class="row">
+            <div class="col-2">
+                {% include '@partials/dashboard-menu.html.twig' %}
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{{ path('authors') }}">Cancel</a>
-        </form>
+            <div class="col-10">
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="display-4">
+                                {% if author.id is defined %}
+                                    Update author
+                                {% else %}
+                                    Create author
+                                {% endif %}
+
+                            </h1>
+                        </div>
+                        <div class="col">
+                            <p>
+                                Author (or artist) only needs a name. A search of existing Authors is performed while you
+                                type so you don't accidentally create the same Author twice.
+                            </p>
+                            {% if author.id is defined %}
+                                <p>
+                                    You can also <a href="{{ path('delete-author', {id: author.id}) }}" class="btn btn-sm btn-danger">Delete</a>
+                                    this Author, just be careful, this can not be undone.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if author.id is defined %}
+                <form method="post" class="dashboard__form" action="{{ path('save-author', {id: author.id}) }}">
+                {% else %}
+                <form method="post" class="dashboard__form" action="{{ path('new-author', {}) }}">
+                {% endif %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" onkeyup="searchAuthor(event)" class="form-control" id="name" aria-describedby="name" value="{{ author.name is defined ? author.name : null}}">
+                                <small id="emailHelp" class="form-text text-muted">Full name of author</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="name">These already exist</label>
+                                <ul data-authors-list class="text-muted"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        const searchAuthor = (inputEvent) => {
+                            fetch(`/api/author/search?q=${inputEvent.target.value}`)
+                                .then(response => response.json())
+                                .then(json => {
+                                    const list = document.querySelector('[data-authors-list]');
+                                    list.innerHTML = '';
+
+                                    json.forEach(item => {
+
+                                        const listItem = document.createElement('li');
+                                        listItem.appendChild(document.createTextNode(item.name));
+                                        list.appendChild(listItem);
+                                    });
+                                });
+                        };
+                    </script>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="{{ path('authors') }}">Cancel</a>
+                </form>
+            </div>
+        </div>
     </main>
 {% endblock %}

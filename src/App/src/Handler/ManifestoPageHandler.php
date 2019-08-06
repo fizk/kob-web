@@ -26,7 +26,7 @@ class ManifestoPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Manifesto $manifesto,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router    = $router;
         $this->manifesto = $manifesto;
@@ -35,10 +35,11 @@ class ManifestoPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'manifesto' => $this->manifesto->get()
-        ];
+        $entry = $this->manifesto->getByType('manifesto', $request->getAttribute('language', 'is'));
 
-        return new HtmlResponse($this->template->render('app::manifesto-page', $data));
+        return $entry
+            ? new HtmlResponse($this->template->render('app::manifesto-page', ['manifesto' => $entry]))
+            : new HtmlResponse($this->template->render('error::404'), 404);
+
     }
 }

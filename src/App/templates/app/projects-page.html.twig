@@ -1,0 +1,90 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}
+    {% if language == 'is' %}
+        Verkefni
+    {% else %}
+        Projects
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'verkefni' : 'projects') }}" />
+    <meta property="og:url"                content="{{ host }}{{ path(language == 'is' ? 'verkefni' : 'projects') }}" />
+    <meta property="og:type"               content="website" />
+    <meta property="og:title"              content="{{ language == 'is' ? 'Verkefni' : 'Projects' }}" />
+{% endblock %}
+
+{% block language_switch %}
+    {% if language == 'is' %}
+        <li><a href="{{ path('projects') }}">English</a></li>
+    {% else %}
+        <li><a href="{{ path('verkefni') }}">Íslenska</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="entries__header">
+            <div class="entries__header-space"></div>
+            <div class="entries__header-logo">
+                {% include '@partials/header.html.twig' %}
+            </div>
+        </div>
+
+        <ul class="entries__list">
+            {% for item in list %}
+                <li class="entries__list-item">
+                    <article class="entries">
+                        <aside class="entries__aside">
+                            {% if item.poster %}
+                                <a href="{{ path('entry', {id: item.title|slug(item.id)}) }}">
+                                    <img class="entries__poster" src="{{ path('asset', {size: '300x300', name: item.poster.name}) }}" />
+                                </a>
+                            {% else %}
+                                <a href="{{ path('entry', {id: item.title|slug(item.id)}) }}">
+                                    <div class="entries__poster-placeholder"></div>
+                                </a>
+                            {% endif %}
+                        </aside>
+                        <div class="entries__body">
+                            <ul class="entries__primary-caption">
+                                {% if item.type == 'show' %}
+                                    {% for author in item.authors %}
+                                        <li class="entries__primary-caption-item">
+                                            <h3 class="entries__primary-caption-text">
+                                                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
+                                                    {{ author.name }}
+                                                </a>
+                                            </h3>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="entries__primary-caption-item">
+                                        <h3 class="entries__primary-caption-text">
+                                            <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
+                                                {{ item.title }}
+                                            </a>
+                                        </h3>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                            {% if item.type == 'show' or item.type == 'proj' %}
+                                <time class="entries__time">{{ item.from|date }} - {{ item.to|date }}</time>
+                            {% endif %}
+
+                            {% if item.type == 'show' %}
+                                <h3 class="entries__secondary-caption-text">
+                                    <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
+                                        {{ item.title }}
+                                    </a>
+                                </h3>
+                            {% endif %}
+                        </div>
+                    </article>
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+
+{% endblock %}

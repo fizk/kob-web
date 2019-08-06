@@ -17,7 +17,7 @@ class Image
     public function get(string $id): \stdClass
     {
         $statement = $this->pdo->prepare('
-            select * from Author where id = :id
+            select * from Image where id = :id
         ');
         $statement->execute(['id' => $id]);
         return $statement->fetch();
@@ -46,5 +46,18 @@ class Image
 
         return $this->pdo->lastInsertId();
 
+    }
+
+    public function updateDescription(string $id, string $description, DateTime $affected)
+    {
+        $statement = $this->pdo->prepare('
+            update `Image` set description = :description, affected = :date where id = :id
+        ');
+        $statement->execute([
+            'id' => $id,
+            'description' => $description,
+            'date' => $affected->format('Y-m-d H:i:s')
+        ]);
+        return $statement->rowCount();
     }
 }

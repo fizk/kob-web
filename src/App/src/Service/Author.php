@@ -43,6 +43,16 @@ class Author
         }, $list);
     }
 
+    public function fetchAffected(): array
+    {
+        $statement = $this->pdo->prepare('
+            select * from `Author` order by affected desc limit 0, 5
+        ');
+        $statement->execute([]);
+
+        return $statement->fetchAll();
+    }
+
     public function save(array $data): int {
 
         $columns = implode(',', array_map(function ($i) {

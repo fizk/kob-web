@@ -27,11 +27,13 @@ class ManifestoSavePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $id = '1';
+        $id = $request->getAttribute('id');
         $post = $request->getParsedBody();
         $data = [
             'id' => $id,
-            'body' => $post['body'],
+            'type' => $post['type'],
+            'body_is' => $post['body_is'],
+            'body_en' => $post['body_en'],
         ];
 
         $this->manifesto->save($data);

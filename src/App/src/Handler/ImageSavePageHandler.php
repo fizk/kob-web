@@ -30,13 +30,18 @@ class ImageSavePageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Image $image,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->image    = $image;
         $this->template = $template;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @todo safe filename
+     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $files = $request->getUploadedFiles();
@@ -46,26 +51,19 @@ class ImageSavePageHandler implements RequestHandlerInterface
         foreach ($files as $key => $value) {
             $prefix = rand(100000, 999999);
             /** @var $value \Zend\Diactoros\UploadedFile */
-            $value->moveTo('./public/img/raw/' . $prefix . $value->getClientFilename());
+            $value->moveTo('./data/images/' . $prefix . $value->getClientFilename());
             $imagine = new Imagine();
 
-            $image = $imagine->open('./public/img/raw/' . $prefix . $value->getClientFilename());
+            $image = $imagine->open('./data/images/' . $prefix . $value->getClientFilename());
+
             $height = $image->getSize()->getHeight();
             $width = $image->getSize()->getWidth();
 
-            $resize = $width > 1280
-                ? $image->getSize()->scale(1280 / $width)
-                : $image->getSize()->scale(1);
-
-            $image->thumbnail(new Box(100, 100), ImageInterface::THUMBNAIL_OUTBOUND)
-                ->save('./public/img/thumb/' . $prefix. $value->getClientFilename());
-
-            $image->resize($resize)
-                ->save('./public/img/original/' . $prefix . $value->getClientFilename());
-
             $id = $this->image->save([
-                'name' => $value->getClientFilename(),
+                'name' => $prefix . $value->getClientFilename(),
                 'description' => null,
+                'height' => $height,
+                'width' => $width,
                 'created' => (new \DateTime())->format('Y-m-d H:i:s'),
                 'affected' => (new \DateTime())->format('Y-m-d H:i:s'),
             ]);
@@ -77,6 +75,10 @@ class ImageSavePageHandler implements RequestHandlerInterface
                 'size' => $value->getSize(),
                 'height' => $height,
                 'width' => $width,
+                'thumb' => $this->router->generateUri('asset', [
+                    'name' => $prefix . $value->getClientFilename(),
+                    'size' => '100x100'
+                ])
             ];
         }
 

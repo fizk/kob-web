@@ -1,16 +1,9 @@
-{% extends '@layout/default.html.twig' %}
+{% extends '@layout/admin.html.twig' %}
 
 {% block title %}Home{% endblock %}
 
 {% block style %}
-
-    .drag-over {
-        border: 1px solid transparent;
-        padding: 16px;
-    }
-    .drag-over--active {
-        border: 1px dashed #ced4da;
-    }
+<style>
     .image-list {
         list-style: none;
         padding-left: 0;
@@ -18,277 +11,332 @@
     .image-list li {
         margin: 8px 0;
     }
+</style>
 
 {% endblock %}
 
 {% block content %}
-    <main>
+    <main class="container">
+        <div class="row">
+            <div class="col-2">
+                {% include '@partials/dashboard-menu.html.twig' %}
+            </div>
+            <div class="col-10">
+                <div class="jumbotron">
 
-
-        <form method="post" action="{{ entry.id is defined ? path('save-entry', {id: entry.id}) : path('new-entry', {}) }}">
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" name="title" class="form-control" id="title" aria-describedby="title" placeholder="Title"  value="{{ entry.title is defined ? entry.title : null}}">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="display-4">
+                                {% if entry.id is defined %}
+                                    Uppdate Entry
+                                {% else %}
+                                    Create Entry
+                                {% endif %}
+                            </h1>
+                            <p>
+                                Entry can be a <em>show</em>, <em>news</em> or <em>project</em>.
+                                Select the type from the dropdown.
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p>
+                                Connect an Author to the Entry by searching in the Author textbox and then clicking on the
+                                name in the list that appears. If the Author doesn't exist you have to create him/her
+                                <a href="{{ path('create-author') }}" target="_blank">here</a>
+                            </p>
+                            <p>
+                                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
+                                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
+                            </p>
+                            <p>
+                                Posters and images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
+                                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
+                                before you save the entry.
+                            </p>
+                            {% if entry.id is defined %}
+                                <p>
+                                    You can also <a href="{{ path('delete-entry', {id: entry.id}) }}" class="btn btn-danger btn-sm">Delete</a>
+                                    this Entry, just be careful, this can not be undone.
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
-                    <script>
-                        const searchAuthor = (inputEvent) => {
-                            fetch(`/api/author/search?q=${inputEvent.target.value}`)
-                                .then(response => response.json())
-                                .then(json => {
-                                    clearAuthEntries();
-                                    return json;
-                                })
-                                .then(json => {
-                                    json.forEach(item => {
-                                        const template = document.querySelector('#author-search-result-item');
-                                        const clone = document.importNode(template.content, true);
 
-                                        clone.querySelector('span').appendChild(document.createTextNode(item.name));
+                </div>
+                <form method="post" class="dashboard__form" action="{{ entry.id is defined ? path('save-entry', {id: entry.id}) : path('new-entry', {}) }}">
 
-                                        clone.querySelector('span').addEventListener('click', () => {
-                                            addAuthorEntry(item.id, item.name);
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" name="title" class="form-control" id="title" aria-describedby="title" placeholder="Title"  value="{{ entry.title is defined ? entry.title : null}}">
+                            </div>
+                            <script>
+                                const searchAuthor = (inputEvent) => {
+                                    fetch(`/api/author/search?q=${inputEvent.target.value}`)
+                                        .then(response => response.json())
+                                        .then(json => {
                                             clearAuthEntries();
-                                            inputEvent.target.value = '';
+                                            return json;
+                                        })
+                                        .then(json => {
+                                            json.forEach(item => {
+                                                const template = document.querySelector('#author-search-result-item');
+                                                const clone = document.importNode(template.content, true);
+
+                                                clone.querySelector('span').appendChild(document.createTextNode(item.name));
+
+                                                clone.querySelector('li').addEventListener('click', () => {
+                                                    addAuthorEntry(item.id, item.name);
+                                                    clearAuthEntries();
+                                                    inputEvent.target.value = '';
+                                                });
+                                                document.querySelector('[data-author-search-result]').appendChild(clone);
+                                            });
                                         });
-                                        document.querySelector('[data-author-search-result]').appendChild(clone);
-                                    });
-                                });
-                        };
-                        const removeAuthorEntry = (event) => {
-                            event.preventDefault();
-                            const parent = event.target.parentNode;
+                                };
+                                const removeAuthorEntry = (event) => {
+                                    event.preventDefault();
+                                    const parent = event.target.parentNode;
 
-                            parent.parentNode.removeChild(parent);
+                                    parent.parentNode.removeChild(parent);
 
-                        };
-                        const clearAuthEntries = () => {
-                            document.querySelector('[data-author-search-result]').innerHTML = '';
-                        };
-                        const addAuthorEntry = (id, name) => {
-                            const template = document.querySelector('#author-entry');
-                            const clone = document.importNode(template.content, true);
+                                };
+                                const clearAuthEntries = () => {
+                                    document.querySelector('[data-author-search-result]').innerHTML = '';
+                                };
+                                const addAuthorEntry = (id, name) => {
+                                    const template = document.querySelector('#author-entry');
+                                    const clone = document.importNode(template.content, true);
 
-                            clone.querySelector('input').value = id;
-                            clone.querySelector('span').appendChild(document.createTextNode(name));
-                            clone.querySelector('a').addEventListener('click', removeAuthorEntry);
+                                    clone.querySelector('input').value = id;
+                                    clone.querySelector('span').appendChild(document.createTextNode(name));
+                                    clone.querySelector('a').addEventListener('click', removeAuthorEntry);
 
-                            document.querySelector('[data-author-list]').appendChild(clone);
-                        };
-                    </script>
-                    <template id="author-entry">
-                        <li>
-                            <input type="hidden" name="author[]">
-                            <span></span>
-                            <a href="#">(remove)</a>
-                        </li>
-                    </template>
-                    <template id="author-search-result-item">
-                        <li class="list-group-item">
-                            <span></span>
-                        </li>
-                    </template>
-                    <div class="form-group">
-                        <label for="search">Author</label>
-                        <input type="search" onkeyup="searchAuthor(event)" class="form-control" aria-describedby="search" placeholder="Search for Author..." />
-                        <small id="emailHelp" class="form-text text-muted">Authors are created <a href="{{ path('create-author') }}" target="_blank">here</a></small>
-                        <ul data-author-search-result class="list-group"></ul>
-                    </div>
-                    <ul data-author-list>
-                        {% if entry.authors is defined %}
-                            {% for author in entry.authors %}
+                                    document.querySelector('[data-author-list]').appendChild(clone);
+                                };
+                            </script>
+                            <template id="author-entry">
                                 <li>
-                                    <input type="hidden" name="author[]" value="{{ author.id }}">
-                                    <span>{{ author.name }}</span>
-                                    <a href="#" onclick="removeAuthorEntry(event)">(remove)</a>
+                                    <input type="hidden" name="author[]">
+                                    <span></span>
+                                    <a href="#">(remove)</a>
                                 </li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="col">
-                    <div class="form-group">
-                        <label for="from">From</label>
-                        <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from : null}}">
+                            </template>
+                            <template id="author-search-result-item">
+                                <li class="list-group-item">
+                                    <span></span>
+                                </li>
+                            </template>
+                            <div class="form-group">
+                                <label for="search">Author</label>
+                                <input type="search" onkeyup="searchAuthor(event)" class="form-control" aria-describedby="search" placeholder="Search for Author..." />
+                                <small id="emailHelp" class="form-text text-muted">Authors are created <a href="{{ path('create-author') }}" target="_blank">here</a></small>
+                                <ul data-author-search-result class="list-group"></ul>
+                            </div>
+                            <ul data-author-list>
+                                {% if entry.authors is defined %}
+                                    {% for author in entry.authors %}
+                                        <li>
+                                            <input type="hidden" name="author[]" value="{{ author.id }}">
+                                            <span>{{ author.name }}</span>
+                                            <a href="#" onclick="removeAuthorEntry(event)">(remove)</a>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="from">From</label>
+                                <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from : null}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="to">To</label>
+                                <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to : null}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Type</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option value="show" {{ entry.type is defined and entry.type == 'show' ? 'selected' : '' }} >Show</option>
+                                    <option value="news" {{ entry.type is defined and entry.type == 'news' ? 'selected' : '' }}>News</option>
+                                    <option value="proj" {{ entry.type is defined and entry.type == 'proj' ? 'selected' : '' }}>Project</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="to">To</label>
-                        <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to : null}}">
+                        <label for="body_is">Body Icelandic</label>
+                        <textarea class="form-control" id="body_is" name="body_is" rows="8">{{ entry.body_is is defined ? entry.body_is : null}}</textarea>
+                        <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
                     </div>
+
                     <div class="form-group">
-                        <label for="type">Type</label>
-                        <select class="form-control" id="type" name="type">
-                            <option value="show" {{ entry.type is defined and entry.type == 'show' ? 'selected' : '' }} >Show</option>
-                            <option value="news" {{ entry.type is defined and entry.type == 'news' ? 'selected' : '' }}>News</option>
-                        </select>
+                        <label for="body_en">Body English</label>
+                        <textarea class="form-control" id="body_en" name="body_en" rows="8">{{ entry.body_en is defined ? entry.body_en : null}}</textarea>
+                        <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
                     </div>
+
+                    <div class="row">
+                        <template id="image-entry-template">
+                            <li
+                                {#draggable="true"#}
+                                {#ondragstart="dragStarted(event)"#}
+                                {#ondragover="draggingOver(event)"#}
+                                {#ondragenter="draggingEnter(event)"#}
+                                {#ondragleave="draggingLeave(event)"#}
+                                {#ondrop="dropped(event)"#}
+                            >
+                                {#<div style="height: 50px; width: 50px; background-color: pink"></div>#}
+                                <image-display>
+                                    <img slot="icon" style="object-fit: cover" height="100" width="100" />
+                                    <span slot="control">
+                                        <input type="hidden">
+                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                    </span>
+                                </image-display>
+
+                            </li>
+                        </template>
+                        <div class="col">
+                            <label for="poster">Poster</label>
+                            <file-uploader data-file-uploader-poster>
+                                <ul class="image-list">
+                                    {% if entry.poster is defined and entry.poster.name is defined %}
+                                        <li
+                                            {#draggable="true"#}
+                                            {#ondragstart="dragStarted(event)"#}
+                                            {#ondragover="draggingOver(event)"#}
+                                            {#ondragenter="draggingEnter(event)"#}
+                                            {#ondr="draggingLeave(event)"#}
+                                            {#ondrop="dropped(event)"#}
+                                        >
+                                            {#<div style="height: 50px; width: 50px; background-color: pink"></div>#}
+                                            <image-display  path="{{ path('update-image', {id: entry.poster.id}) }}" text="{{ entry.poster.description }}">
+                                                <img slot="icon" src="{{ path('asset', {size: '100x100', name: entry.poster.name}) }}" style="object-fit: cover" height="100" width="100" />
+                                                <span slot="control">
+                                                    <input type="hidden" name="poster[]" value="{{ entry.poster.id }}">
+                                                    <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                                </span>
+                                            </image-display>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </file-uploader>
+                        </div>
+                        <div class="col">
+                            <label for="gallery">Gallery</label>
+                            <file-uploader data-file-uploader-gallery>
+                                <ul class="image-list">
+                                    {% if entry.gallery is defined %}
+                                        {% for image in entry.gallery %}
+                                            <li
+                                                {#draggable="true"#}
+                                                {#ondragstart="dragStarted(event)"#}
+                                                {#ondragover="draggingOver(event)"#}
+                                                {#ondragend="draggingEnd(event)"#}
+                                                {#ondragenter="draggingEnter(event)"#}
+                                                {#ondragleave="draggingLeave(event)"#}
+                                                {#ondrop="dropped(event)"#}
+                                            >
+                                                {#<div style="height: 50px; width: 50px; background-color: pink"></div>#}
+                                                <image-display path="{{ path('update-image', {id: image.id}) }}" text="{{ image.description }}">
+                                                    <img slot="icon" src="{{ path('asset', {name: image.name, size: '100x100'}) }}" style="object-fit: cover" height="100" width="100" />
+                                                    <span slot="control">
+                                                        <input type="hidden" name="gallery[]" value="{{ image.id }}">
+                                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                                    </span>
+                                                </image-display>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </file-uploader>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
                     {% if entry.id is defined %}
-                        <a href="{{ path('delete-entry', {id: entry.id}) }}" class="btn btn-danger">Delete</a>
+                        <a href="{{ path('entry', {id: entry.id}) }}">Cancel</a>
+                    {% else %}
+                        <a href="{{ path('update') }}">Cancel</a>
                     {% endif %}
-                </div>
+                </form>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="body">Body</label>
-                <textarea class="form-control" id="body" name="body" rows="8">{{ entry.body is defined ? entry.body : null}}</textarea>
-                <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
-            </div>
+        <script>
 
-            <div class="row">
-                <script>
-                    const onDropPoster = (event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        uploadImages(
-                            event.dataTransfer.files,
-                            '[data-poster]',
-                            '[data-poster-progress-bar]',
-                            '[data-poster-progress-bar-text]',
-                            '#poster-result-entry'
-                        );
-                    };
-                    const onDropGallery = (event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        uploadImages(
-                            event.dataTransfer.files,
-                            '[data-gallery]',
-                            '[data-gallery-progress-bar]',
-                            '[data-gallery-progress-bar-text]',
-                            '#gallery-result-entry'
-                        );
-                    };
-                    const selectPoster = (event) => {
-                        event.preventDefault();
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.multiple = true;
-                        input.accept = 'image/*';
-                        input.style.position = 'absolute';
-                        input.style.top = '-100px';
-                        input.addEventListener('change', (event) => {
-                            event.preventDefault();
-                            uploadImages(
-                                event.target.files,
-                                '[data-poster]',
-                                '[data-poster-progress-bar]',
-                                '[data-poster-progress-bar-text]',
-                                '#poster-result-entry'
-                            )
-                        });
-                        document.body.appendChild(input);
-                        input.click();
-                    };
-                    const selectGallery = (event) => {
-                        event.preventDefault();
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.multiple = true;
-                        input.accept = 'image/*';
-                        input.style.position = 'absolute';
-                        input.style.top = '-100px';
-                        input.addEventListener('change', (event) => {
-                            event.preventDefault();
-                            uploadImages(
-                                event.target.files,
-                                '[data-gallery]',
-                                '[data-gallery-progress-bar]',
-                                '[data-gallery-progress-bar-text]',
-                                '#gallery-result-entry'
-                            )
-                        });
-                        document.body.appendChild(input);
-                        input.click();
-                    };
-                </script>
-                <div class="col">
-                    <label for="body">Poster</label>
-                    <template id="poster-result-entry">
-                        <li>
-                            <input type="hidden" name="poster[]" />
-                            <img src="#" />
-                            <span></span>
-                            <a href="#" onclick="removePoster(event)">(remove)</a>
-                        </li>
-                    </template>
-                    <div class="form-group drag-over"
-                         ondrop="onDropPoster(event)"
-                         ondragover="isDragOver(event)"
-                         ondragenter="isDragOver(event)"
-                         ondragleave="isNotDragOver(event)"
-                         ondragend="isNotDragOver(event)">
+            let source;
 
-                        <p>
-                            <a href="#" onclick="selectPoster(event)">Select or drag images</a>
-                        </p>
-                        <div class="progress" style="height: 2px;">
-                            <div class="progress-bar" data-poster-progress-bar
-                                 role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small data-poster-progress-bar-text class="form-text text-muted">&nbsp;</small>
+            function draggingEnd(e) {
+                console.log('currentTarget', e.currentTarget);
+                console.log('target', e.target);
+                console.log('srcElement', e.srcElement);
+            }
 
-                        <ul data-poster class="image-list">
-                            {% if entry.poster is defined and entry.poster.name is defined %}
-                                <li>
-                                    <input type="hidden" name="poster[]" value="{{ entry.poster.id }}">
-                                    <img src="/img/thumb/{{ entry.poster.name }}" />
-                                    <span>{{ entry.poster.name }}</span>
-                                    <a href="#" onclick="removePoster(event)">(remove)</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col">
-                    <label for="body">Gallery</label>
-                    <template id="gallery-result-entry">
-                        <li>
-                            <input type="hidden" name="gallery[]" />
-                            <img src="#" />
-                            <span></span>
-                            <a href="#" onclick="removePoster(event)">(remove)</a>
-                        </li>
-                    </template>
-                    <div class="form-group drag-over"
-                         ondrop="onDropGallery(event)"
-                         ondragover="isDragOver(event)"
-                         ondragenter="isDragOver(event)"
-                         ondragleave="isNotDragOver(event)"
-                         ondragend="isNotDragOver(event)">
-                        <p>
-                            <a href="#" onclick="selectGallery(event)">Select or drag images</a>
-                        </p>
-                        <div class="progress" style="height: 2px;">
-                            <div class="progress-bar" data-gallery-progress-bar
-                                 role="progressbar" style="width: 0" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small data-gallery-progress-bar-text class="form-text text-muted">&nbsp;</small>
+            function draggingEnter(e) {
+                e.preventDefault();
+                // e.stopPropagation();
+                console.log('enter');
+                e.currentTarget.style.background = '#7f8082';
+                return false;
+            }
+            function draggingLeave(e) {
+                e.preventDefault();
+                // e.stopPropagation();
+                console.log('leave');
+                e.currentTarget.style.background = 'transparent';
+                return false;
+            }
 
-                        <ul data-gallery class="image-list">
-                            {% if entry.gallery is defined %}
-                                {% for image in entry.gallery %}
-                                    <li>
-                                        <input type="hidden" name="gallery[]" value="{{ image.id }}">
-                                        <img src="/img/thumb/{{ image.name }}" />
-                                        <span>{{ image.name }}</span>
-                                        <a href="#" onclick="removePoster(event)">(remove)</a>
-                                    </li>
-                                {% endfor %}
-                            {% endif %}
-                        </ul>
-                    </div>
+            function dragStarted(e) {
+                source = e.target;
+                e.dataTransfer.setData("text/plain", e.target.innerHTML);
+                e.dataTransfer.effectAllowed = "move";
+            }
 
-                </div>
-            </div>
+            function draggingOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // e.dataTransfer.dropEffect = "move";
+                // event.currentTarget.style.background = '#7f8082';
+                return false;
+            }
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-            {% if entry.id is defined %}
-                <a href="{{ path('entry', {id: entry.id}) }}">Cancel</a>
-            {% else %}
-                <a href="{{ path('update') }}">Cancel</a>
-            {% endif %}
-        </form>
+            function dropped(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (e.target.localName === 'li') {
+                    source.innerHTML = e.target.innerHTML;
+                    e.target.innerHTML = e.dataTransfer.getData("text/plain");
+                }
+            }
+
+            const removeImageItem = (event) => {
+                event.preventDefault();
+                const parent = event.target.parentNode.parentNode;
+                parent.parentNode.removeChild(parent);
+            };
+
+            [{el: '[data-file-uploader-poster]', name: 'poster[]' },
+             {el: '[data-file-uploader-gallery]', name: 'gallery[]' }].forEach(config => {
+                document.querySelector(config.el).addEventListener('result', (event) => {
+                    const list = event.target.querySelector('ul');
+                    const template = document.querySelector('#image-entry-template');
+                    event.detail.map(item => {
+                        const clone = document.importNode(template.content, true);
+                        clone.querySelector('input').value = item.id;
+                        clone.querySelector('input').name = config.name;
+                        clone.querySelector('img').src = item.thumb;
+                        clone.querySelector('image-display').path = `/update/image/${item.id}`;
+                        list.appendChild(clone);
+                    });
+                });
+            });
+        </script>
 
     </main>
 {% endblock %}

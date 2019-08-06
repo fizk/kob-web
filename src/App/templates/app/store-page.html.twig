@@ -1,0 +1,60 @@
+{% extends '@layout/default.html.twig' %}
+
+{% block title %}
+    {% if language == 'is' %}
+        Verslun
+    {% else %}
+        Store
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'verslun' : 'store') }}" />
+    <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'verslun' : 'store') }}" />
+    <meta property="og:type"  content="article" />
+    <meta property="og:title" content="{{ language == 'is' ? 'Verslun' : 'Store' }}" />
+{% endblock %}
+
+{% block language_switch %}
+    {% if language == 'is' %}
+        <li><a href="{{ path('store') }}">English</a></li>
+    {% else %}
+        <li><a href="{{ path('verslun') }}">Íslenska</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <main>
+        <article class="article">
+            <aside class="article__aside">
+
+
+                <ul class="image__gallery">
+                    {% for image in manifesto.gallery %}
+                        {% if image.width > image.height %}
+                            <li class="image__gallery-item image__gallery-item--landscape">
+                                <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
+                            </li>
+                        {% else %}
+                            <li class="image__gallery-item image__gallery-item--portrait">
+                                <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+            </aside>
+            <div class="article__body">
+                {% include '@partials/header.html.twig' %}
+                {% if user_session %}
+                    <a class="entry__edit-button" href="{{ path('update-manifesto', {id: manifesto.id}) }}">edit</a>
+                {% endif %}
+                <div class="article__body-text markdown-text">
+                    {% markdown %}
+                        {{ manifesto.body|raw }}
+                    {% endmarkdown %}
+                </div>
+            </div>
+        </article>
+    </main>
+{% endblock %}

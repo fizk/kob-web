@@ -26,7 +26,7 @@ class EntriesPageHandler implements RequestHandlerInterface
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->entry    = $entry;
@@ -35,11 +35,11 @@ class EntriesPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'list' => $this->entry->fetchList($request->getAttribute('year')),
-            'year' => $request->getAttribute('year')
-        ];
-
-        return new HtmlResponse($this->template->render('app::entries-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::entries-page', [
+                'list' => $this->entry->fetchList($request->getAttribute('year')),
+                'year' => $request->getAttribute('year')
+            ])
+        );
     }
 }

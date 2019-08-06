@@ -23,22 +23,28 @@ class DashboardPageHandler implements RequestHandlerInterface
     /** @var \App\Service\Entry */
     private $entry;
 
+    /** @var \App\Service\Author */
+    private $author;
+
     public function __construct(
         Router\RouterInterface $router,
         Service\Entry $entry,
-        ?TemplateRendererInterface $template = null
+        Service\Author $author,
+        TemplateRendererInterface $template
     ) {
         $this->router   = $router;
         $this->entry    = $entry;
+        $this->author   = $author;
         $this->template = $template;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $data = [
-            'list' => $this->entry->fetchList()
-        ];
-
-        return new HtmlResponse($this->template->render('app::dashboard-page', $data));
+        return new HtmlResponse(
+            $this->template->render('app::dashboard-page', [
+                'entries' => $this->entry->fetchAffected(),
+                'authors' => $this->author->fetchAffected(),
+            ])
+        );
     }
 }

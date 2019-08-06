@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Auth\SimpleAuthAdapter;
 use PDO;
+use App\Auth\SimpleAuthAdapter;
 use App\Service;
 use App\Factory;
-use Aptoma\Twig\Extension\MarkdownEngine;
+use Psr\Container\ContainerInterface;
 use Zend\Authentication\AuthenticationService;
+use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
+use Elasticsearch\Client as ElasticSearchClient;
+use Elasticsearch\ClientBuilder as ElasticSearchClientBuilder;
 
 /**
  * The configuration provider for the App module
@@ -41,47 +45,274 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Handler\PingHandler::class => Handler\PingHandler::class,
+
             ],
             'factories'  => [
-                Handler\ImagePageHandler::class => Factory\ImagePageHandlerFactory::class,
-                Handler\ImageSavePageHandler::class => Factory\ImagesavePageHandlerFactory::class,
-                Handler\HomePageHandler::class => Factory\HomePageHandlerFactory::class,
-                Handler\EntryPageHandler::class => Factory\EntryPageHandlerFactory::class,
-                Handler\EntryUpdatePageHandler::class => Factory\EntryUpdatePageHandlerFactory::class,
-                Handler\EntryCreatePageHandler::class => Factory\EntryCreatePageHandlerFactory::class,
-                Handler\EntrySavePageHandler::class => Factory\EntrySavePageHandlerFactory::class,
-                Handler\EntryDeletePageHandler::class => Factory\EntryDeletePageHandlerFactory::class,
-                Handler\EntriesPageHandler::class => Factory\EntriesPageHandlerFactory::class,
-                Handler\AuthorsPageHandler::class => Factory\AuthorsPageHandlerFactory::class,
-                Handler\AuthorsSearchPageHandler::class => Factory\AuthorsSearchPageHandlerFactory::class,
-                Handler\ManifestoPageHandler::class => Factory\ManifestoPageHandlerFactory::class,
-                Handler\DashboardPageHandler::class => Factory\DashboardPageHandlerFactory::class,
-                Handler\LoginPageHandler::class => Factory\LoginPageHandlerFactory::class,
-                Handler\LoginSubmitPageHandler::class => Factory\LoginSubmitPageHandlerFactory::class,
-                Handler\LogoutSubmitPageHandler::class => Factory\LogoutSubmitPageHandlerFactory::class,
-                Handler\AuthorUpdatePageHandler::class => Factory\AuthorUpdatePageHandlerFactory::class,
-                Handler\AuthorSavePageHandler::class => Factory\AuthorSavePageHandlerFactory::class,
-                Handler\AuthorCreatePageHandler::class => Factory\AuthorCreatePageHandlerFactory::class,
-                Handler\AuthorDeletePageHandler::class => Factory\AuthorDeletePageHandlerFactory::class,
-                Handler\ManifestoSavePageHandler::class => Factory\ManifestoSavePageHandlerFactory::class,
-                Handler\ManifestoUpdatePageHandler::class => Factory\ManifestoUpdatePageHandlerFactory::class,
+                Handler\AssetPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AssetPageHandler();
+                },
 
-                Middleware\SessionMiddleware::class => Factory\SessionMiddlewareFactory::class,
-                Middleware\MenuMiddleware::class => Factory\MenuMiddlewareFactory::class,
-                Middleware\AuthenticationMiddleware::class => Factory\AuthenticationMiddlewareFactory::class,
 
-                SimpleAuthAdapter::class => Factory\SimpleAuthAdapterFactory::class,
-                AuthenticationService::class => Factory\AuthenticationServiceFactory::class,
+                Handler\ImageSavePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ImageSavePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Image::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\ImageUpdatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ImageUpdatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Image::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\HomePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\HomePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\EntryPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntryPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\EntryUpdatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntryUpdatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\EntryCreatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntryCreatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\EntrySavePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntrySavePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(Service\Author::class),
+                        $container->get(Service\Image::class),
+                        $container->get(Service\Search::class)
+                    );
+                },
+                Handler\EntryDeletePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntryDeletePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class)
+                    );
+                },
+                Handler\EntriesPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\EntriesPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\ProjectsPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ProjectsPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\AuthorsPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorsPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\AuthorsSearchPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorsSearchPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\ManifestoPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ManifestoPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Manifesto::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\StorePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\StorePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Manifesto::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\DashboardPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\DashboardPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(Service\Author::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\LoginPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\LoginPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Entry::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\LoginSubmitPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\LoginSubmitPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(AuthenticationService::class),
+                        $container->get(SimpleAuthAdapter::class)
+                    );
+                },
+                Handler\LogoutSubmitPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\LogoutSubmitPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(AuthenticationService::class),
+                        $container->get(SimpleAuthAdapter::class)
+                    );
+                },
+                Handler\AuthorUpdatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorUpdatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\AuthorSavePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorSavePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class)
+                    );
+                },
+                Handler\AuthorCreatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorCreatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\AuthorDeletePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\AuthorDeletePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Author::class)
+                    );
+                },
+                Handler\ManifestoSavePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ManifestoSavePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Manifesto::class)
+                    );
+                },
+                Handler\ManifestoUpdatePageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\ManifestoUpdatePageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Manifesto::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Handler\SearchPageHandler::class => function (ContainerInterface $container) {
+                    return new Handler\SearchPageHandler(
+                        $container->get(RouterInterface::class),
+                        $container->get(Service\Search::class),
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
 
-                Service\Entry::class => Factory\EntryFactory::class,
-                Service\User::class => Factory\UserFactory::class,
-                Service\Author::class => Factory\AuthorFactory::class,
-                Service\Manifesto::class => Factory\ManifestoFactory::class,
-                Service\Image::class => Factory\ImageFactory::class,
+                Middleware\SecondaryLanguageMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\SecondaryLanguageMiddleware(
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Middleware\PrimaryLanguageMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\PrimaryLanguageMiddleware(
+                        $container->get(TemplateRendererInterface::class)
+                    );
+                },
+                Middleware\SessionMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\SessionMiddleware(
+                        $container->get(TemplateRendererInterface::class),
+                        $container->get(AuthenticationService::class)
+                    );
+                },
+                Middleware\MenuMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\MenuMiddleware(
+                        $container->get(TemplateRendererInterface::class),
+                        $container->get(Service\Entry::class)
+                    );
+                },
+                Middleware\AuthenticationMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\AuthenticationMiddleware(
+                        $container->get(AuthenticationService::class)
+                    );
+                },
+                Middleware\AdminMenuMiddleware::class => function (ContainerInterface $container) {
+                    return new Middleware\AdminMenuMiddleware(
+                        $container->get(TemplateRendererInterface::class),
+                        $container->get(Service\Manifesto::class)
+                    );
+                },
+
+                SimpleAuthAdapter::class => function (ContainerInterface $container) {
+                    return new SimpleAuthAdapter(
+                        $container->get(Service\User::class)
+                    );
+                },
+                AuthenticationService::class => function (ContainerInterface $container) {
+                    return new AuthenticationService(
+                        null,
+                        $container->get(SimpleAuthAdapter::class)
+                    );
+                },
+
+                Service\Entry::class => function (ContainerInterface $container) {
+                    return new Service\Entry($container->get(PDO::class));
+                },
+                Service\User::class => function (ContainerInterface $container) {
+                    return new Service\User($container->get(PDO::class));
+                },
+                Service\Author::class => function (ContainerInterface $container) {
+                    return new Service\Author($container->get(PDO::class));
+                },
+                Service\Manifesto::class => function (ContainerInterface $container) {
+                    return new Service\Manifesto($container->get(PDO::class));
+                },
+                Service\Image::class => function (ContainerInterface $container) {
+                    return new Service\Image($container->get(PDO::class));
+                },
+                Service\Search::class => function (ContainerInterface $container) {
+                    return new Service\Search($container->get(ElasticSearchClient::class));
+                },
+
                 PDO::class => Factory\DataSourceFactory::class,
-            ],
 
+                ElasticSearchClient::class => function (ContainerInterface $container) {
+                        $esHost = getenv('ES_HOST') ?: 'search';
+                        $esProto = getenv('ES_PROTO') ?: 'http';
+                        $esPort = getenv('ES_PORT') ?: 9200;
+                        $esUser = getenv('ES_USER') ?: 'elastic';
+                        $esPass = getenv('ES_PASSWORD') ?: 'changeme';
+
+                        $hosts = [
+                            "{$esProto}://{$esUser}:{$esPass}@{$esHost}:{$esPort}",
+                        ];
+                        $client = ElasticSearchClientBuilder::create()
+//                                ->setLogger($sm->get(LoggerInterface::class))
+                            ->setHosts($hosts)
+                            ->build();
+
+                        return $client;
+                },
+            ],
         ];
     }
 
@@ -92,9 +323,10 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'app'    => [__DIR__ . '/../templates/app'],
-                'error'  => [__DIR__ . '/../templates/error'],
-                'layout' => [__DIR__ . '/../templates/layout'],
+                'app'      => [__DIR__ . '/../templates/app'],
+                'partials' => [__DIR__ . '/../templates/partials'],
+                'error'    => [__DIR__ . '/../templates/error'],
+                'layout'   => [__DIR__ . '/../templates/layout'],
             ],
         ];
     }
@@ -108,8 +340,20 @@ class ConfigProvider
             ],
             'extensions' => [
                 \Aptoma\Twig\Extension\MarkdownExtension::class => new \Aptoma\Twig\Extension\MarkdownExtension(
-                    new MarkdownEngine\MichelfMarkdownEngine()
+                    new class implements \Aptoma\Twig\Extension\MarkdownEngineInterface {
+                        public function transform($content) {
+                            return \Parsedown::instance()
+                                ->setSafeMode(false)
+                                ->setMarkupEscaped(false)
+                                ->text($content);
+                        }
+                        public function getName() {
+                            return 'erusev/parsedown';
+                        }
+                    }
                 ),
+                Filters\Slug::class => new Filters\Slug(),
+                Filters\Date::class => new Filters\Date(),
             ]
         ];
     }

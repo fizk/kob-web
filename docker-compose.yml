@@ -5,34 +5,34 @@ services:
   web:
     container_name: kob_web
     ports:
-      - 8080:80
+      - 9090:80
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
       - database
+      - search
     links:
       - database
-#    environment:
-#      - APPLICATION_ENVIRONMENT=development
-#      - DB_HOST=database
-#      - DB_PORT=3306
-#      - DB_NAME=althingi
-#      - DB_NAME_TEST=althingi
-#      - DB_USER=root
-#      - DB_PASSWORD=example
-#      - DB_SETUP=false
-#      - CACHE_TYPE=none
-#      - SEARCH=none
-#      - LOG_PATH=none
-#      - QUEUE=none
-#      - QUEUE_FORCED=false
+      - search
+    environment:
+      - APPLICATION_ENVIRONMENT=development
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_NAME=klingogbang
+      - DB_USER=root
+      - DB_PASSWORD=example
     volumes:
-#    - ./auto/:/usr/src/auto
-#    - ./config/:/usr/src/config
-    - .:/var/www
-#    - ./public/:/usr/src/public
-#    command: bash -c "/usr/src/auto/run-test.sh"
+      - ./config:/var/www/config
+      - ./src:/var/www/src
+      - ./public:/var/www/public
+      - ./bin:/var/www/bin
+      - ./data:/var/www/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
 
   database:
     container_name: kob_database
@@ -42,6 +42,28 @@ services:
     ports:
       - 5506:3306
     volumes:
-    - ./auto/db/:/docker-entrypoint-initdb.d
+      - ./data/mysql:/var/lib/mysql
+      - ./auto/db/:/docker-entrypoint-initdb.d
     environment:
-    - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_ROOT_PASSWORD=example
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  search:
+    container_name: kob_search
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./data/search/:/usr/share/elasticsearch/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
