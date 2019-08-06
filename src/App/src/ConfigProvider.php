@@ -122,11 +122,9 @@ class ConfigProvider
                 'ga_tracking' => 'UA-XXXXX-X',
             ],
             'extensions' => [
-                \Aptoma\Twig\Extension\MarkdownExtension::class => new \Aptoma\Twig\Extension\MarkdownExtension(
-                    new ParesDownAdapter()
-                ),
-                Filters\Slug::class => new Filters\Slug(),
-                Filters\Date::class => new Filters\Date(),
+                \Aptoma\Twig\Extension\MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
+                Filters\Slug::class => Factory\SlugFactory::class,
+                Filters\Date::class => Factory\DateFactory::class,
             ]
         ];
     }
