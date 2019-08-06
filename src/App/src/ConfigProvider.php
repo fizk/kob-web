@@ -123,8 +123,8 @@ class ConfigProvider
             ],
             'extensions' => [
                 \Aptoma\Twig\Extension\MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
-                Filters\Slug::class => Factory\SlugFactory::class,
-                Filters\Date::class => Factory\DateFactory::class,
+                Filters\Slug::class => Filters\Slug::class,
+                Filters\Date::class => Filters\Date::class,
             ]
         ];
     }
