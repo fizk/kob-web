@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Auth\ParesDownAdapter;
 use PDO;
 use App\Auth\SimpleAuthAdapter;
 use App\Service;
@@ -340,17 +341,7 @@ class ConfigProvider
             ],
             'extensions' => [
                 \Aptoma\Twig\Extension\MarkdownExtension::class => new \Aptoma\Twig\Extension\MarkdownExtension(
-                    new class implements \Aptoma\Twig\Extension\MarkdownEngineInterface {
-                        public function transform($content) {
-                            return \Parsedown::instance()
-                                ->setSafeMode(false)
-                                ->setMarkupEscaped(false)
-                                ->text($content);
-                        }
-                        public function getName() {
-                            return 'erusev/parsedown';
-                        }
-                    }
+                    new ParesDownAdapter()
                 ),
                 Filters\Slug::class => new Filters\Slug(),
                 Filters\Date::class => new Filters\Date(),

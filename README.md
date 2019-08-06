@@ -1,12 +1,5 @@
-ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 123.123.123.123
-
 ```
-scp -r /Users/einar.adalsteinsson/workspace/ex/auto/* althingi:/home/kogb/auto
-scp -r /Users/einar.adalsteinsson/workspace/ex/src/* althingi:/home/kogb/src
-scp -r /Users/einar.adalsteinsson/workspace/ex/config/routes.php althingi:/home/kogb/config
-scp -r /Users/einar.adalsteinsson/workspace/ex/public/scripts/* althingi:/home/kogb/public/scripts
-scp -r /Users/einar.adalsteinsson/workspace/ex/public/styles/* althingi:/home/kogb/public/styles
-scp -r /Users/einar.adalsteinsson/workspace/ex/Dockerfile althingi:/home/kogb/
+scp -r /Users/einar.adalsteinsson/workspace/ex/data/images/* althingi:/home/kogb/klingogbang/data/
 ```
 
 
@@ -33,8 +26,8 @@ found in ./auto/search/template.json
 
 ElasticSearch is on ports
 
-* 9201
-* 9301
+* `9201`
+* `9301`
 
 To index everything in the database against the search engine, run:
 
@@ -43,3 +36,4 @@ $ docker-compose exec web bash -c "php /var/www/bin/search.php"
 ```
 
 ### Database
+The database has port `5506` exposed, so you can access the database via you favoured database client
