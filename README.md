@@ -22,11 +22,24 @@ Make sure your machine can handle ElasticSearch
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode
 
 ## Install
-Clone the repository.
-
-run docker `docker-compose up -d`
+Clone the repository. Run Docker Composer.  
+```
+$ docker-compose up -d
+```
 
 ## Post-install
+To create a mapping for ElasticSearch, connect to the cluster with Kibana and then run the mapping
+found in ./auto/search/template.json
+
+ElasticSearch is on ports
+
+* 9201
+* 9301
+
 To index everything in the database against the search engine, run:
 
-`docker-compose exec web bash -c "php /var/www/bin/search.php"`
+```
+$ docker-compose exec web bash -c "php /var/www/bin/search.php"
+```
+
+### Database
