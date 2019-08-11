@@ -95,6 +95,10 @@ class ConfigProvider
                 PDO::class => Factory\DataSourceFactory::class,
 
                 Client::class => Factory\ClientFactory::class,
+
+                \Aptoma\Twig\Extension\MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
+                Filters\Slug::class => Factory\SlugFactory::class,
+                Filters\Date::class => Factory\DateFactory::class,
             ],
         ];
     }
@@ -122,10 +126,10 @@ class ConfigProvider
                 'ga_tracking' => 'UA-XXXXX-X',
             ],
             'extensions' => [
-                \Aptoma\Twig\Extension\MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
-                Filters\Slug::class => Filters\Slug::class,
-                Filters\Date::class => Filters\Date::class,
-            ]
+                \Aptoma\Twig\Extension\MarkdownExtension::class,
+                Filters\Slug::class,
+                Filters\Date::class,
+            ],
         ];
     }
 }

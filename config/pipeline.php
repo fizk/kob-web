@@ -24,6 +24,9 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
 
+$app->pipe(App\Middleware\SessionMiddleware::class);
+    $app->pipe(App\Middleware\MenuMiddleware::class);
+
     // Pipe more middleware here that you want to execute on every request:
     // - bootstrapping
     // - pre-conditions
@@ -60,8 +63,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app->pipe(UrlHelperMiddleware::class);
 
 
-    $app->pipe(App\Middleware\SessionMiddleware::class);
-    $app->pipe(App\Middleware\MenuMiddleware::class);
+
 
     // Add more middleware here that needs to introspect the routing results; this
     // might include:
