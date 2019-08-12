@@ -9,7 +9,7 @@ class ClientFactory
     public function __invoke(ContainerInterface $container) {
         $esHost = getenv('ES_HOST') ?: 'search';
         $esProto = getenv('ES_PROTO') ?: 'http';
-        $esPort = getenv('ES_PORT') ?: 9201;
+        $esPort = getenv('ES_PORT') ?: 9200;
         $esUser = getenv('ES_USER') ?: 'elastic';
         $esPass = getenv('ES_PASSWORD') ?: 'changeme';
 

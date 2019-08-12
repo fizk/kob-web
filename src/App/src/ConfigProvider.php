@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Auth\ParesDownAdapter;
 use PDO;
 use App\Auth\SimpleAuthAdapter;
 use App\Service;
 use App\Factory;
 use Zend\Authentication\AuthenticationService;
 use Elasticsearch\Client;
+use Aptoma\Twig\Extension\MarkdownExtension;
 
 
 /**
@@ -47,8 +47,6 @@ class ConfigProvider
             ],
             'factories'  => [
                 Handler\AssetPageHandler::class => Factory\AssetPageHandlerFactory::class,
-
-
                 Handler\ImageSavePageHandler::class => Factory\ImageSavePageHandlerFactory::class,
                 Handler\ImageUpdatePageHandler::class => Factory\ImageUpdatePageHandlerFactory::class,
                 Handler\HomePageHandler::class => Factory\HomePageHandlerFactory::class,
@@ -93,10 +91,9 @@ class ConfigProvider
                 Service\Search::class => Factory\SearchFactory::class,
 
                 PDO::class => Factory\DataSourceFactory::class,
-
                 Client::class => Factory\ClientFactory::class,
 
-                \Aptoma\Twig\Extension\MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
+                MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
                 Filters\Slug::class => Factory\SlugFactory::class,
                 Filters\Date::class => Factory\DateFactory::class,
             ],
@@ -126,7 +123,7 @@ class ConfigProvider
                 'ga_tracking' => 'UA-XXXXX-X',
             ],
             'extensions' => [
-                \Aptoma\Twig\Extension\MarkdownExtension::class,
+                MarkdownExtension::class,
                 Filters\Slug::class,
                 Filters\Date::class,
             ],
