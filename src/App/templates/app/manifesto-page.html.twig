@@ -1,18 +1,15 @@
 {% extends '@layout/default.html.twig' %}
 
 {% block title %}
-    {% if language == 'is' %}
-        Um Kling&amp;Bang
-    {% else %}
-        About Kling&amp;Bang
-    {% endif %}
+    {{ language == 'is' ? 'Um Kling &amp; Bang' :  'About Kling &amp; Bang' }}
 {% endblock %}
 
 {% block meta %}
     <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
     <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
     <meta property="og:type"  content="article" />
-    <meta property="og:title" content="{{ language == 'is' ? 'Um' : 'About' }} Kling&amp;Bang" />
+    <meta property="og:title" content="{{ language == 'is' ? 'Um' : 'About' }} Kling &amp; Bang" />
+    <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
 {% block language_switch %}

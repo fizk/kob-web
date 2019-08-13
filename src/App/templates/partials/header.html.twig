@@ -1,6 +1,6 @@
 <header class="app__header">
     <h1 class="app__brand">
-        <a href="{{ path(language == 'is' ? 'heim' : 'home') }}">
+        <a href="{{ path(language|default('is') == 'is' ? 'heim' : 'home') }}">
         <svg width="187" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <title>Kling &amp; Bang</title>
             <defs>

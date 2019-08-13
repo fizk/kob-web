@@ -10,6 +10,8 @@
     <meta property="og:description" content="{{ entry.current.body|length > 100 ? entry.current.body|slice(0, 100) ~ '...' : entry.current.body  }}" />
     {% if entry.current.poster %}
     <meta property="og:image"       content="{{ path('asset', {size: 'x', name: entry.current.poster.name}) }}" />
+    {% else %}
+    <meta property="og:image" content="/images/poster.jpg" />
     {% endif %}
 {% endblock %}
 
@@ -45,6 +47,7 @@
                          src="{{ path('asset', {size: 'x', name: entry.current.poster.name}) }}" />
                 {% endif %}
 
+                {% if entry.current.gallery|length > 0 %}
                 <ul class="image__gallery">
                     {% for image in entry.current.gallery %}
                         {% if image.width > image.height %}
@@ -62,7 +65,7 @@
                         {% endif %}
                     {% endfor %}
                 </ul>
-
+                {% endif %}
             </aside>
             <div class="entry__body">
                 {% include '@partials/header.html.twig' %}
@@ -87,7 +90,7 @@
                     {% endif %}
                 </ul>
                 {% if entry.current.type == 'show' or entry.current.type == 'proj' %}
-                    <time class="entry__time">{{ entry.current.from|date }} - {{ entry.current.to|date }}</time>
+                    <time class="entry__time">{{ entry.current.from|date(language|default('is'), false) }} - {{ entry.current.to|date(language|default('is')) }}</time>
                 {% endif %}
 
                 {% if entry.current.type == 'show' %}
@@ -105,24 +108,34 @@
         </article>
     </main>
 
-    <aside class="row">
-        <div class="col">
+    <aside class="pagination">
+        <div class="pagination__item pagination--next">
             {% if entry.next %}
-                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">{{ entry.next.title }}
+                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
                     {% if entry.next.poster %}
-                        <img src="{{ path('asset', {size: '60x60', name: entry.next.poster.name}) }}" />
+                        <img class="pagination__image" src="{{ path('asset', {size: '60x60', name: entry.next.poster.name}) }}" />
+                    {% else %}
+                        <span class="pagination__image"></span>
                     {% endif %}
+                </a>
+                <a class="pagination__title" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
+                    {{ entry.next.title }}
                 </a>
             {% endif %}
         </div>
 
-        <div class="col">
+        <div class="pagination__item pagination--previous">
             {% if entry.previous %}
+                <a class="pagination__title" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
+                    {{ entry.previous.title }}
+                </a>
                 <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
-                {% if entry.previous.poster %}
-                    <img width="60" height="60" src="{{ path('asset', {size: '60x60', name: entry.previous.poster.name}) }}" />
-                {% endif %}
-                {{ entry.previous.title }}</a>
+                    {% if entry.previous.poster %}
+                        <img class="pagination__image"  src="{{ path('asset', {size: '60x60', name: entry.previous.poster.name}) }}" />
+                    {% else %}
+                        <span class="pagination__image"></span>
+                    {% endif %}
+                </a>
             {% endif %}
         </div>
     </aside>

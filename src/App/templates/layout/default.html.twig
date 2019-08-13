@@ -26,11 +26,6 @@
             {% endif %}
         {% endblock %}
 
-        <form method="get" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
-            <input type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
-            <button>{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
-        </form>
-
         <nav class="app__nav">
             <ul class="app__nav-list">
                 {% if language|default('is') == 'is' %}
@@ -57,7 +52,13 @@
                 </li>
             {% endfor %}
             </ul>
+
         </nav>
+
+        <form method="get" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
+            <input type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
+            <button>{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
+        </form>
 
         <div class="container">
             <div class="row">

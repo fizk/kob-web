@@ -1,12 +1,13 @@
 {% extends '@layout/default.html.twig' %}
 
-{% block title %}Kling&amp;Bang{% endblock %}
+{% block title %}Kling &amp; Bang{% endblock %}
 
 {% block meta %}
     <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'heim' : 'home') }}" />
-    <meta property="og:url"         content="{{ host }}{{ path(language == 'is' ? 'heim' : 'home') }}" />
-    <meta property="og:type"        content="article" />
-    <meta property="og:title"       content="Kling&amp;Bang" />
+    <meta property="og:url" content="{{ host }}{{ path(language == 'is' ? 'heim' : 'home') }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Kling &amp; Bang" />
+    <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
 {% block content %}
@@ -44,7 +45,7 @@
                     </ul>
 
                     {% if item.type == 'show' or item.type == 'proj' %}
-                        <time class="entry__time">{{ item.from|date }} - {{ item.to|date }}</time>
+                        <time class="entry__time">{{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is')) }}</time>
                     {% endif %}
 
                     {% if item.type == 'show' %}

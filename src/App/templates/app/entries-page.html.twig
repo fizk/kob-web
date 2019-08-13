@@ -1,18 +1,15 @@
 {% extends '@layout/default.html.twig' %}
 
 {% block title %}
-    {% if language == 'is' %}
-        Sýningar {{ year }}
-    {% else %}
-        Shows {{ year }}
-    {% endif %}
+    {{ language == 'is' ? 'Sýningar ' ~ year :  'Shows ' ~ year }}
 {% endblock %}
 
 {% block meta %}
     <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'listi' : 'list', {year: year}) }}" />
-    <meta property="og:url"                content="{{ host }}{{ path(language == 'is' ? 'listi' : 'list', {year: year}) }}" />
-    <meta property="og:type"               content="website" />
-    <meta property="og:title"              content="{{ language == 'is' ? 'Sýningar' : 'Shows'}} {{ year }}" />
+    <meta property="og:url" content="{{ host }}{{ path(language == 'is' ? 'listi' : 'list', {year: year}) }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ language == 'is' ? 'Sýningar' : 'Shows'}} {{ year }}" />
+    <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
 {% block language_switch %}
@@ -80,7 +77,7 @@
                             {% endif %}
                         </ul>
                         {% if item.type == 'show' or item.type == 'proj' %}
-                            <time class="entries__time">{{ item.from|date }} - {{ item.to|date }}</time>
+                            <time class="entries__time">{{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is')) }}</time>
                         {% endif %}
 
                         {% if item.type == 'show' %}

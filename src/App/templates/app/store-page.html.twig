@@ -1,11 +1,7 @@
 {% extends '@layout/default.html.twig' %}
 
 {% block title %}
-    {% if language == 'is' %}
-        Verslun
-    {% else %}
-        Store
-    {% endif %}
+    {{ language == 'is' ? 'Verslun' :  'Store' }}
 {% endblock %}
 
 {% block meta %}
@@ -13,6 +9,7 @@
     <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'verslun' : 'store') }}" />
     <meta property="og:type"  content="article" />
     <meta property="og:title" content="{{ language == 'is' ? 'Verslun' : 'Store' }}" />
+    <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
 {% block language_switch %}
@@ -27,8 +24,6 @@
     <main>
         <article class="article">
             <aside class="article__aside">
-
-
                 <ul class="image__gallery">
                     {% for image in manifesto.gallery %}
                         {% if image.width > image.height %}

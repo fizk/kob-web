@@ -1,18 +1,15 @@
 {% extends '@layout/default.html.twig' %}
 
 {% block title %}
-    {% if language == 'is' %}
-        Leit
-    {% else %}
-        Search
-    {% endif %}
+    {{ language == 'is' ? 'Leit: ' ~ query|default('') :  'Search: ' ~ query|default('') }}
 {% endblock %}
 
 {% block meta %}
-    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
-    <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'um' : 'about') }}" />
+    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'leit' : 'search') }}" />
+    <meta property="og:url"   content="{{ host }}{{ path(language == 'is' ? 'leit' : 'search') }}" />
     <meta property="og:type"  content="article" />
-    <meta property="og:title" content="{{ language == 'is' ? 'Um' : 'About' }} Kling&amp;Bang" />
+    <meta property="og:title" content="{{ language == 'is' ? 'Leit' : 'Search' }} Kling &amp; Bang" />
+    <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
 {% block language_switch %}
@@ -74,7 +71,7 @@
                                 {% endif %}
                             </ul>
                             {% if item.type == 'show' or item.type == 'proj' %}
-                                <time class="entries__time">{{ item.from|date }} - {{ item.to|date }}</time>
+                                <time class="entries__time">{{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is')) }}</time>
                             {% endif %}
 
                             {% if item.type == 'show' %}

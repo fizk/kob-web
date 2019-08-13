@@ -4,15 +4,35 @@
 
 {% block content %}
     <main>
-        {% if user_session %}
-            <a href="{{ path('logout-submit') }}">logout</a>
-        {% else %}
-            <form method="post" action="{{ path('login-submit') }}">
-                <input type="text" name="username" />
-                <input type="password" name="password" />
-                <input type="submit" />
-            </form>
 
+        <article class="article">
+            <aside class="article__aside">
+
+
+            </aside>
+            <div class="article__body">
+                {% include '@partials/header.html.twig' %}
+
+                <div class="article__body-text">
+                    {% if user_session %}
+                    <a href="{{ path('logout-submit') }}">logout</a>
+                    {% else %}
+                    <form method="post" action="{{ path('login-submit') }}">
+                        <div>
+                            <label for="username">User name</label>
+                            <input type="text" name="username" />
+                        </div>
+                        <div>
+                            <label for="password">Password</label>
+                            <input type="password" name="password" />
+                        </div>
+                        <div>
+                            <button type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </article>
         {% endif %}
     </main>
 {% endblock %}
