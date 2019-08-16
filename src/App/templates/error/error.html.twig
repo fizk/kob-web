@@ -3,13 +3,19 @@
 {% block title %}{{ status }} {{ reason }}{% endblock %}
 
 {% block content %}
-    <h1>Oops!</h1>
-    <h2>This is awkward.</h2>
-    <p>We encountered a {{ status }} {{ reason }} error.</p>
-    {% if status == 404 %}
-        <p>
-            You are looking for something that doesn't exist or may have moved. Check out one of the links on this page
-            or head back to <a href="{{ path('home') }}">Home</a>.
-        </p>
-    {% endif %}
+    <main class="four-o-four">
+        <article class="article">
+            <aside class="article__aside">
+                <h1 class="four-o-four__headline">{{ status }}!</h1>
+                <h2>{{ reason }}</h2>
+            </aside>
+            <div class="article__body">
+                {% include '@partials/header.html.twig' %}
+                <form method="get" class="search search--tail" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
+                    <input class="search__text" type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
+                    <button class="search__button">{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
+                </form>
+            </div>
+        </article>
+    </main>
 {% endblock %}

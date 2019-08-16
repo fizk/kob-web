@@ -14,9 +14,9 @@
 
 {% block language_switch %}
     {% if language == 'is' %}
-        <li><a href="{{ path('about') }}">English</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('about') }}">English</a></li>
     {% else %}
-        <li><a href="{{ path('um') }}">Íslenska</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('um') }}">Íslenska</a></li>
     {% endif %}
 {% endblock %}
 

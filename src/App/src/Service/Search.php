@@ -43,7 +43,7 @@ class Search
                                             "match" => [
                                                 "title" => [
                                                     "query" => $query,
-                                                    "boost" => 5
+                                                    "boost" => 5,
                                                 ]
                                             ]
                                         ],
@@ -55,12 +55,23 @@ class Search
                                             ]
                                         ],
                                         [
-                                            "match" => [
-                                                "author.name" => [
-                                                    "query" => $query,
-                                                    "boost" => 10
+                                            "nested" => [
+                                                "path" => "authors",
+                                                "query" => [
+                                                    "bool" => [
+                                                        "must" => [
+                                                            [
+                                                                "match" => [
+                                                                    "authors.name" => [
+                                                                        "query" => $query,
+                                                                        "boost" => 10,
+                                                                    ],
+                                                                ]
+                                                            ]
+                                                        ]
+                                                    ]
                                                 ]
-                                            ]
+                                            ],
                                         ]
                                     ]
                                 ]
@@ -70,13 +81,11 @@ class Search
                 ]
             ]
         ]);
-//print_r($result['hits']['hits']);
-//die();
+
         $response = array_map(function ($item) {
             return array_merge($item['_source'], ['_score' => $item['_score']]);
         }, $result['hits']['hits']);
 
-//        print_r($result); die();
 
         for ($i = 0; $i < count($result['hits']['hits']); $i++) {
             if (!array_key_exists('highlight', $result['hits']['hits'][$i])) {

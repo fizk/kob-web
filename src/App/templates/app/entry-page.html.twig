@@ -17,9 +17,9 @@
 
 {% block language_switch %}
     {% if language == 'is' %}
-        <li><a href="{{ path('entry', {id: entry.current.title|slug(entry.current.id)}) }}">English</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('entry', {id: entry.current.title|slug(entry.current.id)}) }}">English</a></li>
     {% else %}
-        <li><a href="{{ path('syning', {id: entry.current.title|slug(entry.current.id)}) }}">Íslenska</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('syning', {id: entry.current.title|slug(entry.current.id)}) }}">Íslenska</a></li>
     {% endif %}
 {% endblock %}
 

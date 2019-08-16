@@ -14,9 +14,9 @@
 
 {% block language_switch %}
     {% if language == 'is' %}
-        <li><a href="{{ path('search') }}">English</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('search') }}">English</a></li>
     {% else %}
-        <li><a href="{{ path('leit') }}">Íslenska</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('leit') }}">Íslenska</a></li>
     {% endif %}
 {% endblock %}
 
@@ -24,9 +24,9 @@
     <main>
         <div class="entries__header">
             <div class="entries__header-space">
-                <form method="get" action="{{ path(language == 'is' ? 'leit' : 'search') }}">
-                    <input type="search" name="q" value="{{ query }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
-                    <button>{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
+                <form method="get" class="search" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
+                    <input class="search__text search__text--dark" type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
+                    <button class="search__button">{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
                 </form>
             </div>
             <div class="entries__header-logo">
@@ -94,6 +94,6 @@
                 </li>
             {% endfor %}
         </ul>
-        <div>{{ count }}</div>
+        {#<div>{{ count }}</div>#}
     </main>
 {% endblock %}

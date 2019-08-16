@@ -4,16 +4,17 @@
 
 {% block content %}
     <main class="four-o-four">
-        <h1>Oops! 404</h1>
-        {% if language == 'is' %}
-            <h2>Tu veist, tu getur alltaf farid <a href="{{ path('heim') }}">heim</a></h2>
-        {% else %}
-            <h2>I know, you can always go <a href="{{ path('home') }}">home</a></h2>
-        {% endif %}
-
-        <form method="get" action="{{ path(language == 'is' ? 'leit' : 'search') }}">
-            <input type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language == 'is' ? 'Leit...' : 'Search...' }}" />
-            <button>{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
-        </form>
+        <article class="article">
+            <aside class="article__aside">
+                <h1 class="four-o-four__headline">404!</h1>
+            </aside>
+            <div class="article__body">
+                {% include '@partials/header.html.twig' %}
+                <form method="get" class="search search--tail" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
+                    <input class="search__text" type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
+                    <button class="search__button">{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>
+                </form>
+            </div>
+        </article>
     </main>
 {% endblock %}

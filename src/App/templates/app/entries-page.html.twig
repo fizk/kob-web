@@ -14,9 +14,9 @@
 
 {% block language_switch %}
     {% if language == 'is' %}
-        <li><a href="{{ path('list', {year: year}) }}">English</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('list', {year: year}) }}">English</a></li>
     {% else %}
-        <li><a href="{{ path('listi', {year: year}) }}">Íslenska</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('listi', {year: year}) }}">Íslenska</a></li>
     {% endif %}
 {% endblock %}
 
@@ -28,18 +28,22 @@
                 {% include '@partials/header.html.twig' %}
             </div>
         </div>
-        <ul style="position: sticky; top: 0; display: inline-block">
-            {% for item in entry_years %}
-                <li>
-                    {% if year == item.year %}
-                        <span>{{ item.year }}</span>
-                    {% else %}
-                        <a href="{{ path(language == 'is' ? 'listi' : 'list', {year: item.year}) }}" class="app__footer-link">{{ item.year }}</a>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-        <ul class="entries__list">
+
+        <div class="entries__container">
+            {#<div class="entries__years-list">#}
+                {#<ul class="entries__years">#}
+                    {#{% for item in entry_years %}#}
+                        {#<li class="entries__years-item">#}
+                            {#{% if year == item.year %}#}
+                                {#<span class="entries__years-year">{{ item.year }}</span>#}
+                            {#{% else %}#}
+                                {#<a class="entries__years-link" href="{{ path(language == 'is' ? 'listi' : 'list', {year: item.year}) }}">{{ item.year }}</a>#}
+                            {#{% endif %}#}
+                        {#</li>#}
+                    {#{% endfor %}#}
+                {#</ul>#}
+            {#</div>#}
+            <ul class="entries__list">
             {% for item in list %}
             <li class="entries__list-item">
                 <article class="entries">
@@ -92,5 +96,6 @@
             </li>
             {% endfor %}
         </ul>
+        </div>
     </main>
 {% endblock %}

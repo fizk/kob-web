@@ -17,37 +17,37 @@
 
 {% block language_switch %}
 {% if language == 'is' %}
-    <li><a href="{{ path('authors') }}">English</a></li>
+    <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('authors') }}">English</a></li>
 {% else %}
-    <li><a href="{{ path('listamenn') }}">Íslenska</a></li>
+    <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('listamenn') }}">Íslenska</a></li>
 {% endif %}
 {% endblock %}
 
 {% block content %}
-    <div class="container" style="max-width: 960px; margin: auto">
-        <div class="row" style="display: flex">
-            <div class="col">
-                <ul class="author-list">
-                    {% for author in list %}
-                        <li class="author-list__item">
-                            {{ author.name }}
-                            {% if user_session %}
-                                <a href="{{ path('update-author', {id: author.id}) }}">edit</a>
-                            {% endif %}
-                            <ul class="author-list__entries-list">
-                                {% for entry in author.entries %}
-                                    <li class="author-list__entries-item">
+    <article class="article">
+        <aside class="article__aside">
+            <ul class="author-list">
+                {% for author in list %}
+                    <li class="author-list__item">
+                        <h3 class="author-list__author">{{ author.name }}</h3>
+                        {% if user_session %}
+                            <a href="{{ path('update-author', {id: author.id}) }}">edit</a>
+                        {% endif %}
+                        <ul class="author-list__entries-list">
+                            {% for entry in author.entries %}
+                                <li class="author-list__entries-item">
+                                    <h4 class="author-list__entry">
                                         <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.title|slug(entry.id)}) }}">{{ entry.title }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col">
-                {% include '@partials/header.html.twig' %}
-            </div>
+                                    </h4>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </aside>
+        <div class="article__body">
+            {% include '@partials/header.html.twig' %}
         </div>
-    </div>
+    </article>
 {% endblock %}

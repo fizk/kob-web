@@ -5,384 +5,405 @@ DELETE kob_entry
 DELETE _template/template_entry
 PUT _template/template_entry?include_type_name=true
 {
-"settings": {
-"analysis": {
-"analyzer": {
-"english_analyzer":{
-"type":"custom",
-"tokenizer":"standard",
-"filter":[
-"lowercase"
-]
-},
-"english_stop_analyzer":{
-"type":"custom",
-"tokenizer":"standard",
-"filter":[
-"lowercase",
-"english_stop"
-]
-},
-"text_searcher": {
-"type": "custom",
-"tokenizer": "standard",
-"filter": [
-"lowercase",
-"icelandic_stop"
-],
-"char_filter": [
-"icelandic",
-"html_strip"
-]
-}
-},
-"tokenizer": {
-"max_size_tokenizer": {
-"type": "standard",
-"max_token_length": 5
-}
-},
-"char_filter": {
-"icelandic": {
-"type": "mapping",
-"mappings": [
-"Á => A",
-"Ð => D",
-"É => E",
-"Í => I",
-"Ó => O",
-"Ú => O",
-"Ý => Y",
-"Þ => TH",
-"Æ => AE",
-"Ö => O",
-"á => a",
-"ð => d",
-"é => e",
-"í => i",
-"ó => o",
-"ú => u",
-"ý => y",
-"þ => th",
-"æ => ae",
-"ö => o"
-]
-}
-},
-"filter": {
-"english_stop":{
-"type":"stop",
-"stopwords":"_english_"
-},
-"icelandic_stop": {
-"type": "stop",
-"stopwords": [
-"a",
-"ad",
-"adra",
-"adrar",
-"adrir",
-"adur en",
-"af",
-"af thvi",
-"af thvi ad",
-"alla",
-"allan",
-"allar",
-"allir",
-"allra",
-"allrar",
-"allri",
-"alls",
-"allt",
-"allur",
-"an",
-"annad",
-"annan",
-"annar",
-"annarra",
-"annarrar",
-"annarri",
-"annars",
-"auk",
-"bada",
-"badar",
-"badir",
-"badum",
-"baedi",
-"beggja",
-"e",
-"ed",
-"eda",
-"ef",
-"eftir",
-"eftir ad",
-"eg",
-"einhver",
-"einhverja",
-"einhverjar",
-"einhverjir",
-"einhverju",
-"einhverjum",
-"einhvern",
-"einhverra",
-"einhverrar",
-"einhverri",
-"einhvers",
-"einn",
-"eins og",
-"einskis",
-"eitt",
-"eitthvad",
-"eitthvert",
-"ek",
-"ekkert",
-"ekki",
-"ellegar",
-"en",
-"enda",
-"enga",
-"engan",
-"engar",
-"engi",
-"engin",
-"enginn",
-"engir",
-"engra",
-"engrar",
-"engri",
-"engu",
-"engum",
-"er",
-"faeinir",
-"fra",
-"fyrir",
-"hana",
-"hann",
-"hans",
-"hanum",
-"heldur",
-"heldur en",
-"hennar",
-"henni",
-"herna",
-"hinn",
-"hja",
-"hon",
-"honum",
-"hun",
-"hvad",
-"hvada",
-"hver",
-"hvergi",
-"hverja",
-"hverjar",
-"hverjir",
-"hverju",
-"hverjum",
-"hvern",
-"hverra",
-"hverrar",
-"hverri",
-"hvers",
-"hvert",
-"hvilíkur",
-"hvor",
-"hvora",
-"hvorar",
-"hvorir",
-"hvorn",
-"hvorra",
-"hvorrar",
-"hvorri",
-"hvors",
-"hvort",
-"hvoru",
-"hvorugur",
-"hvorum",
-"i",
-"id",
-"innan",
-"m",
-"med",
-"medan",
-"medfram",
-"mer",
-"mig",
-"milli",
-"min",
-"mina",
-"minar",
-"minir",
-"minn",
-"minna",
-"minnar",
-"minni",
-"mins",
-"minu",
-"minum",
-"mitt",
-"neinn",
-"nema",
-"nokkrir",
-"nokkur",
-"odru",
-"odrum",
-"og",
-"okkar",
-"okkur",
-"oll",
-"ollu",
-"ollum",
-"onnur",
-"oss",
-"sa",
-"sem",
-"ser",
-"serhver",
-"sig",
-"sin",
-"sina",
-"sinar",
-"sinir",
-"sinn",
-"sinna",
-"sinnar",
-"sinni",
-"sins",
-"sinu",
-"sinum",
-"sitt",
-"sitthvad",
-"sjalfur",
-"sko",
-"su",
-"sumur",
-"tha",
-"thad",
-"thaer",
-"thann",
-"thar sem",
-"that",
-"thau",
-"thegar",
-"theim",
-"their",
-"theirra",
-"theirrar",
-"theirri",
-"thennan",
-"ther",
-"thess",
-"thessa",
-"thessar",
-"thessara",
-"thessarar",
-"thessari",
-"thessi",
-"thessir",
-"thessu",
-"thessum",
-"thetta",
-"thid",
-"thig",
-"thin",
-"thina",
-"thinar",
-"thinir",
-"thinn",
-"thinna",
-"thinnar",
-"thinni",
-"thins",
-"thinu",
-"thinum",
-"thit",
-"thitt",
-"tho ad",
-"thott",
-"thu",
-"thvi",
-"til",
-"til thess ad",
-"um",
-"und",
-"undir",
-"ur",
-"vegna",
-"ver",
-"vid",
-"vor",
-"ydar",
-"ydur",
-"yfir",
-"ykkar",
-"ykkur",
-"ymis"
-]
-}
-}
-}
-},
-"mappings": {
-"entry": {
-"properties": {
-"id": {
-"type": "long"
-},
-"title": {
-"analyzer": "text_searcher",
-"type": "text"
-},
-"from": {
-"format": "yyyy-MM-dd",
-"type": "date"
-},
-"to": {
-"format": "yyyy-MM-dd",
-"type": "date"
-},
-"body_is": {
-"analyzer": "text_searcher",
-"type": "text"
-},
-"body_en": {
-"analyzer":"english_analyzer",
-"type": "text"
-},
-"type": {
-"type": "keyword"
-},
-"affected": {
-"format": "yyyy-MM-dd HH:mm:ss",
-"type": "date"
-},
-"created": {
-"format": "yyyy-MM-dd HH:mm:ss",
-"type": "date"
-},
-"authors": {
-"type": "nested",
-"properties" : {
-"id": {
-"type": "long"
-},
-"name": {
-"analyzer": "text_searcher",
-"type": "text"
-}
-}
-},
-"poster": {
-"type": "object",
-"enabled": false
-},
-"gallery": {
-"type": "nested",
-"enabled": false
-}
-}
-}
-},
-"index_patterns": "kob_entry*"
+  "index_patterns": "kob_entry*",
+  "mappings": {
+    "entry": {
+      "properties": {
+        "affected": {
+          "format": "yyyy-MM-dd HH:mm:ss",
+          "type": "date"
+        },
+        "authors": {
+          "properties": {
+            "id": {
+              "type": "long"
+            },
+            "name": {
+              "analyzer": "ngram_is_analyzer",
+              "search_analyzer": "is_searcher",
+              "type": "text"
+            }
+          },
+          "type": "nested"
+        },
+        "body_en": {
+          "analyzer": "ngram_en_analyzer",
+          "search_analyzer": "en_searcher",
+          "type": "text"
+        },
+        "body_is": {
+          "analyzer": "ngram_is_analyzer",
+          "search_analyzer": "is_searcher",
+          "type": "text"
+        },
+        "created": {
+          "format": "yyyy-MM-dd HH:mm:ss",
+          "type": "date"
+        },
+        "from": {
+          "format": "yyyy-MM-dd",
+          "type": "date"
+        },
+        "gallery": {
+          "enabled": false,
+          "type": "nested"
+        },
+        "id": {
+          "type": "long"
+        },
+        "poster": {
+          "enabled": false,
+          "type": "object"
+        },
+        "title": {
+          "analyzer": "ngram_is_analyzer",
+          "search_analyzer": "is_searcher",
+          "type": "text"
+        },
+        "to": {
+          "format": "yyyy-MM-dd",
+          "type": "date"
+        },
+        "type": {
+          "type": "keyword"
+        }
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "en_searcher": {
+          "char_filter": [
+            "html_strip"
+          ],
+          "filter": [
+            "lowercase",
+            "english_stop"
+          ],
+          "tokenizer": "standard",
+          "type": "custom"
+        },
+        "is_searcher": {
+          "char_filter": [
+            "icelandic",
+            "html_strip"
+          ],
+          "filter": [
+            "lowercase",
+            "icelandic_stop"
+          ],
+          "tokenizer": "standard",
+          "type": "custom"
+        },
+        "ngram_en_analyzer": {
+          "filter": [
+            "lowercase",
+            "english_stop",
+            "ngram_filter"
+          ],
+          "tokenizer": "standard",
+          "type": "custom"
+        },
+        "ngram_is_analyzer": {
+          "char_filter": [
+            "icelandic",
+            "html_strip"
+          ],
+          "filter": [
+            "lowercase",
+            "icelandic_stop",
+            "ngram_filter"
+          ],
+          "tokenizer": "standard",
+          "type": "custom"
+        }
+      },
+      "char_filter": {
+        "icelandic": {
+          "mappings": [
+            "Á => A",
+            "Ð => D",
+            "É => E",
+            "Í => I",
+            "Ó => O",
+            "Ú => O",
+            "Ý => Y",
+            "Þ => TH",
+            "Æ => AE",
+            "Ö => O",
+            "á => a",
+            "ð => d",
+            "é => e",
+            "í => i",
+            "ó => o",
+            "ú => u",
+            "ý => y",
+            "þ => th",
+            "æ => ae",
+            "ö => o"
+          ],
+          "type": "mapping"
+        }
+      },
+      "filter": {
+        "english_stop": {
+          "stopwords": "_english_",
+          "type": "stop"
+        },
+        "icelandic_stop": {
+          "stopwords": [
+            "a",
+            "ad",
+            "adra",
+            "adrar",
+            "adrir",
+            "adur en",
+            "af",
+            "af thvi",
+            "af thvi ad",
+            "alla",
+            "allan",
+            "allar",
+            "allir",
+            "allra",
+            "allrar",
+            "allri",
+            "alls",
+            "allt",
+            "allur",
+            "an",
+            "annad",
+            "annan",
+            "annar",
+            "annarra",
+            "annarrar",
+            "annarri",
+            "annars",
+            "auk",
+            "bada",
+            "badar",
+            "badir",
+            "badum",
+            "baedi",
+            "beggja",
+            "e",
+            "ed",
+            "eda",
+            "ef",
+            "eftir",
+            "eftir ad",
+            "eg",
+            "einhver",
+            "einhverja",
+            "einhverjar",
+            "einhverjir",
+            "einhverju",
+            "einhverjum",
+            "einhvern",
+            "einhverra",
+            "einhverrar",
+            "einhverri",
+            "einhvers",
+            "einn",
+            "eins og",
+            "einskis",
+            "eitt",
+            "eitthvad",
+            "eitthvert",
+            "ek",
+            "ekkert",
+            "ekki",
+            "ellegar",
+            "en",
+            "enda",
+            "enga",
+            "engan",
+            "engar",
+            "engi",
+            "engin",
+            "enginn",
+            "engir",
+            "engra",
+            "engrar",
+            "engri",
+            "engu",
+            "engum",
+            "er",
+            "faeinir",
+            "fra",
+            "fyrir",
+            "hana",
+            "hann",
+            "hans",
+            "hanum",
+            "heldur",
+            "heldur en",
+            "hennar",
+            "henni",
+            "herna",
+            "hinn",
+            "hja",
+            "hon",
+            "honum",
+            "hun",
+            "hvad",
+            "hvada",
+            "hver",
+            "hvergi",
+            "hverja",
+            "hverjar",
+            "hverjir",
+            "hverju",
+            "hverjum",
+            "hvern",
+            "hverra",
+            "hverrar",
+            "hverri",
+            "hvers",
+            "hvert",
+            "hvilíkur",
+            "hvor",
+            "hvora",
+            "hvorar",
+            "hvorir",
+            "hvorn",
+            "hvorra",
+            "hvorrar",
+            "hvorri",
+            "hvors",
+            "hvort",
+            "hvoru",
+            "hvorugur",
+            "hvorum",
+            "i",
+            "id",
+            "innan",
+            "m",
+            "med",
+            "medan",
+            "medfram",
+            "mer",
+            "mig",
+            "milli",
+            "min",
+            "mina",
+            "minar",
+            "minir",
+            "minn",
+            "minna",
+            "minnar",
+            "minni",
+            "mins",
+            "minu",
+            "minum",
+            "mitt",
+            "neinn",
+            "nema",
+            "nokkrir",
+            "nokkur",
+            "odru",
+            "odrum",
+            "og",
+            "okkar",
+            "okkur",
+            "oll",
+            "ollu",
+            "ollum",
+            "onnur",
+            "oss",
+            "sa",
+            "sem",
+            "ser",
+            "serhver",
+            "sig",
+            "sin",
+            "sina",
+            "sinar",
+            "sinir",
+            "sinn",
+            "sinna",
+            "sinnar",
+            "sinni",
+            "sins",
+            "sinu",
+            "sinum",
+            "sitt",
+            "sitthvad",
+            "sjalfur",
+            "sko",
+            "su",
+            "sumur",
+            "tha",
+            "thad",
+            "thaer",
+            "thann",
+            "thar sem",
+            "that",
+            "thau",
+            "thegar",
+            "theim",
+            "their",
+            "theirra",
+            "theirrar",
+            "theirri",
+            "thennan",
+            "ther",
+            "thess",
+            "thessa",
+            "thessar",
+            "thessara",
+            "thessarar",
+            "thessari",
+            "thessi",
+            "thessir",
+            "thessu",
+            "thessum",
+            "thetta",
+            "thid",
+            "thig",
+            "thin",
+            "thina",
+            "thinar",
+            "thinir",
+            "thinn",
+            "thinna",
+            "thinnar",
+            "thinni",
+            "thins",
+            "thinu",
+            "thinum",
+            "thit",
+            "thitt",
+            "tho ad",
+            "thott",
+            "thu",
+            "thvi",
+            "til",
+            "til thess ad",
+            "um",
+            "und",
+            "undir",
+            "ur",
+            "vegna",
+            "ver",
+            "vid",
+            "vor",
+            "ydar",
+            "ydur",
+            "yfir",
+            "ykkar",
+            "ykkur",
+            "ymis"
+          ],
+          "type": "stop"
+        },
+        "ngram_filter": {
+          "max_gram": 20,
+          "min_gram": 1,
+          "type": "edge_ngram"
+        }
+      }
+    }
+  }
 }
