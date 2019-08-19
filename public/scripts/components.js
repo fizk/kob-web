@@ -179,42 +179,66 @@ class ImageDisplay extends HTMLElement {
         const shadowRoot = this.attachShadow({mode: 'open'});
         shadowRoot.innerHTML = `
             <style>
-                :root {
-                    
-                }
+                
                 textarea {
-                display: block;
-                width: 100%;
-                padding: .375rem .75rem;
-                font-size: 1rem;
-                line-height: 1.5;
-                color: #495057;
-                background-color: #fff;
-                background-clip: padding-box;
-                border: 1px solid #ced4da;
-                border-radius: .25rem;
-                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-                overflow: auto;
-                resize: vertical;
-                margin: 0;
-                font-family: inherit;
-                }
-                .container {
                     box-sizing: border-box;
+                    display: block;
+                    width: 100%;
+                    padding: .375rem .75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    color: #495057;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    border: 1px solid #ced4da;
+                    border-radius: .25rem;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+                textarea:focus {
+                    color: #495057;
+                    background-color: #fff;
+                    border-color: #80bdff;
+                    outline: 0;
+                    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+                }
+                
+                
+                
+                
+                
+                
+                .card {
+                    position: relative;
+                    display: -ms-flexbox;
                     display: flex;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    min-width: 0;
+                    word-wrap: break-word;
+                    background-color: #fff;
+                    background-clip: border-box;
+                    border: 1px solid rgba(0,0,0,.125);
+                    border-radius: .25rem;
                 }
-                .icon {
-                    flex-basis: 100px;
+                .card-img-top {
+                    width: 100%;
+                    border-top-left-radius: calc(.25rem - 1px);
+                    border-top-right-radius: calc(.25rem - 1px);
                 }
-                .controls {
-                    flex-grow: 1;
+                .card-body {
+                    -ms-flex: 1 1 auto;
+                    flex: 1 1 auto;
+                    padding: 1.25rem;
                 }
+                
+                
+                
             </style>
-            <div class="container">
-                <div class="icon">
-                    <slot name="icon"></slot>
-                </div>
-                <div class="controls">
+            
+            
+            <div class="card">
+                <slot name="icon"></slot>
+                <div class="card-body">
                     <textarea placeholder="Write a description..."></textarea>
                     <button>save</button>
                     <slot name="control"></slot>
@@ -267,3 +291,246 @@ class ImageDisplay extends HTMLElement {
 }
 
 customElements.define('image-display', ImageDisplay);
+
+class AuthorSelect extends HTMLElement {
+    constructor() {
+        super();
+
+        const shadowRoot = this.attachShadow({mode: 'open'});
+        shadowRoot.innerHTML = `
+            <style>
+                .form-control:focus {
+                    color: #495057;
+                    background-color: #fff;
+                    border-color: #80bdff;
+                    outline: 0;
+                    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+                }
+                .form-control {
+                    overflow: visible;
+                    display: block;
+                    width: 100%;
+                    padding: .375rem .75rem;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                    color: #495057;
+                    background-color: #fff;
+                    background-clip: padding-box;
+                    border: 1px solid #ced4da;
+                    border-radius: .25rem;
+                    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+                }
+                .list-group {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    padding-left: 0;
+                    margin-bottom: 0
+                }
+                .list-group-item:first-child {
+                    border-top-left-radius: .25rem;
+                    border-top-right-radius: .25rem;
+                }
+                .list-group-item {
+                    position: relative;
+                    display: block;
+                    padding: .75rem 1.25rem;
+                    margin-bottom: -1px;
+                    background-color: #fff;
+                    border: 1px solid rgba(0,0,0,.125);
+                    cursor: pointer;
+                }
+                .list-group-item-success {
+                    color: #155724;
+                    background-color: #c3e6cb
+                }
+            </style>
+            <input type="search" 
+                class="form-control" 
+                aria-describedby="search" 
+                placeholder="Search for Author..." />
+            <ul data-author-search-result class="list-group"></ul>
+        `;
+        shadowRoot.querySelector('[type=search]').addEventListener('keyup', this.throttle(this.searchAuthor, 500));
+        shadowRoot.querySelector('[type=search]').addEventListener('search', this.clearAuthEntries);
+    }
+
+    createElement = (value) => {
+        const resultItem = document.createElement('li');
+        resultItem.classList.add('list-group-item');
+        const resultItemSpan = document.createElement('span');
+        resultItemSpan.appendChild(document.createTextNode(value));
+        resultItem.appendChild(resultItemSpan);
+
+        return resultItem;
+    };
+
+    searchAuthor = (inputEvent) => {
+        const value = inputEvent.target.value;
+        fetch(`/api/author/search?q=${inputEvent.target.value}`)
+            .then(response => response.json())
+            .then(json => {
+                this.clearAuthEntries();
+                return json;
+            })
+            .then(json => {
+                json.forEach(item => {
+                    const resultItem = this.createElement(item.name);
+                    resultItem.addEventListener('click', () => {
+                        const customEvent = new CustomEvent('select', {
+                            bubbles: true,
+                            detail: { author: item }
+                        });
+                        this.dispatchEvent(customEvent);
+                        this.clearInput();
+                        this.clearAuthEntries();
+                    });
+
+                    this.shadowRoot.querySelector('[data-author-search-result]').appendChild(resultItem);
+                });
+
+                if (value.length > 0) {
+                    const newButton = this.createElement('Create New');
+                    newButton.classList.add('list-group-item-success');
+
+                    newButton.addEventListener('click', () => {
+                        this.createAuthEntry(value)
+                            .then(author => {
+                                this.clearInput();
+                                const customEvent = new CustomEvent('select', {
+                                    bubbles: true,
+                                    detail: { author: author }
+                                });
+                                this.dispatchEvent(customEvent);
+                                this.clearAuthEntries();
+                            })
+                            .catch(console.error);
+                    });
+
+                    this.shadowRoot.querySelector('[data-author-search-result]').appendChild(newButton);
+                }
+            });
+    };
+
+    clearInput = () => {
+        this.shadowRoot.querySelector('[type=search]').value = '';
+    };
+
+    clearAuthEntries = () => {
+        this.shadowRoot.querySelector('[data-author-search-result]').innerHTML = '';
+    };
+
+    createAuthEntry = (name) => {
+        const formData = new FormData();
+        formData.append('name', name);
+
+        return fetch('/update/author', {
+            method: 'POST',
+            headers: {
+                'X-REQUESTED-WITH': 'xmlhttprequest',
+            },
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        }).then(response => {
+            return response.json();
+        }).catch(error => {
+            console.log(Error(error.toString()));
+        });
+
+    };
+
+    throttle = (func, limit) => {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit)
+            }
+        }
+    }
+}
+
+customElements.define('author-select', AuthorSelect);
+
+
+const getMouseOffset = (evt) => {
+    const targetRect = evt.target.getBoundingClientRect()
+    const offset = {
+        x: evt.pageX - targetRect.left,
+        y: evt.pageY - targetRect.top
+    }
+    return offset
+}
+
+const getElementVerticalCenter = (el) => {
+    const rect = el.getBoundingClientRect()
+    return (rect.bottom - rect.top) / 2
+}
+
+function sortable(rootEl, onUpdate) {
+    var dragEl;
+
+    // Function responsible for sorting
+    function _onDragOver(evt) {
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'move';
+
+        var target = evt.target.closest('[draggable=true]');
+        if (target && target !== dragEl && target.draggable === true) {
+            // Sorting
+            const offset = getMouseOffset(evt)
+            const middleY = getElementVerticalCenter(evt.target)
+
+            if (offset.y > middleY) {
+                rootEl.insertBefore(dragEl, target.nextSibling)
+            } else {
+                rootEl.insertBefore(dragEl, target)
+            }
+        }
+    }
+
+    // End of sorting
+    function _onDragEnd(evt){
+        evt.preventDefault();
+
+        dragEl.classList.remove('ghost');
+        rootEl.removeEventListener('dragover', _onDragOver, false);
+        rootEl.removeEventListener('dragend', _onDragEnd, false);
+
+
+        // Notification about the end of sorting
+        onUpdate(dragEl);
+    }
+
+    // Sorting starts
+    rootEl.addEventListener('dragstart', function (evt){
+        dragEl = evt.target; // Remembering an element that will be moved
+
+        // Limiting the movement type
+        evt.dataTransfer.effectAllowed = 'move';
+        evt.dataTransfer.setData('Text', dragEl.textContent);
+
+
+        // Subscribing to the events at dnd
+        rootEl.addEventListener('dragover', _onDragOver, false);
+        rootEl.addEventListener('dragend', _onDragEnd, false);
+
+
+        setTimeout(function () {
+            // If this action is performed without setTimeout, then
+            // the moved object will be of this class.
+            dragEl.classList.add('ghost');
+        }, 0)
+    }, false);
+}

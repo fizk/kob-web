@@ -54,11 +54,14 @@
                     <div class="row">
                         <div class="col-3">
                             <template id="image-entry-template">
-                                <li>
-                                    <input type="hidden" name="gallery[]"/>
-                                    <img src="#" />
-                                    <span></span>
-                                    <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                <li draggable="true">
+                                    <image-display>
+                                        <img class="card-img-top" draggable="false" slot="icon" style="object-fit: cover" height="100" width="100" />
+                                        <span slot="control">
+                                        <input type="hidden">
+                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                    </span>
+                                    </image-display>
                                 </li>
                             </template>
                             <label for="gallery">Gallery</label>
@@ -66,11 +69,14 @@
                                 <ul data-gallery class="image-list">
                                     {% if manifesto.gallery is defined %}
                                         {% for image in manifesto.gallery %}
-                                            <li>
-                                                <input type="hidden" name="gallery[]" value="{{ image.id }}">
-                                                <img src="{{ path('asset', {size: '100x100', name: image.name}) }}" />
-                                                <span>{{ image.name }}</span>
-                                                <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                            <li draggable="true">
+                                                <image-display path="{{ path('update-image', {id: image.id}) }}" text="{{ image.description }}">
+                                                    <img class="card-img-top" draggable="false" slot="icon" src="{{ path('asset', {name: image.name, size: '250x100'}) }}" style="object-fit: cover" height="100" width="100" />
+                                                    <span slot="control">
+                                                        <input type="hidden" name="gallery[]" value="{{ image.id }}">
+                                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                                    </span>
+                                                </image-display>
                                             </li>
                                         {% endfor %}
                                     {% endif %}
@@ -100,9 +106,11 @@
         </div>
 
         <script>
+            sortable(document.querySelector('[data-gallery]'), () => {});
+
             const removeImageItem = (event) => {
                 event.preventDefault();
-                const parent = event.target.parentNode;
+                const parent = event.target.closest('[draggable=true]');
                 parent.parentNode.removeChild(parent);
             };
             document.querySelector('[data-file-uploader-gallery]').addEventListener('result', (event) => {
@@ -111,8 +119,9 @@
                 event.detail.map(item => {
                     const clone = document.importNode(template.content, true);
                     clone.querySelector('input').value = item.id;
-                    clone.querySelector('span').appendChild(document.createTextNode(item.name));
+                    clone.querySelector('input').name = 'gallery[]';
                     clone.querySelector('img').src = item.thumb;
+                    clone.querySelector('image-display').path = `/update/image/${item.id}`;
                     list.appendChild(clone);
                 });
             });
