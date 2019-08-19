@@ -86,7 +86,7 @@
 
                         {% if item.type == 'show' %}
                             <h3 class="entries__secondary-caption-text">
-                                <a href="{{ path('entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
+                                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
                                 {{ item.title }}
                                 </a>
                             </h3>

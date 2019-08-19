@@ -15,6 +15,23 @@
 
 {% endblock %}
 
+{% block footer %}
+    <div class="row">
+        <div class="col">
+            <p>
+                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
+                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
+            </p>
+            <p>
+                Images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
+                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
+                before you save the entry.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+
 {% block content %}
     <main class="container">
         <div class="row">
@@ -29,17 +46,7 @@
                                 Update "{{ manifesto.type }}" Page
                             </h1>
                         </div>
-                        <div class="col">
-                            <p>
-                                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
-                                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
-                            </p>
-                            <p>
-                                Images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
-                                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
-                                before you save the entry.
-                            </p>
-                        </div>
+
                     </div>
                 </div>
                 <form method="post" action="{{ path('new-manifesto', {id: manifesto.id}) }}">

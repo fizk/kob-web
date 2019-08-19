@@ -39,11 +39,11 @@
                     <article class="entries">
                         <aside class="entries__aside">
                             {% if item.poster %}
-                                <a href="{{ path('entry', {id: item.title|slug(item.id)}) }}">
+                                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
                                     <img class="entries__poster" src="{{ path('asset', {size: '300x300', name: item.poster.name}) }}" />
                                 </a>
                             {% else %}
-                                <a href="{{ path('entry', {id: item.title|slug(item.id)}) }}">
+                                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
                                     <div class="entries__poster-placeholder"></div>
                                 </a>
                             {% endif %}

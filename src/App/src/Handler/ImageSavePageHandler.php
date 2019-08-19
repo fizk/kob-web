@@ -51,16 +51,17 @@ class ImageSavePageHandler implements RequestHandlerInterface
         foreach ($files as $key => $value) {
             $prefix = rand(100000, 999999);
             /** @var $value \Zend\Diactoros\UploadedFile */
-            $value->moveTo('./data/images/' . $prefix . $value->getClientFilename());
-            $imagine = new Imagine();
+            $name = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $value->getClientFilename());
+            $value->moveTo('./data/images/' . $prefix . $name);
 
-            $image = $imagine->open('./data/images/' . $prefix . $value->getClientFilename());
+            $imagine = new Imagine();
+            $image = $imagine->open('./data/images/' . $prefix . $name);
 
             $height = $image->getSize()->getHeight();
             $width = $image->getSize()->getWidth();
 
             $id = $this->image->save([
-                'name' => $prefix . $value->getClientFilename(),
+                'name' => $prefix . $name,
                 'description' => null,
                 'height' => $height,
                 'width' => $width,
@@ -71,12 +72,12 @@ class ImageSavePageHandler implements RequestHandlerInterface
             $result[] = [
                 'id' => $id,
                 'key' => $key,
-                'name' => $prefix . $value->getClientFilename(),
+                'name' => $prefix . $name,
                 'size' => $value->getSize(),
                 'height' => $height,
                 'width' => $width,
                 'thumb' => $this->router->generateUri('asset', [
-                    'name' => $prefix . $value->getClientFilename(),
+                    'name' => $prefix . $name,
                     'size' => '100x100'
                 ])
             ];

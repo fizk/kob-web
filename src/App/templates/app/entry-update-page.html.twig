@@ -11,8 +11,39 @@
     .image-list li {
         margin: 8px 0;
     }
+    .list-group-item {
+        cursor: pointer;
+    }
 </style>
 
+{% endblock %}
+
+{% block footer %}
+    <div class="row">
+    <div class="col">
+        <p>
+            Entry can be a <em>show</em>, <em>news</em> or <em>project</em>.
+            Select the type from the dropdown.
+        </p>
+        <p>
+            Connect an Author to the Entry by searching in the Author textbox and then clicking on the
+            name in the list that appears. If the Author doesn't exist you have to create him/her
+            <a href="{{ path('create-author') }}" target="_blank">here</a>
+        </p>
+        <p>
+            The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
+            found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
+        </p>
+    </div>
+    <div class="col">
+        <p>
+            Posters and images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
+            from the desktop onto the text. You can then add caption to the image, just remember to save the caption
+            before you save the entry.
+        </p>
+
+    </div>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -23,7 +54,6 @@
             </div>
             <div class="col-10">
                 <div class="jumbotron">
-
                     <div class="row">
                         <div class="col">
                             <h1 class="display-4">
@@ -33,26 +63,6 @@
                                     Create Entry
                                 {% endif %}
                             </h1>
-                            <p>
-                                Entry can be a <em>show</em>, <em>news</em> or <em>project</em>.
-                                Select the type from the dropdown.
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p>
-                                Connect an Author to the Entry by searching in the Author textbox and then clicking on the
-                                name in the list that appears. If the Author doesn't exist you have to create him/her
-                                <a href="{{ path('create-author') }}" target="_blank">here</a>
-                            </p>
-                            <p>
-                                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
-                                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
-                            </p>
-                            <p>
-                                Posters and images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
-                                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
-                                before you save the entry.
-                            </p>
                             {% if entry.id is defined %}
                                 <p>
                                     You can also <a href="{{ path('delete-entry', {id: entry.id}) }}" class="btn btn-danger btn-sm">Delete</a>
@@ -60,6 +70,7 @@
                                 </p>
                             {% endif %}
                         </div>
+
                     </div>
 
                 </div>
@@ -93,6 +104,23 @@
                                                 });
                                                 document.querySelector('[data-author-search-result]').appendChild(clone);
                                             });
+
+                                            const newButton = document.querySelector('#author-search-result-item');
+                                            const newButtonClone = document.importNode(newButton.content, true);
+
+                                            newButtonClone.querySelector('li').classList.add('list-group-item-success');
+                                            newButtonClone.querySelector('li').addEventListener('click', () => {
+                                                createAuthEntry(inputEvent.target.value)
+                                                    .then(author => {
+                                                        addAuthorEntry(author.id, author.name);
+                                                        clearAuthEntries();
+                                                        inputEvent.target.value = '';
+                                                    })
+                                                    .catch(console.error);
+                                            });
+
+                                            newButtonClone.querySelector('span').appendChild(document.createTextNode('Create New'));
+                                            document.querySelector('[data-author-search-result]').appendChild(newButtonClone);
                                         });
                                 };
                                 const removeAuthorEntry = (event) => {
@@ -115,6 +143,29 @@
 
                                     document.querySelector('[data-author-list]').appendChild(clone);
                                 };
+
+                                const createAuthEntry = (name) => {
+                                    const formData = new FormData();
+                                    formData.append('name', name);
+
+                                    return fetch('{{ path('new-author') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-REQUESTED-WITH': 'xmlhttprequest',
+                                        },
+                                        body: formData
+                                    }).then(response => {
+                                        if (!response.ok) {
+                                            throw Error(response.statusText);
+                                        }
+                                        return response;
+                                    }).then(response => {
+                                        return response.json();
+                                    }).catch(error => {
+                                        console.log(Error(error.toString()));
+                                    });
+
+                                }
                             </script>
                             <template id="author-entry">
                                 <li>
@@ -131,7 +182,7 @@
                             <div class="form-group">
                                 <label for="search">Author</label>
                                 <input type="search" onkeyup="searchAuthor(event)" class="form-control" aria-describedby="search" placeholder="Search for Author..." />
-                                <small id="emailHelp" class="form-text text-muted">Authors are created <a href="{{ path('create-author') }}" target="_blank">here</a></small>
+                                {#<small id="emailHelp" class="form-text text-muted">Authors are created <a href="{{ path('create-author') }}" target="_blank">here</a></small>#}
                                 <ul data-author-search-result class="list-group"></ul>
                             </div>
                             <ul data-author-list>

@@ -13,9 +13,34 @@
     {% block javascript %}{% endblock %}
     {% block style %}{% endblock %}
     {% block stylesheets %}{% endblock %}
+    <style>
+        .admin {
+            background-color: #f8f9fa;
+        }
+        .admin__header {
+            background-color: #323232;
+            color: white;
+            padding: 0.8rem 0;
+        }
+        .admin__footer {
+            margin-top: 1.953rem;
+            padding: 1.953rem 0;
+            background-color: white;
+        }
+    </style>
 </head>
-<body class="app">
+<body class="admin">
+    <header class="admin__header">
+        <div class="container">
+            Kling &amp; Bang | Admin
+        </div>
+    </header>
     {% block content %}{% endblock %}
+    <footer class="admin__footer">
+        <div class="container">
+            {% block footer %}{% endblock %}
+        </div>
+    </footer>
     <script src="//cdn.jsdelivr.net/npm/mutationobserver-shim/dist/mutationobserver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.2.10/webcomponents-bundle.js"></script>
     <script src="/scripts/components.js"></script>

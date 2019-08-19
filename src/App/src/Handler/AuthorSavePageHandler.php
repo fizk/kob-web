@@ -7,6 +7,7 @@ namespace App\Handler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use App\Service;
@@ -38,8 +39,14 @@ class AuthorSavePageHandler implements RequestHandlerInterface
             'created' => (new DateTime())->format('Y-m-d H:i:s'),
         ]);
 
-        $this->author->save($data);
+        $createdId = $this->author->save($data);
+        $withHeaders = $request->getHeader('X-REQUESTED-WITH');
 
-        return new RedirectResponse($this->router->generateUri('authors'));
+        return in_array('xmlhttprequest', $withHeaders)
+            ? new JsonResponse([
+                'id' => $createdId,
+                'name' => $post['name'],
+            ])
+            : new RedirectResponse($this->router->generateUri('authors'));
     }
 }
