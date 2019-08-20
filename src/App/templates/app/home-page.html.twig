@@ -15,6 +15,9 @@
         {% for item in list %}
             <article class="entry">
                 <aside class="entry__aside">
+                    {% if loop.first %}
+                        {% include '@partials/header.html.twig' %}
+                    {% endif %}
                     {% if item.poster %}
                     <img class="entry__poster" src="{{ path('asset', {size: 'x', name: item.poster.name}) }}" />
                     {% endif %}

@@ -130,9 +130,6 @@ body {
     }
 }
 
-.app__header {
-    /*display: none;*/
-}
 @media (min-width: 960px) {
     .app__header {
         display: block;
@@ -140,7 +137,6 @@ body {
 }
 
 .entry__aside .app__header {
-    /*mix-blend-mode: overlay;*/
     display: block;
     position: absolute;
     padding: 1.953rem;
@@ -157,6 +153,15 @@ body {
     position: relative;
     flex-basis: 50%;
     padding: 1.953rem;
+}
+
+.entry__body .app__brand {
+    display: none;
+}
+@media (min-width: 960px) {
+    .entry__body .app__brand {
+        display: block;
+    }
 }
 .entry__poster {
     width: 100%;
