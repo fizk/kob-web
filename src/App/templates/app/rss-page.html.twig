@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>Kling &amp; Bang</title>
+        <description>
+            <![CDATA[
+            <p>
+                Kling &amp; Bang Gallery was established by ten artists in the beginning of 2003.
+            </p>
+            <p>
+                The policy of Kling & Bang gallery is to introduce emerging and established, national and international
+                artists and their works, that challenge the context and content of creative thinking.
+            </p>
+            <p>
+                Kling & Bang Gallery often collaborates with outside curators and galleries on various projects.
+                Kling & Bang gallery also aim to participate directly in the process of creating the artworks, e.g. by
+                producing the works in collaboration with the exhibitors.
+            </p>
+            ]]>
+        </description>
+        <link>{{ host }}</link>
+        <lastBuildDate>{{ list[0].affected|RFC822 }}</lastBuildDate>
+        <pubDate>{{ list[0].affected|RFC822 }}</pubDate>
+        <image>
+            <url>{{ host }}/images/poster.jpg</url>
+            <title>Kling &amp; Bang</title>
+            <link>{{ host }}</link>
+        </image>
+
+        {% for item in list %}
+        <item>
+            <title>{{ item.title }}</title>
+            <description>
+                <![CDATA[
+                <ul>
+                    {% for author in item.authors %}
+                        <li>
+                            <h2>{{ author.name }}</h2>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <h3>
+                    <time>{{ item.from }}</time> / <time>{{ item.to }}</time>
+                </h3>
+
+                {% markdown %}
+                    {{ item.body_is|raw }}
+                {% endmarkdown %}
+                {% markdown %}
+                    {{ item.body_en|raw }}
+                {% endmarkdown %}
+                ]]>
+            </description>
+            <link>{{ host }}{{ path('entry', {id: item.title|slug(item.id)}) }}</link>
+            <guid isPermaLink="true">{{ host }}{{ path('entry', {id: item.title|slug(item.id)}) }}</guid>
+            <pubDate>{{ item.created|RFC822 }}</pubDate>
+            <category>{{ item.type }}</category>
+        </item>
+        {% endfor %}
+
+    </channel>
+</rss>

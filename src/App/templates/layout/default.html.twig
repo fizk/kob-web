@@ -12,6 +12,7 @@
     <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles/bundle.css" />
+    <link rel="alternate" type="application/rss+xml" title="Subscribe to Shows/News/Projects feed" href="{{ host }}{{ path('rss') }}" />
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="app">
@@ -73,8 +74,8 @@
                 {% endif %}
             </ul>
             <ul class="app__nav-list app__nav-list--quarter">
-                <li><a href="http://facebook.com" class="app__nav-link">Facebook</a></li>
-                <li><a href="http://instagram.com" class="app__nav-link">Instagram</a></li>
+                <li><a href="https://www.facebook.com/klingandbang" target="_blank" class="app__nav-link">Facebook</a></li>
+                <li><a href="https://www.instagram.com/klingogbang" target="_blank" class="app__nav-link">Instagram</a></li>
             </ul>
             {#<ul class="app__nav-list app__nav-list--half">#}
                 {#{% if user_session %}#}

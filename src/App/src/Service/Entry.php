@@ -198,6 +198,49 @@ class Entry
         }, $list);
     }
 
+    public function fetchFeed(): array
+    {
+
+        $statement = $this->pdo->prepare('
+          select * from `Entry` order by `affected` desc limit 0, 20
+        ');
+        $statement->execute([]);
+
+
+        $list = $statement->fetchAll();
+
+        $authorStatement = $this->pdo->prepare('
+            select A.* from Entry_has_Author EA
+                join Author A on (A.id = EA.author_id)
+            where EA.entry_id = :id;
+        ');
+
+        return array_map(function ($item) use ($authorStatement) {
+
+            $authorStatement->execute(['id' => $item->id]);
+            $item->authors = $authorStatement->fetchAll();
+
+            $posterStatement = $this->pdo->prepare('
+                select I.*, EI.`type` from Entry_has_Image EI
+                join Image I on (I.id = EI.image_id)
+                where EI.entry_id = :id and `type` = 1;
+            ');
+            $posterStatement->execute(['id' => $item->id]);
+            $item->poster = $posterStatement->fetch();
+
+            $galleryStatement = $this->pdo->prepare('
+                select I.*, EI.`type` from Entry_has_Image EI
+                join Image I on (I.id = EI.image_id)
+                where EI.entry_id = :id and `type` = 2;
+            ');
+            $galleryStatement->execute(['id' => $item->id]);
+            $item->gallery = $galleryStatement->fetchAll();
+
+            return $item;
+
+        }, $list);
+    }
+
     public function fetchByType($type)
     {
         $statement = $this->pdo->prepare('

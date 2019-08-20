@@ -72,6 +72,7 @@ class ConfigProvider
                 Handler\ManifestoSavePageHandler::class => Factory\ManifestoSavePageHandlerFactory::class,
                 Handler\ManifestoUpdatePageHandler::class => Factory\ManifestoUpdatePageHandlerFactory::class,
                 Handler\SearchPageHandler::class => Factory\SearchPageHandlerFactory::class,
+                Handler\RssPageHandler::class => Factory\RssPageHandlerFactory::class,
 
                 Middleware\SecondaryLanguageMiddleware::class => Factory\SecondaryLanguageMiddlewareFactory::class,
                 Middleware\PrimaryLanguageMiddleware::class => Factory\PrimaryLanguageMiddlewareFactory::class,
@@ -96,6 +97,7 @@ class ConfigProvider
                 MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
                 Filters\Slug::class => Factory\SlugFactory::class,
                 Filters\Date::class => Factory\DateFactory::class,
+                Filters\RFC822::class => Factory\RFC822Factory::class,
             ],
         ];
     }
@@ -126,6 +128,7 @@ class ConfigProvider
                 MarkdownExtension::class,
                 Filters\Slug::class,
                 Filters\Date::class,
+                Filters\RFC822::class,
             ],
         ];
     }

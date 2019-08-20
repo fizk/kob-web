@@ -41,6 +41,24 @@
         <article class="entry">
             <aside class="entry__aside">
                 {% if entry.current.poster %}
+                    {% include '@partials/header.html.twig' %}
+                    {#<ul class="entry__primary-caption">#}
+                        {#{% if entry.current.type == 'show' %}#}
+                            {#{% for author in entry.current.authors %}#}
+                                {#<li class="entry__primary-caption-item">#}
+                                    {#<h2 class="entry__primary-caption-text">#}
+                                        {#{{ author.name }}#}
+                                    {#</h2>#}
+                                {#</li>#}
+                            {#{% endfor %}#}
+                        {#{% else %}#}
+                            {#<li class="entry__primary-caption-item">#}
+                                {#<h2 class="entry__primary-caption-text">#}
+                                    {#{{ entry.current.title }}#}
+                                {#</h2>#}
+                            {#</li>#}
+                        {#{% endif %}#}
+                    {#</ul>#}
                     <img class="entry__poster entry__poster--full"
                          width="{{ entry.current.poster.width }}"
                          height="{{ entry.current.poster.height }}"

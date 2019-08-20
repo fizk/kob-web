@@ -117,6 +117,10 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         Handler\SearchPageHandler::class
     ], 'search');
 
+    $app->get('/rss', [
+        Handler\RssPageHandler::class
+    ], 'rss');
+
     $app->get('/login', Handler\LoginPageHandler::class, 'login');
     $app->post('/login', Handler\LoginSubmitPageHandler::class, 'login-submit');
     $app->get('/logout', Handler\LogoutSubmitPageHandler::class, 'logout-submit');
