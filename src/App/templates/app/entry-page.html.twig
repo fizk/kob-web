@@ -38,8 +38,26 @@
 
 {% block content %}
     <main>
+        {% if entry.current.id is odd %}
+            <div style="display: flex; position: absolute; width: 100%">
+                <div style="width: 50%"></div>
+                <div style="width: 50%; padding: 1.953rem;">
+                    {% include '@partials/header.html.twig' with {color: 'white'} %}
+                </div>
+            </div>
+            {% if entry.current.poster %}
+                <img style="height: 100vh; width: 100vw; object-fit: cover; background-color: rgb(200,200,200); vertical-align: bottom;"
+                     width="{{ entry.current.poster.width }}"
+                     height="{{ entry.current.poster.height }}"
+                     src="{{ path('asset', {size: '1280x', name: entry.current.poster.name}) }}" />
+            {% else %}
+                <div style="height: 100vh; width: 100vw; background-color: rgb(200,200,200)"></div>
+            {% endif %}
+        {% endif %}
+
         <article class="entry">
             <aside class="entry__aside">
+                {% if entry.current.id is even %}
                 {% if entry.current.poster %}
                     {% include '@partials/header.html.twig' %}
                     {#<ul class="entry__primary-caption">#}
@@ -64,6 +82,7 @@
                          height="{{ entry.current.poster.height }}"
                          src="{{ path('asset', {size: 'x', name: entry.current.poster.name}) }}" />
                 {% endif %}
+                {% endif %}
 
                 {% if entry.current.gallery|length > 0 %}
                 <ul class="image__gallery">
@@ -86,7 +105,9 @@
                 {% endif %}
             </aside>
             <div class="entry__body">
+                {% if entry.current.id is even %}
                 {% include '@partials/header.html.twig' %}
+                {% endif %}
                 {% if user_session %}
                     <a class="entry__edit-button" href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
                 {% endif %}
