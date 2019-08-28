@@ -70,13 +70,13 @@
                     {% for image in entry.current.gallery %}
                         {% if image.width > image.height %}
                             <li class="image__gallery-item image__gallery-item--landscape">
-                                <a data-caption="{{ image.description }}" href="{{ path('asset', {size: 'x', name: image.name}) }}">
+                                <a data-caption="{{ image.description }}" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
                                     <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
                                 </a>
                             </li>
                         {% else %}
                             <li class="image__gallery-item image__gallery-item--portrait">
-                                <a data-caption="{{ image.description }}" data-fslightbox="gallery" href="{{ path('asset', {size: 'x', name: image.name}) }}">
+                                <a data-caption="{{ image.description }}" data-fslightbox="gallery" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
                                     <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
                                 </a>
                             </li>
@@ -129,14 +129,17 @@
     <aside class="pagination">
         <div class="pagination__item pagination--next">
             {% if entry.next %}
-                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
+                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}"
+                   aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}">
                     {% if entry.next.poster %}
                         <img class="pagination__image" src="{{ path('asset', {size: '60x60', name: entry.next.poster.name}) }}" />
                     {% else %}
                         <span class="pagination__image"></span>
                     {% endif %}
                 </a>
-                <a class="pagination__title" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
+                <a class="pagination__title"
+                   aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}"
+                   href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
                     {{ entry.next.title }}
                 </a>
             {% endif %}
@@ -144,10 +147,13 @@
 
         <div class="pagination__item pagination--previous">
             {% if entry.previous %}
-                <a class="pagination__title" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
+                <a class="pagination__title"
+                   aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}"
+                   href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
                     {{ entry.previous.title }}
                 </a>
-                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
+                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}"
+                   aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}">
                     {% if entry.previous.poster %}
                         <img class="pagination__image"  src="{{ path('asset', {size: '60x60', name: entry.previous.poster.name}) }}" />
                     {% else %}

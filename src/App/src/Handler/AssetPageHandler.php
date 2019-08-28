@@ -13,6 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Stream;
+
 class AssetPageHandler implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -39,10 +40,25 @@ class AssetPageHandler implements RequestHandlerInterface
             $height = $image->getSize()->getHeight();
             $width = $image->getSize()->getWidth();
 
-            if ($dimensions['width'] === null && $dimensions['height'] === null) {
-                $image->save(
+            if ($dimensions['max'] === true) {
+                if ($height <= $dimensions['height'] && $width <= $dimensions['width']) {
+                    $image->save(
                         __DIR__ . '/../../../../public/img/' . $size. '/'. $name
                     );
+                } else {
+                    $scale = ($dimensions['height'] / $height * $width) >= $dimensions['height']
+                        ? $dimensions['height'] / $height
+                        : $dimensions['width'] / $width;
+
+                    $image->resize($image->getSize()->scale($scale))
+                        ->save(
+                            __DIR__ . '/../../../../public/img/' . $size. '/'. $name
+                        );
+                }
+            } elseif ($dimensions['width'] === null && $dimensions['height'] === null) {
+                $image->save(
+                    __DIR__ . '/../../../../public/img/' . $size. '/'. $name
+                );
             } elseif ($dimensions['width'] === null || $dimensions['height'] === null) {
                 $resize = $dimensions['width'] === null
                     ? $image->getSize()->scale($dimensions['height'] / $height)
@@ -51,7 +67,6 @@ class AssetPageHandler implements RequestHandlerInterface
                     ->save(
                         __DIR__ . '/../../../../public/img/' . $size. '/'. $name
                     );
-
             } else {
                 $image->thumbnail(
                     new Box($dimensions['width'], $dimensions['height']),
@@ -83,11 +98,12 @@ class AssetPageHandler implements RequestHandlerInterface
     private function parseRequestedDimensions(string $size)
     {
         $sizeResult = [];
-        preg_match('/([0-9]*)x([0-9]*)/', $size, $sizeResult);
+        preg_match('/([0-9]*)x([0-9]*)(max)?/', $size, $sizeResult);
 
         return [
             'width' => is_numeric($sizeResult[1]) ? (int) $sizeResult[1] : null,
             'height' => is_numeric($sizeResult[2]) ? (int) $sizeResult[2] : null,
+            'max' => isset($sizeResult[3]) && $sizeResult[3] === 'max'
         ];
 
     }
