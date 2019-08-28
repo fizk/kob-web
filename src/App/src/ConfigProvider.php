@@ -62,6 +62,7 @@ class ConfigProvider
                 Handler\AuthorsSearchPageHandler::class => Factory\AuthorsSearchPageHandlerFactory::class,
                 Handler\ManifestoPageHandler::class => Factory\ManifestoPageHandlerFactory::class,
                 Handler\StorePageHandler::class => Factory\StorePageHandlerFactory::class,
+                Handler\SupportersPageHandler::class => Factory\SupportersPageHandlerFactory::class,
                 Handler\DashboardPageHandler::class => Factory\DashboardPageHandlerFactory::class,
                 Handler\LoginPageHandler::class => Factory\LoginPageHandlerFactory::class,
                 Handler\LoginSubmitPageHandler::class => Factory\LoginSubmitPageHandlerFactory::class,

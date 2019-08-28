@@ -117,6 +117,15 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         Handler\StorePageHandler::class
     ], 'store');
 
+    $app->get('/velunnarar', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\SupportersPageHandler::class
+    ], 'velunnarar');
+    $app->get('/supporters', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\SupportersPageHandler::class
+    ], 'supporters');
+
     $app->get('/leit', [
         Middleware\PrimaryLanguageMiddleware::class,
         Handler\SearchPageHandler::class

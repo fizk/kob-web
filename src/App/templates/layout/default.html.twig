@@ -34,9 +34,11 @@
                 {% if language|default('is') == 'is' %}
                     <li class="app__nav-list-item"><a href="{{ path('um') }}" class="app__nav-link">Um Kling &amp; Bang</a></li>
                     <li class="app__nav-list-item"><a href="{{ path('verslun') }}" class="app__nav-link">Verslun</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('velunnarar') }}" class="app__nav-link">Velunnarar</a></li>
                 {% else %}
                     <li class="app__nav-list-item"><a href="{{ path('about') }}" class="app__nav-link">About Kling &amp; Bang</a></li>
                     <li class="app__nav-list-item"><a href="{{ path('store') }}" class="app__nav-link">Store</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('supporters') }}" class="app__nav-link">Supporters</a></li>
                 {% endif %}
                 {% block language_switch %}
                     {% if language|default('is') == 'is' %}
