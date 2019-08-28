@@ -13,19 +13,39 @@
 {% block content %}
     <main>
         {% for item in list %}
+
             <article class="entry">
                 <aside class="entry__aside">
-                    {% if loop.first %}
-                        {% include '@partials/header.html.twig' %}
-                    {% endif %}
                     {% if item.poster %}
-                    <img class="entry__poster" src="{{ path('asset', {size: 'x', name: item.poster.name}) }}" />
+                        <img class="entry__poster entry__poster--full"
+                             width="{{ item.poster.width }}"
+                             height="{{ item.poster.height }}"
+                             src="{{ path('asset', {size: 'x', name: item.poster.name}) }}" />
+                    {% endif %}
+
+                    {% if item.gallery|length > 0 %}
+                        <ul class="image__gallery">
+                            {% for image in item.gallery %}
+                                {% if image.width > image.height %}
+                                    <li class="image__gallery-item image__gallery-item--landscape">
+                                        <a data-caption="{{ image.description }}" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
+                                            <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="image__gallery-item image__gallery-item--portrait">
+                                        <a data-caption="{{ image.description }}" data-fslightbox="gallery" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
+                                            <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     {% endif %}
                 </aside>
                 <div class="entry__body">
-                    {% if loop.first %}
-                        {% include '@partials/header.html.twig' %}
-                    {% endif %}
+                    {% include '@partials/header.html.twig' %}
+
                     {% if user_session %}
                         <a class="entry__edit-button" href="{{ path('update-entry', {id: item.id}) }}">edit</a>
                     {% endif %}
@@ -34,38 +54,39 @@
                             {% for author in item.authors %}
                                 <li class="entry__primary-caption-item">
                                     <h2 class="entry__primary-caption-text">
-                                        <a class="entry__link" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">{{ author.name }}</a>
+                                        <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id) }) }}" class="entry__primary-caption-link">{{ author.name }}</a>
                                     </h2>
                                 </li>
                             {% endfor %}
                         {% else %}
                             <li class="entry__primary-caption-item">
                                 <h2 class="entry__primary-caption-text">
-                                    <a class="entry__link" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">{{ item.title }}</a>
+                                    {{ item.title }}
                                 </h2>
                             </li>
                         {% endif %}
                     </ul>
-
                     {% if item.type == 'show' or item.type == 'proj' %}
-                        <time class="entry__time">{{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is')) }}</time>
+                        <time class="entry__time">
+                            {{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is'), false) }}
+                            <a href="{{ path(language|default('is') == 'is' ? 'listi' : 'list', {year: item.from|year}) }}" class="entry__time-link">{{ item.from|year }}</a>
+                        </time>
                     {% endif %}
 
                     {% if item.type == 'show' %}
                         <h3 class="entry__secondary-caption-text">
-                            <a class="entry__link" href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">{{ item.title }}</a>
+                            {{ item.title }}
                         </h3>
                     {% endif %}
 
-                    {% if item.type != 'show' %}
-                        <div class="entry__text markdown-text">
+                    <div class="entry__text markdown-text">
                         {% markdown %}
-                            {{ item.body|length > 300 ? item.body|slice(0, 300) ~ '...' : item.body|raw  }}
+                            {{ item.body|raw }}
                         {% endmarkdown %}
-                        </div>
-                    {% endif %}
+                    </div>
                 </div>
             </article>
+
         {% endfor %}
 
         {% for item in upcoming %}

@@ -209,6 +209,10 @@ body {
     font-weight: 400;
     font-size: 1.953rem;
 }
+.entry__primary-caption-link {
+    text-decoration: none;
+    color: #0000EE;;
+}
 .entry__secondary-caption-text {
     font-weight: 400;
     font-size: 1.25rem;
@@ -244,6 +248,11 @@ body {
 }
 .entry__time {
     font-size: 0.8rem;
+}
+.entry__time-link {
+    text-decoration: none;
+    color: #0000EE;;
+    font-weight: 400;
 }
 .entry__text {
     max-width: 450px;
@@ -368,6 +377,13 @@ body {
     max-width: 1024px;
     margin: auto;
 }
+
+.entries__title {
+    font-weight: 400;
+    font-size: 1.25rem;
+    margin: 1.25rem 0;
+}
+
 @media (min-width: 960px) {
     .entries__header {
         display: flex;

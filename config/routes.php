@@ -90,6 +90,15 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         Handler\AuthorsPageHandler::class
     ], 'authors');
 
+    $app->get('/listamenn/:id', [
+        Middleware\PrimaryLanguageMiddleware::class,
+        Handler\AuthorPageHandler::class
+    ], 'listamadur');
+    $app->get('/authors/:id', [
+        Middleware\SecondaryLanguageMiddleware::class,
+        Handler\AuthorPageHandler::class
+    ], 'author');
+
     $app->get('/um', [
         Middleware\PrimaryLanguageMiddleware::class,
         Handler\ManifestoPageHandler::class

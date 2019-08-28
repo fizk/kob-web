@@ -23,6 +23,50 @@ class Author
         return $statement->fetch();
     }
 
+    public function fetch(string $id)
+    {
+        $statement = $this->pdo->prepare('
+            select * from Author where id = :id
+        ');
+        $statement->execute(['id' => $id]);
+        $item = $statement->fetch();
+
+        $entriesStatement = $this->pdo->prepare('
+            select E.* from Entry_has_Author EA 
+                join Entry E on (E.id = EA.entry_id)
+            where EA.author_id = :id;
+        ');
+
+        $entriesStatement->execute(['id' => $item->id]);
+        $item->entries = $entriesStatement->fetchAll();
+
+        $posterStatement = $this->pdo->prepare('
+            select I.*, EI.`type` from Entry_has_Image EI
+            join Image I on (I.id = EI.image_id)
+            where EI.entry_id = :id and `type` = 1;
+        ');
+        $authorStatement = $this->pdo->prepare('
+            select A.* from Entry_has_Author EA
+                join Author A on (A.id = EA.author_id)
+            where EA.entry_id = :id;
+        ');
+
+        $authorStatement->execute(['id' => $item->id]);
+        $item->authors = $authorStatement->fetchAll();
+
+        $item->entries = array_map(function ($item) use ($posterStatement, $authorStatement) {
+            $authorStatement->execute(['id' => $item->id]);
+            $item->authors = $authorStatement->fetchAll();
+
+            $posterStatement->execute(['id' => $item->id]);
+            $item->poster = $posterStatement->fetch();
+            return $item;
+        }, $item->entries);
+
+        return $item;
+
+    }
+
     public function fetchList(): array
     {
         $statement = $this->pdo->prepare('select * from `Author` order by `name` asc');

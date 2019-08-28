@@ -26,6 +26,13 @@
             <div class="entries__header-space"></div>
             <div class="entries__header-logo">
                 {% include '@partials/header.html.twig' %}
+                <h2 class="entries__title">
+                    {% if language|default('is') == 'is' %}
+                        Verkefni
+                    {% else %}
+                        Projects
+                    {% endif %}
+                </h2>
             </div>
         </div>
 

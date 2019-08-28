@@ -58,6 +58,7 @@ class ConfigProvider
                 Handler\EntriesPageHandler::class => Factory\EntriesPageHandlerFactory::class,
                 Handler\ProjectsPageHandler::class => Factory\ProjectsPageHandlerFactory::class,
                 Handler\AuthorsPageHandler::class => Factory\AuthorsPageHandlerFactory::class,
+                Handler\AuthorPageHandler::class => Factory\AuthorPageHandlerFactory::class,
                 Handler\AuthorsSearchPageHandler::class => Factory\AuthorsSearchPageHandlerFactory::class,
                 Handler\ManifestoPageHandler::class => Factory\ManifestoPageHandlerFactory::class,
                 Handler\StorePageHandler::class => Factory\StorePageHandlerFactory::class,
@@ -97,6 +98,7 @@ class ConfigProvider
                 MarkdownExtension::class => Factory\ParesDownAdapterFactory::class,
                 Filters\Slug::class => Factory\SlugFactory::class,
                 Filters\Date::class => Factory\DateFactory::class,
+                Filters\Year::class => Factory\YearFactory::class,
                 Filters\RFC822::class => Factory\RFC822Factory::class,
             ],
         ];
@@ -128,6 +130,7 @@ class ConfigProvider
                 MarkdownExtension::class,
                 Filters\Slug::class,
                 Filters\Date::class,
+                Filters\Year::class,
                 Filters\RFC822::class,
             ],
         ];

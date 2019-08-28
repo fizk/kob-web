@@ -116,7 +116,7 @@
                         {% for author in entry.current.authors %}
                             <li class="entry__primary-caption-item">
                                 <h2 class="entry__primary-caption-text">
-                                    {{ author.name }}
+                                    <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id) }) }}" class="entry__primary-caption-link">{{ author.name }}</a>
                                 </h2>
                             </li>
                         {% endfor %}
@@ -129,7 +129,21 @@
                     {% endif %}
                 </ul>
                 {% if entry.current.type == 'show' or entry.current.type == 'proj' %}
-                    <time class="entry__time">{{ entry.current.from|date(language|default('is'), false) }} - {{ entry.current.to|date(language|default('is')) }}</time>
+                    <time class="entry__time">
+                        {{ entry.current.from|date(language|default('is'), false) }} - {{ entry.current.to|date(language|default('is'), false) }}
+                        <a href="{{ path(language|default('is') == 'is' ? 'listi' : 'list', {year: entry.current.from|year}) }}" class="entry__time-link">{{ entry.current.from|year }}</a>
+                    </time>
+                {% endif %}
+
+                {% if entry.current.type == 'proj' %}
+                    |
+                <a href="{{ path(language|default('is') == 'is' ? 'verkefni' : 'projects') }}" class="entry__time-link">
+                    {% if language|default('is') == 'is' %}
+                        Öll verkefni
+                    {% else %}
+                        All projects
+                    {% endif %}
+                </a>
                 {% endif %}
 
                 {% if entry.current.type == 'show' %}
