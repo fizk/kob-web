@@ -19,36 +19,41 @@
     {% block content %}{% endblock %}
 
     <footer class="app__footer">
-
+        <ul class="app__nav-list-language">
+        {% block language_switch %}
+            {% if language|default('is') == 'is' %}
+                <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('home') }}">English</a></li>
+            {% else %}
+                <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('heim') }}">Íslenska</a></li>
+            {% endif %}
+        {% endblock %}
+        </ul>
         <nav class="app__nav">
             <ul class="app__nav-list app__nav-list--quarter">
+                <li class="app__nav-brand-item">
+                    {% include '@partials/header.html.twig' with {color: 'white'} %}
+                </li>
                 {% if language|default('is') == 'is' %}
-                    <li class="app__nav-list-item"><a href="{{ path('listamenn') }}" class="app__nav-link">Listamenn</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('verkefni') }}" class="app__nav-link">Verkefni</a></li>
+                    <li style="margin-top: 0.5rem" class="app__nav-menu-item"><a href="{{ path('listamenn') }}" class="app__nav-link">Listamenn</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('verkefni') }}" class="app__nav-link">Verkefni</a></li>
                 {% else %}
-                    <li class="app__nav-list-item"><a href="{{ path('authors') }}" class="app__nav-link">Artists</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('projects') }}" class="app__nav-link">Projects</a></li>
+                    <li style="margin-top: 0.5rem" class="app__nav-menu-item"><a href="{{ path('authors') }}" class="app__nav-link">Artists</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('projects') }}" class="app__nav-link">Projects</a></li>
                 {% endif %}
             </ul>
             <ul class="app__nav-list app__nav-list--quarter">
                 {% if language|default('is') == 'is' %}
                     <li class="app__nav-list-item"><a href="{{ path('um') }}" class="app__nav-link">Um Kling &amp; Bang</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('verslun') }}" class="app__nav-link">Verslun</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('verslun') }}" class="app__nav-link">Verk til sölu</a></li>
                     <li class="app__nav-list-item"><a href="{{ path('velunnarar') }}" class="app__nav-link">Velunnarar</a></li>
                 {% else %}
                     <li class="app__nav-list-item"><a href="{{ path('about') }}" class="app__nav-link">About Kling &amp; Bang</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('store') }}" class="app__nav-link">Store</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('store') }}" class="app__nav-link">Works for sale</a></li>
                     <li class="app__nav-list-item"><a href="{{ path('supporters') }}" class="app__nav-link">Supporters</a></li>
                 {% endif %}
-                {% block language_switch %}
-                    {% if language|default('is') == 'is' %}
-                        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('home') }}">English</a></li>
-                    {% else %}
-                        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('heim') }}">Íslenska</a></li>
-                    {% endif %}
-                {% endblock %}
+
             </ul>
-            <ul class="app__nav-list app__nav-list--half">
+            <ul class="app__nav-list app__nav-list--half app__nav-list-years">
             {% for item in entry_years %}
                 <li class="app__nav-year-list">
                     {% if year|default(0) == item.year %}
@@ -68,7 +73,7 @@
                 {% if language|default('is') == 'is' %}
                     <li class="app__opening-hours-item">Mið - Sun: 12 – 18</li>
                     <li class="app__opening-hours-item">Fim: 12 – 21</li>
-                    <li class="app__opening-hours-item">Mán/Þri: Closed</li>
+                    <li class="app__opening-hours-item">Mán/Þri: Lokað</li>
                 {% else %}
                     <li class="app__opening-hours-item">Wed - Sun: 12 – 18</li>
                     <li class="app__opening-hours-item">Thu: 12 – 21</li>
@@ -79,14 +84,6 @@
                 <li><a href="https://www.facebook.com/klingandbang" target="_blank" class="app__nav-link">Facebook</a></li>
                 <li><a href="https://www.instagram.com/klingogbang" target="_blank" class="app__nav-link">Instagram</a></li>
             </ul>
-            {#<ul class="app__nav-list app__nav-list--half">#}
-                {#{% if user_session %}#}
-                    {#<li><a href="{{ path('logout-submit') }}" class="app__footer-link">logout {{ user_session.name }}</a></li>#}
-                    {#<li><a href="{{ path('update') }}" class="app__footer-link">Dashboard</a></li>#}
-                {#{% else %}#}
-                    {#<li><a href="{{ path('login') }}" class="app__footer-link">login</a></li>#}
-                {#{% endif %}#}
-            {#</ul>#}
 
             <div class="app__nav-list app__nav-list--half">
                 <form method="get" class="search" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
@@ -102,6 +99,9 @@
                 <a href="https://www.google.com.au/maps/place/Kling+og+Bang/@64.1556389,-21.941386,17z/data=!4m5!3m4!1s0x48d674cd0ad7ec1d:0x8639bdf40995859e!8m2!3d64.1563149!4d-21.9391541"  class="app__nav-link" target="_blank">Grandagarður 20</a> - 101 Reykjavík |
                 <a href="mailto:kob@this.is" class="app__nav-link">kob@this.is</a>
             </address>
+            <div class="app__footer-control">
+                <a href="{{ path('update') }}" class="app__footer-control-dashboard">dashboard</a>
+            </div>
         </div>
     </footer>
     {% block javascript %}{% endblock %}

@@ -90,7 +90,7 @@ class Author
     public function fetchAffected(): array
     {
         $statement = $this->pdo->prepare('
-            select * from `Author` order by affected desc limit 0, 5
+            select * from `Author` order by affected desc limit 0, 6
         ');
         $statement->execute([]);
 

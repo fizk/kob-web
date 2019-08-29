@@ -400,7 +400,7 @@ class Entry
     {
         $statement = $this->pdo->prepare('
             select * from Entry
-            order by affected desc limit 0, 5;
+            order by affected desc limit 0, 6;
         ');
         $statement->execute([]);
 

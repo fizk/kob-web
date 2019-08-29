@@ -42,6 +42,11 @@ body {
     list-style: none;
     padding: 0;
 }
+.app__nav-list-years {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
 
 @media (min-width: 960px) {
     .app__nav-list {
@@ -66,6 +71,14 @@ body {
     margin-bottom: 1rem;
 }
 
+.app__nav-menu-item {
+    margin: 1rem 0;
+}
+
+.app__nav-brand-item {
+    margin-top: -1.2rem;
+}
+
 .app__nav-link {
     color: white;
     text-decoration: none;
@@ -87,9 +100,42 @@ body {
     font-style: normal;
     padding: 0;
 }
+.app__footer-control {
+    text-align: right;
+}
+.app__footer-control-dashboard {
+    text-decoration: none;
+    color: #b2b2b2;
+}
 @media (min-width: 960px) {
     .app__footer-address {
         padding: 0 1.953rem;
+    }
+    .app__footer-control {
+        width: 50%;
+        padding: 0 1.953rem;
+    }
+}
+
+.app__nav-list-language {
+    width: 100%;
+    max-width: 1024px;
+    margin: auto;
+
+    display: flex;
+    list-style: none;
+}
+
+.app__nav-list-language .app__nav-list-item {
+    margin-left: auto;
+}
+
+@media (min-width: 960px) {
+    .app__nav-list-language {
+        padding: 0 1.953rem;
+    }
+    .app__nav-list-language .app__nav-list-item {
+        padding-right: 1rem;
     }
 }
 
