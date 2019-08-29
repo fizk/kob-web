@@ -10,6 +10,15 @@
     <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
+{% block javascript %}
+<script src="/scripts/baguetteBox.min.js"></script>
+    <script>
+    baguetteBox.run('.image__gallery', {
+        // Custom options
+    });
+</script>
+{% endblock %}
+
 {% block content %}
     <main>
         {% for item in list %}
