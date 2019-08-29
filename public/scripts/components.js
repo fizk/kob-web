@@ -534,3 +534,47 @@ function sortable(rootEl, onUpdate) {
         }, 0)
     }, false);
 }
+
+
+const format = (event) => {
+
+    if (!event.metaKey) {
+        return;
+    }
+
+    if (event.target.selectionEnd - event.target.selectionStart <= 0) {
+        return;
+    }
+
+    const selectionStart = event.target.selectionStart;
+    const selectionEnd = event.target.selectionEnd;
+    let selectionOffset = 0;
+    const beginning = event.target.value.substring(0, event.target.selectionStart);
+    const middle = event.target.value.substring(event.target.selectionStart, event.target.selectionEnd);
+    const end = event.target.value.substring(event.target.selectionEnd);
+    const scroll = event.target.scrollTop;
+
+    let value = '';
+    
+    switch (event.key) {
+        case 'b':
+            value = `${beginning}**${middle}**${end}`;
+            selectionOffset = 4;
+            break;
+        case 'i':
+            value = `${beginning}_${middle}_${end}`;
+            selectionOffset = 2;
+            break;
+        case '1':
+            // value = `${beginning}_${middle}_${end}`;
+            // selectionOffset = 2;
+            debugger;
+            break;
+    }
+
+    event.target.value = value;
+    event.target.setSelectionRange(selectionEnd + selectionOffset,selectionEnd + selectionOffset);
+    event.target.scrollTo(0, scroll);
+
+    return false;
+};

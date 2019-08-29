@@ -142,13 +142,13 @@
 
                     <div class="form-group">
                         <label for="body_is">Body Icelandic</label>
-                        <textarea class="form-control" id="body_is" name="body_is" rows="8">{{ entry.body_is is defined ? entry.body_is : null}}</textarea>
+                        <textarea class="form-control" onkeypress="format(event)" id="body_is" name="body_is" rows="8">{{ entry.body_is is defined ? entry.body_is : null}}</textarea>
                         <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
                     </div>
 
                     <div class="form-group">
                         <label for="body_en">Body English</label>
-                        <textarea class="form-control" id="body_en" name="body_en" rows="8">{{ entry.body_en is defined ? entry.body_en : null}}</textarea>
+                        <textarea class="form-control" onkeypress="format(event)" id="body_en" name="body_en" rows="8">{{ entry.body_en is defined ? entry.body_en : null}}</textarea>
                         <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a></small>
                     </div>
 
