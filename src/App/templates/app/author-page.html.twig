@@ -24,6 +24,9 @@
             <div class="entries__header-space"></div>
             <div class="entries__header-logo">
                 {% include '@partials/header.html.twig' %}
+                {% if user_session %}
+                    <a class="entry__edit-button" href="{{ path('update-author', {id: author.id}) }}">edit</a>
+                {% endif %}
                 <h2 class="entries__title">{{ author.name }}</h2>
             </div>
         </div>

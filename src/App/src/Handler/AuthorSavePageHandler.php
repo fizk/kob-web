@@ -47,6 +47,6 @@ class AuthorSavePageHandler implements RequestHandlerInterface
                 'id' => $createdId,
                 'name' => $post['name'],
             ])
-            : new RedirectResponse($this->router->generateUri('authors'));
+            : new RedirectResponse($this->router->generateUri('author', ['id' => $createdId]));
     }
 }

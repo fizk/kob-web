@@ -30,22 +30,19 @@
                 {% for author in list %}
                     <li class="author-list__item">
                         <h3 class="author-list__author">
-                        <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.id}) }}">
+                        <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.id}) }}" class="author-list__author-link">
                             {{ author.name }}
                         </a>
                         </h3>
-                        {% if user_session %}
-                            <a href="{{ path('update-author', {id: author.id}) }}">edit</a>
-                        {% endif %}
-                        {#<ul class="author-list__entries-list">#}
-                            {#{% for entry in author.entries %}#}
-                                {#<li class="author-list__entries-item">#}
-                                    {#<h4 class="author-list__entry">#}
-                                        {#<a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.title|slug(entry.id)}) }}">{{ entry.title }}</a>#}
-                                    {#</h4>#}
-                                {#</li>#}
-                            {#{% endfor %}#}
-                        {#</ul>#}
+                        <ul class="author-list__entries-list">
+                            {% for entry in author.entries %}
+                                <li class="author-list__entries-item">
+                                    <h4 class="author-list__entry">
+                                        <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.title|slug(entry.id)}) }}">{{ entry.title }}</a>
+                                    </h4>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
                 {% endfor %}
             </ul>

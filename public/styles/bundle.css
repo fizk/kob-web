@@ -775,6 +775,10 @@ body {
     font-weight: 400;
     font-size: 1.25rem;
 }
+.author-list__author-link {
+    text-decoration: none;
+    color: #0000EE;
+}
 .author-list__entry {
     font-weight: 300;
     font-size: 1rem;
