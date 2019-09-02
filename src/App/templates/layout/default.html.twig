@@ -34,24 +34,24 @@
                     {% include '@partials/header.html.twig' with {color: 'white'} %}
                 </li>
                 {% if language|default('is') == 'is' %}
-                    <li style="margin-top: 0.5rem" class="app__nav-menu-item"><a href="{{ path('listamenn') }}" class="app__nav-link">Listamenn</a></li>
-                    <li class="app__nav-menu-item"><a href="{{ path('verkefni') }}" class="app__nav-link">Verkefni</a></li>
+                    <li style="margin-top: 0.5rem" class="app__nav-list-item"><a href="{{ path('verslun') }}" class="app__nav-link">Verk til sölu</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('velunnarar') }}" class="app__nav-link">Vinir Kling &amp; Bang</a></li>
                 {% else %}
-                    <li style="margin-top: 0.5rem" class="app__nav-menu-item"><a href="{{ path('authors') }}" class="app__nav-link">Artists</a></li>
-                    <li class="app__nav-menu-item"><a href="{{ path('projects') }}" class="app__nav-link">Projects</a></li>
+
+                    <li style="margin-top: 0.5rem" class="app__nav-list-item"><a href="{{ path('store') }}" class="app__nav-link">Works for sale</a></li>
+                    <li class="app__nav-list-item"><a href="{{ path('supporters') }}" class="app__nav-link">Friends of Kling &amp; Bang</a></li>
                 {% endif %}
             </ul>
             <ul class="app__nav-list app__nav-list--quarter">
                 {% if language|default('is') == 'is' %}
-                    <li class="app__nav-list-item"><a href="{{ path('um') }}" class="app__nav-link">Um Kling &amp; Bang</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('verslun') }}" class="app__nav-link">Verk til sölu</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('velunnarar') }}" class="app__nav-link">Velunnarar</a></li>
+                    <li style="margin-top: 0" class="app__nav-menu-item"><a href="{{ path('listamenn') }}" class="app__nav-link">Listamenn</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('verkefni') }}" class="app__nav-link">Verkefni</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('um') }}" class="app__nav-link">Um Kling &amp; Bang</a></li>
                 {% else %}
-                    <li class="app__nav-list-item"><a href="{{ path('about') }}" class="app__nav-link">About Kling &amp; Bang</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('store') }}" class="app__nav-link">Works for sale</a></li>
-                    <li class="app__nav-list-item"><a href="{{ path('supporters') }}" class="app__nav-link">Supporters</a></li>
+                    <li style="margin-top: 0" class="app__nav-menu-item"><a href="{{ path('authors') }}" class="app__nav-link">Artists</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('projects') }}" class="app__nav-link">Projects</a></li>
+                    <li class="app__nav-menu-item"><a href="{{ path('about') }}" class="app__nav-link">About Kling &amp; Bang</a></li>
                 {% endif %}
-
             </ul>
             <ul class="app__nav-list app__nav-list--half app__nav-list-years">
             {% for item in entry_years %}
