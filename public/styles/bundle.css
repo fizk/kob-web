@@ -187,6 +187,10 @@ body {
     }
 }
 
+.app__header .app__brand {
+    text-align: right;
+}
+
 @media (min-width: 960px) {
     .app__header {
         display: block;

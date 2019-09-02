@@ -56,6 +56,7 @@ class EntrySavePageHandler implements RequestHandlerInterface
             'from' => $post['from'],
             'to' => $post['to'],
             'type' => $post['type'],
+            'orientation' => $post['orientation'],
             'affected' => (new DateTime())->format('Y-m-d H:i:s')
         ];
         $data = array_merge($data, $id ? [] : [

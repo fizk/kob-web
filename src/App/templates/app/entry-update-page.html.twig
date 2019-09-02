@@ -137,6 +137,13 @@
                                     <option value="proj" {{ entry.type is defined and entry.type == 'proj' ? 'selected' : '' }}>Project</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="type">Orientation</label>
+                                <select class="form-control" id="orientation" name="orientation">
+                                    <option value="h" {{ entry.orientation is defined and entry.orientation == 'h' ? 'selected' : '' }} >Horizontal</option>
+                                    <option value="v" {{ entry.orientation is defined and entry.orientation == 'v' ? 'selected' : '' }} >Vertical</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
