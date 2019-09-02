@@ -13,10 +13,10 @@
 {% endblock %}
 
 {% block language_switch %}
-    {% if language == 'is' %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('velunnarar') }}">English</a></li>
+    {% if language|default('is') == 'is' %}
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('supporters') }}">English</a></li>
     {% else %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('supporters') }}">Íslenska</a></li>
+        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('velunnarar') }}">Íslenska</a></li>
     {% endif %}
 {% endblock %}
 
