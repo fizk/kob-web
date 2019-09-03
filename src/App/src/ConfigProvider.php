@@ -124,8 +124,8 @@ class ConfigProvider
     {
         return [
             'globals' => [
-                'host' => 'http://this.is/klingogbang',
-                'ga_tracking' => 'UA-XXXXX-X',
+                'host' => 'http://klingogbang.is',
+                'ga_tracking' => 'UA-146902881-1',
             ],
             'extensions' => [
                 MarkdownExtension::class,
