@@ -536,7 +536,7 @@ function sortable(rootEl, onUpdate) {
 }
 
 
-const format = (event) => {
+const markdownFormat = (event) => {
 
     if (!event.metaKey) {
         return;
@@ -555,7 +555,7 @@ const format = (event) => {
     const scroll = event.target.scrollTop;
 
     let value = '';
-    
+
     switch (event.key) {
         case 'b':
             value = `${beginning}**${middle}**${end}`;
@@ -565,11 +565,6 @@ const format = (event) => {
             value = `${beginning}_${middle}_${end}`;
             selectionOffset = 2;
             break;
-        case '1':
-            // value = `${beginning}_${middle}_${end}`;
-            // selectionOffset = 2;
-            debugger;
-            break;
     }
 
     event.target.value = value;
@@ -578,3 +573,105 @@ const format = (event) => {
 
     return false;
 };
+
+const disable = (event) => {
+    if (event.metaKey && (
+        event.key === '1' || event.key === '2' || event.key === '3' ||
+        event.key === '4' || event.key === '5' || event.key === '6'
+    )) {
+        event.cancelBubble = true;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const selectionStart = event.target.selectionStart;
+        const scroll = event.target.scrollTop;
+        let location = (event.target.selectionStart - 1);
+
+        while (location > 0) {
+            if (event.target.value[location] === '\n') {
+                break;
+            }
+            location--;
+        }
+
+        location = location === 0 ? 0 : location + 1;
+
+        const begin = event.target.value.substring(0, location);
+        const end = event.target.value.substring(location);
+
+        event.target.value = `${begin}${"#".repeat(Number(event.key))} ${end}`;
+        event.target.setSelectionRange(selectionStart, selectionStart);
+        event.target.scrollTo(0, scroll);
+    }
+
+    if (event.metaKey && (event.key === 'a')) {
+        event.cancelBubble = true;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const selectionStart = event.target.selectionStart;
+        const scroll = event.target.scrollTop;
+        let location = (event.target.selectionStart - 1);
+
+        while (location > 0) {
+            if (event.target.value[location] === '\n') {
+                break;
+            }
+            location--;
+        }
+
+        location = location === 0 ? 0 : location + 1;
+
+        const begin = event.target.value.substring(0, location);
+        const end = event.target.value.substring(location);
+
+        event.target.value = `${begin}> ${end}`;
+        event.target.setSelectionRange(selectionStart+2, selectionStart+2);
+        event.target.scrollTo(0, scroll);
+    }
+
+    if (event.metaKey && (event.key === 'l')) {
+        event.cancelBubble = true;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const scroll = event.target.scrollTop;
+        let location = (event.target.selectionStart - 1);
+
+        while (location > 0) {
+            if (event.target.value[location] === '\n') {
+                break;
+            }
+            location--;
+        }
+
+        location = location === 0 ? 0 : location + 1;
+
+        const beginning = event.target.value.substring(0, location);
+        const middle = event.target.value.substring(location, event.target.selectionEnd);
+        const end = event.target.value.substring(event.target.selectionEnd);
+
+        const items = middle.split('\n').map(item => `\n* ${item}`);
+
+        event.target.value = `${beginning}${items.join('')}${end}`;
+        event.target.setSelectionRange(location + 1, location + 1);
+        event.target.scrollTo(0, scroll);
+    }
+    return false;
+};
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    Array.from(document.querySelectorAll('textarea')).forEach(textarea => {
+        textarea.addEventListener('focus', () => {
+            window.addEventListener('keydown', disable);
+            textarea.addEventListener('keypress', markdownFormat);
+        });
+        textarea.addEventListener('blur', () => {
+            window.removeEventListener('keydown', disable);
+            textarea.removeEventListener('keypress', markdownFormat);
+        });
+    });
+});
+
+

@@ -245,6 +245,8 @@ INSERT INTO `User` VALUES ('1','kob','kob_kob',1),('2','admin','admin',0),('3','
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+alter table `Entry` add column `orientation` char(1) not null default 'v';
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

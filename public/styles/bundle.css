@@ -677,7 +677,32 @@ body {
     height: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
 
+.markdown-text blockquote {
+    margin: 1rem;
+    font-style: italic;
+}
+
+.markdown-text blockquote p:first-of-type:before {
+    display: inline-block;
+    vertical-align: top;
+}
+.markdown-text blockquote p:last-of-type:after {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.markdown-text blockquote p:first-of-type:before {
+    content: '\201C';
+    margin-right: 4px;
+    margin-left: -8px;
+}
+
+.markdown-text blockquote p:last-of-type:after {
+    content: '\201D';
+    margin-left: 4px;
+    margin-right: -8px;
 }
 
 .markdown-text table {
