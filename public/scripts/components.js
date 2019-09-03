@@ -604,7 +604,7 @@ const disable = (event) => {
         event.target.scrollTo(0, scroll);
     }
 
-    if (event.metaKey && (event.key === 'a')) {
+    if (event.metaKey && (event.key === 't')) {
         event.cancelBubble = true;
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -662,7 +662,7 @@ const disable = (event) => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    Array.from(document.querySelectorAll('textarea')).forEach(textarea => {
+    Array.from(document.querySelectorAll('[data-markdown]')).forEach(textarea => {
         textarea.addEventListener('focus', () => {
             window.addEventListener('keydown', disable);
             textarea.addEventListener('keypress', markdownFormat);
