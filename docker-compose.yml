@@ -42,7 +42,7 @@ services:
     ports:
       - 5506:3306
     volumes:
-      # - ./data/mysql:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql
       - ./auto/db/:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=example
