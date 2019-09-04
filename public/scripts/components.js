@@ -173,6 +173,7 @@ class FileUploader extends HTMLElement {
 window.customElements.define('file-uploader', FileUploader);
 
 class ImageDisplay extends HTMLElement {
+
     constructor() {
         super();
 
@@ -284,7 +285,6 @@ class ImageDisplay extends HTMLElement {
         this.setAttribute('text', text);
     }
 
-
     static get observedAttributes() {
         return ['path', 'text'];
     }
@@ -293,6 +293,7 @@ class ImageDisplay extends HTMLElement {
 customElements.define('image-display', ImageDisplay);
 
 class AuthorSelect extends HTMLElement {
+
     constructor() {
         super();
 
@@ -355,11 +356,15 @@ class AuthorSelect extends HTMLElement {
                 placeholder="Search for Author..." />
             <ul data-author-search-result class="list-group"></ul>
         `;
+        this.searchAuthor = this.searchAuthor.bind(this);
+        this.clearInput = this.clearInput.bind(this);
+        this.clearAuthEntries = this.clearAuthEntries.bind(this);
+
         shadowRoot.querySelector('[type=search]').addEventListener('keyup', this.throttle(this.searchAuthor, 500));
         shadowRoot.querySelector('[type=search]').addEventListener('search', this.clearAuthEntries);
     }
 
-    createElement = (value) => {
+    createElement(value) {
         const resultItem = document.createElement('li');
         resultItem.classList.add('list-group-item');
         const resultItemSpan = document.createElement('span');
@@ -369,7 +374,7 @@ class AuthorSelect extends HTMLElement {
         return resultItem;
     };
 
-    searchAuthor = (inputEvent) => {
+    searchAuthor(inputEvent) {
         const value = inputEvent.target.value;
         fetch(`/api/author/search?q=${inputEvent.target.value}`)
             .then(response => response.json())
@@ -416,15 +421,15 @@ class AuthorSelect extends HTMLElement {
             });
     };
 
-    clearInput = () => {
+    clearInput() {
         this.shadowRoot.querySelector('[type=search]').value = '';
     };
 
-    clearAuthEntries = () => {
+    clearAuthEntries() {
         this.shadowRoot.querySelector('[data-author-search-result]').innerHTML = '';
     };
 
-    createAuthEntry = (name) => {
+    createAuthEntry (name) {
         const formData = new FormData();
         formData.append('name', name);
 
@@ -447,7 +452,7 @@ class AuthorSelect extends HTMLElement {
 
     };
 
-    throttle = (func, limit) => {
+    throttle(func, limit) {
         let inThrottle;
         return function() {
             const args = arguments;
@@ -465,32 +470,31 @@ customElements.define('author-select', AuthorSelect);
 
 
 const getMouseOffset = (evt) => {
-    const targetRect = evt.target.getBoundingClientRect()
-    const offset = {
+    const targetRect = evt.target.getBoundingClientRect();
+    return {
         x: evt.pageX - targetRect.left,
         y: evt.pageY - targetRect.top
-    }
-    return offset
-}
+    };
+};
 
 const getElementVerticalCenter = (el) => {
-    const rect = el.getBoundingClientRect()
+    const rect = el.getBoundingClientRect();
     return (rect.bottom - rect.top) / 2
-}
+};
 
 function sortable(rootEl, onUpdate) {
-    var dragEl;
+    let dragEl;
 
     // Function responsible for sorting
     function _onDragOver(evt) {
         evt.preventDefault();
         evt.dataTransfer.dropEffect = 'move';
 
-        var target = evt.target.closest('[draggable=true]');
+        const target = evt.target.closest('[draggable=true]');
         if (target && target !== dragEl && target.draggable === true) {
             // Sorting
-            const offset = getMouseOffset(evt)
-            const middleY = getElementVerticalCenter(evt.target)
+            const offset = getMouseOffset(evt);
+            const middleY = getElementVerticalCenter(evt.target);
 
             if (offset.y > middleY) {
                 rootEl.insertBefore(dragEl, target.nextSibling)
@@ -583,78 +587,45 @@ const disable = (event) => {
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        const selectionStart = event.target.selectionStart;
+
         const scroll = event.target.scrollTop;
-        let location = (event.target.selectionStart - 1);
+        const lineBeginPosition = positionBeginningLine(event.target.selectionStart, event.target.value);
+        const lineEndPosition = positionEndLine(event.target.selectionEnd, event.target.value);
 
-        while (location > 0) {
-            if (event.target.value[location] === '\n') {
-                break;
-            }
-            location--;
-        }
+        const beginning = event.target.value.substring(0, lineBeginPosition);
+        const middle = event.target.value.substring(lineBeginPosition, lineEndPosition);
+        const end = event.target.value.substring(lineEndPosition);
 
-        location = location === 0 ? 0 : location + 1;
+        const headerString = `${"#".repeat(Number(event.key))} ${middle}`;
+        const isPaddingBegin = event.target.value[lineBeginPosition - 2] === '\n';
+        const isPaddingEnd = event.target.value[lineEndPosition + 1] === '\n';
 
-        const begin = event.target.value.substring(0, location);
-        const end = event.target.value.substring(location);
-
-        event.target.value = `${begin}${"#".repeat(Number(event.key))} ${end}`;
-        event.target.setSelectionRange(selectionStart, selectionStart);
+        event.target.value = `${beginning}${isPaddingBegin ? '' : '\n'}${headerString}${isPaddingEnd ? '' : '\n'}${end}`;
+        event.target.setSelectionRange(lineEndPosition + Number(event.key) + 1, lineEndPosition + Number(event.key) + 1);
         event.target.scrollTo(0, scroll);
     }
 
-    if (event.metaKey && (event.key === 't')) {
+    if (event.metaKey && (event.key === 'l' || event.key === 'k')) {
         event.cancelBubble = true;
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        const selectionStart = event.target.selectionStart;
+        const marker = event.key === 'l' ? '*' : '>';
         const scroll = event.target.scrollTop;
-        let location = (event.target.selectionStart - 1);
+        const lineBeginPosition = positionBeginningLine(event.target.selectionStart, event.target.value);
+        const lineEndPosition = positionEndLine(event.target.selectionEnd, event.target.value);
 
-        while (location > 0) {
-            if (event.target.value[location] === '\n') {
-                break;
-            }
-            location--;
-        }
+        const beginning = event.target.value.substring(0, lineBeginPosition);
+        const middle = event.target.value.substring(lineBeginPosition, lineEndPosition);
+        const end = event.target.value.substring(lineEndPosition);
 
-        location = location === 0 ? 0 : location + 1;
+        const listItems = middle.split('\n');
+        const listString = listItems.map(item => `${marker} ${item}`).join('\n');
+        const isPaddingBegin = event.target.value[lineBeginPosition - 2] === '\n';
+        const isPaddingEnd = event.target.value[lineEndPosition + 1] === '\n';
 
-        const begin = event.target.value.substring(0, location);
-        const end = event.target.value.substring(location);
-
-        event.target.value = `${begin}> ${end}`;
-        event.target.setSelectionRange(selectionStart+2, selectionStart+2);
-        event.target.scrollTo(0, scroll);
-    }
-
-    if (event.metaKey && (event.key === 'l')) {
-        event.cancelBubble = true;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        const scroll = event.target.scrollTop;
-        let location = (event.target.selectionStart - 1);
-
-        while (location > 0) {
-            if (event.target.value[location] === '\n') {
-                break;
-            }
-            location--;
-        }
-
-        location = location === 0 ? 0 : location + 1;
-
-        const beginning = event.target.value.substring(0, location);
-        const middle = event.target.value.substring(location, event.target.selectionEnd);
-        const end = event.target.value.substring(event.target.selectionEnd);
-
-        const items = middle.split('\n').map(item => `\n* ${item}`);
-
-        event.target.value = `${beginning}${items.join('')}${end}`;
-        event.target.setSelectionRange(location + 1, location + 1);
+        event.target.value = `${beginning}${isPaddingBegin ? '' : '\n'}${listString}${isPaddingEnd ? '' : '\n'}${end}`;
+        event.target.setSelectionRange(lineEndPosition + (listItems.length * 2) + 1, lineEndPosition + (listItems.length * 2) + 1);
         event.target.scrollTo(0, scroll);
     }
     return false;
@@ -674,4 +645,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+const positionBeginningLine = (start, value) => {
+    let location = start;
+
+    while (location > 0) {
+        location--;
+        if (value[location] === '\n') {
+            break;
+        }
+    }
+
+    return location === 0 ? 0 : location + 1;
+};
+
+
+const positionEndLine = (start, value) => {
+    let location = start;
+
+    while (location < value.length) {
+        if (value[location] === '\n') {
+            break;
+        }
+        location++;
+    }
+
+    return location;
+};
 
