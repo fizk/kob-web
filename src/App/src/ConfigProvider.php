@@ -101,6 +101,7 @@ class ConfigProvider
                 Filters\Date::class => Factory\DateFactory::class,
                 Filters\Year::class => Factory\YearFactory::class,
                 Filters\RFC822::class => Factory\RFC822Factory::class,
+                Filters\ClassModifiers::class => Factory\ClassModifiersFactory::class
             ],
         ];
     }
@@ -133,6 +134,7 @@ class ConfigProvider
                 Filters\Date::class,
                 Filters\Year::class,
                 Filters\RFC822::class,
+//                Filters\ClassModifiers::class,
             ],
         ];
     }

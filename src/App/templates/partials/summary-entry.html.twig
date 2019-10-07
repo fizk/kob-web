@@ -1,0 +1,59 @@
+<article class="entry entry--summary">
+    <aside class="entry__aside">
+        <a href="{{ path(language|default('is') == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
+        {% if item.poster %}
+            <img class="entry__poster"
+                 width="{{ item.poster.width }}"
+                 height="{{ item.poster.height }}"
+                 src="{{ path('asset', {size: 'x', name: item.poster.name}) }}" />
+        {% else %}
+            <div class="entry__poster"></div>
+        {% endif %}
+        </a>
+    </aside>
+    <div class="entry__body">
+
+        {% if user_session %}
+            <a class="entry__edit-button" href="{{ path('update-entry', {id: item.id}) }}">edit</a>
+        {% endif %}
+        <ul class="entry__primary-caption">
+            {% if item.type == 'show' %}
+                {% for author in item.authors %}
+                    <li class="entry__primary-caption-item">
+                        <h2 class="entry__primary-caption-text">
+                            <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id) }) }}" class="entry__primary-caption-link">{{ author.name }}</a>
+                        </h2>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="entry__primary-caption-item">
+                    <h2 class="entry__primary-caption-text">
+                        <a href="{{ path(language|default('is') == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entry__primary-caption-link">
+                        {{ item.title }}
+                        </a>
+                    </h2>
+                </li>
+            {% endif %}
+        </ul>
+        {% if item.type == 'show' or item.type == 'proj' %}
+            <time class="entry__time">
+                {{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is'), false) }}
+                <a href="{{ path(language|default('is') == 'is' ? 'listi' : 'list', {year: item.from|year}) }}" class="entry__time-link">{{ item.from|year }}</a>
+            </time>
+        {% endif %}
+
+        {% if item.type == 'show' %}
+            <h3 class="entry__secondary-caption-text">
+                <a href="{{ path(language|default('is') == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entry__primary-caption-link">
+                {{ item.title }}
+                </a>
+            </h3>
+        {% endif %}
+
+        {#<div class="entry__text markdown-text">#}
+            {#{% markdown %}#}
+                {#{{ item.body|raw }}#}
+            {#{% endmarkdown %}#}
+        {#</div>#}
+    </div>
+</article>

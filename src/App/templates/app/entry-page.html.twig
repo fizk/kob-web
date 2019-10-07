@@ -37,16 +37,16 @@
 {% endblock %}
 
 {% block content %}
-    <main>
+    <main class="app__main">
         {% if entry.current.orientation == "h" %}
             <div style="display: flex; position: absolute; width: 100%">
-                <div style="width: 50%"></div>
                 <div style="width: 50%; padding: 1.953rem;">
                     {% include '@partials/header.html.twig' with {color: 'white'} %}
                 </div>
+                <div style="width: 50%"></div>
             </div>
             {% if entry.current.poster %}
-                <img style="height: 100vh; width: 100vw; object-fit: cover; background-color: rgb(200,200,200); vertical-align: bottom;"
+                <img style="height: 80vh; width: 100vw; object-fit: cover; background-color: rgb(200,200,200); vertical-align: bottom;"
                      width="{{ entry.current.poster.width }}"
                      height="{{ entry.current.poster.height }}"
                      src="{{ path('asset', {size: '1280x', name: entry.current.poster.name}) }}" />

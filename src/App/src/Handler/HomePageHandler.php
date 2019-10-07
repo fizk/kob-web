@@ -41,7 +41,7 @@ class HomePageHandler implements RequestHandlerInterface
 
         $list = empty($current) ? $upcoming : $current;
         $next = empty($current) ? [] : $upcoming;
-        $fallback = empty($list) && empty($next) ? $this->entry->fetchFallback() : null;
+        $fallback = empty($list) && empty($next) ? $this->entry->fetchList((new DateTime())->format('Y')) : null;
 
         return new HtmlResponse(
             $this->template->render('app::home-page', [

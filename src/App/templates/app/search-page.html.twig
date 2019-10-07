@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-    <main>
+    <main class="app__main">
         <div class="entries__header">
             <div class="entries__header-space">
                 <form method="get" class="search" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">

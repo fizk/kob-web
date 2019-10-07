@@ -24,83 +24,33 @@
 {% endblock %}
 
 {% block content %}
-    <main>
-        {% for item in list %}
-
-            <article class="entry">
-                <aside class="entry__aside">
-                    {% if item.poster %}
-                        <img class="entry__poster entry__poster--full"
-                             width="{{ item.poster.width }}"
-                             height="{{ item.poster.height }}"
-                             src="{{ path('asset', {size: 'x', name: item.poster.name}) }}" />
-                    {% endif %}
-
-                    {% if item.gallery|length > 0 %}
-                        <ul class="image__gallery">
-                            {% for image in item.gallery %}
-                                {% if image.width > image.height %}
-                                    <li class="image__gallery-item image__gallery-item--landscape">
-                                        <a data-caption="{{ image.description }}" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
-                                            <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="image__gallery-item image__gallery-item--portrait">
-                                        <a data-caption="{{ image.description }}" data-fslightbox="gallery" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
-                                            <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </aside>
-                <div class="entry__body">
-                    {% include '@partials/header.html.twig' %}
-
-                    {% if user_session %}
-                        <a class="entry__edit-button" href="{{ path('update-entry', {id: item.id}) }}">edit</a>
-                    {% endif %}
-                    <ul class="entry__primary-caption">
-                        {% if item.type == 'show' %}
-                            {% for author in item.authors %}
-                                <li class="entry__primary-caption-item">
-                                    <h2 class="entry__primary-caption-text">
-                                        <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id) }) }}" class="entry__primary-caption-link">{{ author.name }}</a>
-                                    </h2>
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li class="entry__primary-caption-item">
-                                <h2 class="entry__primary-caption-text">
-                                    {{ item.title }}
-                                </h2>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    {% if item.type == 'show' or item.type == 'proj' %}
-                        <time class="entry__time">
-                            {{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is'), false) }}
-                            <a href="{{ path(language|default('is') == 'is' ? 'listi' : 'list', {year: item.from|year}) }}" class="entry__time-link">{{ item.from|year }}</a>
-                        </time>
-                    {% endif %}
-
-                    {% if item.type == 'show' %}
-                        <h3 class="entry__secondary-caption-text">
-                            {{ item.title }}
-                        </h3>
-                    {% endif %}
-
-                    <div class="entry__text markdown-text">
-                        {% markdown %}
-                            {{ item.body|raw }}
-                        {% endmarkdown %}
-                    </div>
-                </div>
-            </article>
-
-        {% endfor %}
+    <main class="app__main">
+        {% if list|length == 1 %}
+            {% embed '@partials/full-entry.html.twig' with {
+                item: list.0,
+                user_session: user_session,
+                is_header: true,
+                language: language|default('is')
+            } only %}
+            {% endembed %}
+        {% else %}
+            <div class="app__header-brand">
+                {% embed '@partials/header.html.twig' with {color: 'white'} %}{% endembed %}
+            </div>
+            <ul class="entry-container">
+            {% for item in list %}
+                <li class="entry-container__item">
+                {% embed '@partials/summary-entry.html.twig' with {
+                    item: item,
+                    user_session: user_session,
+                    is_header: loop.index0 == 0,
+                    language: language|default('is')
+                } only %}
+                {% endembed %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
 
         {% for item in upcoming %}
             <article>
