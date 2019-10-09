@@ -36,8 +36,8 @@ class HomePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $current = $this->entry->fetchByDate(new DateTime());
-        $upcoming = $this->entry->fetchAfter(new DateTime());
+        $current = $this->entry->fetchByDate(new DateTime(), $request->getAttribute('language', 'is'));
+        $upcoming = $this->entry->fetchAfter(new DateTime(), $request->getAttribute('language', 'is'));
 
         $list = empty($current) ? $upcoming : $current;
         $next = empty($current) ? [] : $upcoming;
