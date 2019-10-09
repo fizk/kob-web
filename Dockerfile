@@ -14,8 +14,14 @@ RUN apt-get update \
  && a2enmod rewrite \
  && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/apache2.conf \
  && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf \
- && mv /var/www/html /var/www/public \
- && curl -sS https://getcomposer.org/installer \
+ && mv /var/www/html /var/www/public
+
+COPY ./auto/server/apache2.conf /etc/apache2/sites-available/000-default.conf
+COPY ./auto/server/apache2-le-ssl.conf /etc/apache2/sites-available/000-default-le-ssl.conf
+
+RUN ln -s /etc/apache2/sites-available/000-default-le-ssl.conf /etc/apache2/sites-enabled/000-default-le-ssl.conf
+
+RUN curl -sS https://getcomposer.org/installer \
   | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN pecl install -o -f imagick-3.4.4 \

@@ -28,6 +28,7 @@ services:
       - ./public:/var/www/public
       - ./bin:/var/www/bin
       - ./data:/var/www/data
+      - /etc/letsencrypt/:/etc/letsencrypt/
     logging:
       driver: "json-file"
       options:
@@ -56,6 +57,8 @@ services:
     container_name: kob_search
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
     environment:
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     ports:
       - 9201:9200
