@@ -12,6 +12,7 @@ RUN apt-get update \
  && docker-php-ext-install bcmath \
  && docker-php-ext-install sockets \
  && a2enmod rewrite \
+ && a2enmod ssl \
  && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/apache2.conf \
  && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf \
  && mv /var/www/html /var/www/public
