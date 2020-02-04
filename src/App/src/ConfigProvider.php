@@ -61,6 +61,10 @@ class ConfigProvider
                 Handler\AuthorPageHandler::class => Factory\AuthorPageHandlerFactory::class,
                 Handler\AuthorsSearchPageHandler::class => Factory\AuthorsSearchPageHandlerFactory::class,
                 Handler\ManifestoPageHandler::class => Factory\ManifestoPageHandlerFactory::class,
+                Handler\InventoryUpdatePageHandler::class => Factory\InventoryPageHandlerFactory::class,
+                Handler\InventorySavePageHandler::class => Factory\InventorySavePageHandlerFactory::class,
+                Handler\InventoryCreatePageHandler::class => Factory\InventoryCreatePageHandlerFactory::class,
+
                 Handler\StorePageHandler::class => Factory\StorePageHandlerFactory::class,
                 Handler\SupportersPageHandler::class => Factory\SupportersPageHandlerFactory::class,
                 Handler\DashboardPageHandler::class => Factory\DashboardPageHandlerFactory::class,
@@ -91,6 +95,7 @@ class ConfigProvider
                 Service\Author::class => Factory\AuthorFactory::class,
                 Service\Manifesto::class => Factory\ManifestoFactory::class,
                 Service\Image::class => Factory\ImageFactory::class,
+                Service\Inventory::class => Factory\InventoryFactory::class,
                 Service\Search::class => Factory\SearchFactory::class,
 
                 PDO::class => Factory\DataSourceFactory::class,

@@ -8,11 +8,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\Router;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use App\Service;
 
-class StorePageHandler implements RequestHandlerInterface
+class InventoryCreatePageHandler implements RequestHandlerInterface
 {
     /** @var Router\RouterInterface */
     private $router;
@@ -28,14 +28,17 @@ class StorePageHandler implements RequestHandlerInterface
         Service\Inventory $inventory,
         TemplateRendererInterface $template
     ) {
-        $this->router    = $router;
-        $this->inventory = $inventory;
-        $this->template  = $template;
+        $this->router   = $router;
+        $this->inventory    = $inventory;
+        $this->template = $template;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $inventory = $this->inventory->fetchList($request->getAttribute('language', 'is'));
-        return new HtmlResponse($this->template->render('app::store-page', ['inventory' => $inventory]));
+        return new HtmlResponse(
+            $this->template->render('app::inventory-update-page', [
+                'item' => null
+            ])
+        );
     }
 }

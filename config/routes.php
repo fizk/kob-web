@@ -213,6 +213,32 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         BodyParamsMiddleware::class,
         Handler\ManifestoSavePageHandler::class
     ], 'new-manifesto');
+
+
+
+    $app->get('/update/inventory', [
+        Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
+        Handler\InventoryCreatePageHandler::class
+    ], 'create-inventory');
+    $app->get('/update/inventory/:id', [
+        Middleware\AuthenticationMiddleware::class,
+        Middleware\AdminMenuMiddleware::class,
+        Handler\InventoryUpdatePageHandler::class
+    ], 'update-inventory');
+    $app->post('/update/inventory/:id', [
+        Middleware\AuthenticationMiddleware::class,
+        BodyParamsMiddleware::class,
+        Handler\InventorySavePageHandler::class
+    ], 'new-inventory');
+    $app->post('/update/inventory', [
+        Middleware\AuthenticationMiddleware::class,
+        BodyParamsMiddleware::class,
+        Handler\InventorySavePageHandler::class
+    ], 'save-inventory');
+
+
+
     $app->post('/update/image/:id', [
         Middleware\AuthenticationMiddleware::class,
         BodyParamsMiddleware::class,

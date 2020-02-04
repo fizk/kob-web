@@ -1,0 +1,4 @@
+Require all granted
+  AuthType None
+  Order deny,allow
+  Allow from all

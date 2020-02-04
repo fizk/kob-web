@@ -3,24 +3,22 @@
  * Created by PhpStorm.
  * User: einar.adalsteinsson
  * Date: 7/8/19
- * Time: 1:06 AM
+ * Time: 1:14 AM
  */
 
 namespace App\Factory;
 
-use App\Handler;
 use App\Service;
+use App\Handler;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
 
-class StorePageHandlerFactory
+class InventorySavePageHandlerFactory
 {
     public function __invoke(ContainerInterface $container) {
-        return new Handler\StorePageHandler(
+        return new Handler\InventorySavePageHandler(
             $container->get(RouterInterface::class),
-            $container->get(Service\Inventory::class),
-            $container->get(TemplateRendererInterface::class)
+            $container->get(Service\Inventory::class)
         );
     }
 }

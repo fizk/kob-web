@@ -1,0 +1,192 @@
+{% extends '@layout/admin.html.twig' %}
+
+{% block title %}Store{% endblock %}
+
+{% block style %}
+<style>
+    .image-list {
+        list-style: none;
+        padding-left: 0;
+    }
+    .image-list li {
+        margin: 8px 0;
+    }
+</style>
+
+{% endblock %}
+
+{% block footer %}
+    <div class="row">
+        <div class="col">
+            <p>
+                The body text supports Markdown which is a simple way to add styling to text. A cheat-sheet can be
+                found <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">here</a>.
+            </p>
+            <p>
+                Images can be attached by either clicking <em>Select or drag images</em> or by dragging and image
+                from the desktop onto the text. You can then add caption to the image, just remember to save the caption
+                before you save the entry.
+            </p>
+        </div>
+        <div class="col">
+            <h4>Markdown</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>format</td>
+                    <td>shortcut</td>
+                    <td>syntax</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>bold</td>
+                    <td>cmd + b</td>
+                    <td>** **</td>
+                </tr>
+                <tr>
+                    <td>italic</td>
+                    <td>cmd + i</td>
+                    <td>_ _</td>
+                </tr>
+                <tr>
+                    <td>list</td>
+                    <td>cmd + l</td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td>quote</td>
+                    <td>cmd + k</td>
+                    <td>&gt;</td>
+                </tr>
+                <tr>
+                    <td>headline 1</td>
+                    <td>cmd + 1</td>
+                    <td>#</td>
+                </tr>
+                <tr>
+                    <td>headline 2</td>
+                    <td>cmd + 2</td>
+                    <td>##</td>
+                </tr>
+                <tr>
+                    <td>headline 3</td>
+                    <td>cmd + 3</td>
+                    <td>###</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <main class="container">
+        <div class="row">
+            <div class="col-2">
+                {% include '@partials/dashboard-menu.html.twig' %}
+            </div>
+            <div class="col-10">
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="display-4">
+                                {% if item %}
+                                    Update "{{ item.title }}"
+                                {% else %}
+                                    Create Store Item
+                                {% endif %}
+                            </h1>
+                        </div>
+
+                    </div>
+                </div>
+                <form method="post" action="{{item.id is defined ? path('new-inventory', {id: item.id}) : path('save-inventory', {}) }}">
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input class="form-control" id="title" required name="title" value="{{item.title is defined ? item.title : null}}" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <template id="image-entry-template">
+                                <li draggable="true">
+                                    <image-display>
+                                        <img class="card-img-top" draggable="false" slot="icon" style="object-fit: cover" height="100" width="100" />
+                                        <span slot="control">
+                                        <input type="hidden">
+                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                    </span>
+                                    </image-display>
+                                </li>
+                            </template>
+                            <label for="gallery">Gallery</label>
+                            <file-uploader data-file-uploader-gallery>
+                                <ul data-gallery class="image-list">
+                                    {% if item.images is defined %}
+                                        {% for image in item.images %}
+                                            <li draggable="true">
+                                                <image-display path="{{ path('update-image', {id: image.id}) }}" text="{{ image.description }}">
+                                                    <img class="card-img-top" draggable="false" slot="icon" src="{{ path('asset', {name: image.name, size: '250x100'}) }}" style="object-fit: cover" height="100" width="100" />
+                                                    <span slot="control">
+                                                        <input type="hidden" name="gallery[]" value="{{ image.id }}">
+                                                        <a href="#" onclick="removeImageItem(event)">(remove)</a>
+                                                    </span>
+                                                </image-display>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </file-uploader>
+                        </div>
+                        <div class="col-9">
+                            <div class="form-group">
+                                <label for="body_is">Body Icelandic</label>
+                                <textarea data-markdown class="form-control" id="body_is" name="body_is" rows="20">{{ item.body_is is defined ? item.body_is : null}}</textarea>
+                                <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="body_en">Body English</label>
+                                <textarea data-markdown class="form-control" id="body_en" name="body_en" rows="20">{{ item.body_en is defined ? item.body_en : null}}</textarea>
+                                <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="{{ path('store') }}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <script>
+            sortable(document.querySelector('[data-gallery]'), () => {});
+
+            const removeImageItem = (event) => {
+                event.preventDefault();
+                const parent = event.target.closest('[draggable=true]');
+                parent.parentNode.removeChild(parent);
+            };
+            document.querySelector('[data-file-uploader-gallery]').addEventListener('result', (event) => {
+                const list = event.target.querySelector('ul');
+                const template = document.querySelector('#image-entry-template');
+                event.detail.map(item => {
+                    const clone = document.importNode(template.content, true);
+                    clone.querySelector('input').value = item.id;
+                    clone.querySelector('input').name = 'gallery[]';
+                    clone.querySelector('img').src = item.thumb;
+                    clone.querySelector('image-display').path = `/update/image/${item.id}`;
+                    list.appendChild(clone);
+                });
+            });
+        </script>
+    </main>
+{% endblock %}

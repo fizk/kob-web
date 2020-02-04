@@ -22,34 +22,78 @@
 
 {% block content %}
     <main class="app__main">
-        <article class="article">
-            <aside class="article__aside">
-                <ul class="image__gallery">
-                    {% for image in manifesto.gallery %}
-                        {% if image.width > image.height %}
-                            <li class="image__gallery-item image__gallery-item--landscape">
-                                <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
-                            </li>
-                        {% else %}
-                            <li class="image__gallery-item image__gallery-item--portrait">
-                                <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-
-            </aside>
-            <div class="article__body">
+        <article class="block">
+            <aside class="block__aside"></aside>
+            <div class="block__content">
                 {% include '@partials/header.html.twig' %}
-                {% if user_session %}
-                    <a class="entry__edit-button" href="{{ path('update-manifesto', {id: manifesto.id}) }}">edit</a>
-                {% endif %}
-                <div class="article__body-text markdown-text">
-                    {% markdown %}
-                        {{ manifesto.body|raw }}
-                    {% endmarkdown %}
-                </div>
             </div>
         </article>
+        {% for item in inventory %}
+
+            <article class="block">
+                <aside class="block__aside">
+                    <ul class="image__gallery image__gallery--small">
+                        {% for image in item.images %}
+                            {% if image.width > image.height %}
+                                <li class="image__gallery-item image__gallery-item--landscape">
+                                    <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
+                                </li>
+                            {% else %}
+                                <li class="image__gallery-item image__gallery-item--portrait">
+                                    <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </aside>
+                <div class="block__content">
+                    {% if user_session %}
+                        <a class="entry__edit-button" href="{{ path('update-inventory', {id: item.id}) }}">edit</a>
+                    {% endif %}
+                    <div class="content">
+                        <h3 class="content__title">
+                            {{item.title}}
+                        </h3>
+
+                        <div class="content__body markdown-text">
+                            {% markdown %}
+                                {{ item.body|raw }}
+                            {% endmarkdown %}
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+
+
+{#            <article class="article">#}
+{#                <aside class="article__aside">#}
+{#                    <ul class="image__gallery">#}
+{#                        {% for image in item.images %}#}
+{#                            {% if image.width > image.height %}#}
+{#                                <li class="image__gallery-item image__gallery-item--landscape">#}
+{#                                    <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />#}
+{#                                </li>#}
+{#                            {% else %}#}
+{#                                <li class="image__gallery-item image__gallery-item--portrait">#}
+{#                                    <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />#}
+{#                                </li>#}
+{#                            {% endif %}#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </aside>#}
+{#                <div class="article__body">#}
+{#                    {% if user_session %}#}
+{#                        <a class="entry__edit-button" href="{{ path('update-inventory', {id: item.id}) }}">edit</a>#}
+{#                    {% endif %}#}
+{#                    {{item.title}}#}
+{#                    <div class="article__body-text markdown-text">#}
+{#                        {% markdown %}#}
+{#                            {{ item.body|raw }}#}
+{#                        {% endmarkdown %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </article>#}
+        {% endfor %}
     </main>
 {% endblock %}
