@@ -17,3 +17,10 @@ RewriteRule ^.*$ - [NC,L]
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
 RewriteRule ^(.*) - [E=BASE:%1]
 RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
+
+# AuthUserFile /usr/local/etc/.htpasswd
+# AuthName "Name of Secure Area"
+# AuthType Basic
+# <Limit GET POST>
+# require valid-user
+# </Limit>

@@ -180,7 +180,28 @@ class ImageDisplay extends HTMLElement {
         const shadowRoot = this.attachShadow({mode: 'open'});
         shadowRoot.innerHTML = `
             <style>
-                
+                .row {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -ms-flex-wrap: wrap;
+                    flex-wrap: wrap;
+                    margin-right: -15px;
+                    margin-left: -15px
+                }
+                .col {
+                    position: relative;
+                    width: 100%;
+                    min-height: 1px;
+                    padding-right: 15px;
+                    padding-left: 15px;
+                    -ms-flex-preferred-size: 0;
+                    flex-basis: 0;
+                    -webkit-box-flex: 1;
+                    -ms-flex-positive: 1;
+                    flex-grow: 1;
+                    max-width: 100%
+                }
                 textarea {
                     box-sizing: border-box;
                     display: block;
@@ -202,12 +223,7 @@ class ImageDisplay extends HTMLElement {
                     outline: 0;
                     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
                 }
-                
-                
-                
-                
-                
-                
+
                 .card {
                     position: relative;
                     display: -ms-flexbox;
@@ -231,20 +247,23 @@ class ImageDisplay extends HTMLElement {
                     flex: 1 1 auto;
                     padding: 1.25rem;
                 }
-                
-                
-                
             </style>
-            
-            
-            <div class="card">
-                <slot name="icon"></slot>
-                <div class="card-body">
-                    <textarea placeholder="Write a description..."></textarea>
-                    <button>save</button>
-                    <slot name="control"></slot>
+
+
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row no-gutters">
+                        <div class="col">
+                            <slot name="icon"></slot>
+                        </div>
+                        <div class="col">
+                            <div class="card-body">
+                                <textarea placeholder="Write a description..."></textarea>
+                                <button>save</button>
+                                <slot name="control"></slot>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         `;
     }
 
@@ -350,9 +369,9 @@ class AuthorSelect extends HTMLElement {
                     background-color: #c3e6cb
                 }
             </style>
-            <input type="search" 
-                class="form-control" 
-                aria-describedby="search" 
+            <input type="search"
+                class="form-control"
+                aria-describedby="search"
                 placeholder="Search for Author..." />
             <ul data-author-search-result class="list-group"></ul>
         `;
