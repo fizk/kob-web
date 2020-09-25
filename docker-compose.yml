@@ -26,15 +26,17 @@ services:
     volumes:
       - ./config:/var/www/config
       - ./src:/var/www/src
-      - ./public:/var/www/public
+      - ./templates:/var/www/templates
+      - ./public:/var/www/html
       - ./bin:/var/www/bin
       - ./data:/var/www/data
-      - /etc/letsencrypt/:/etc/letsencrypt/
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "10m"
+      - ./vendor:/var/www/vendor
+    #   - /etc/letsencrypt/:/etc/letsencrypt/
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-file: "5"
+    #     max-size: "10m"
 
   database:
     container_name: kob_database
@@ -48,26 +50,71 @@ services:
       - ./auto/db/:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=example
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "10m"
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-file: "5"
+    #     max-size: "10m"
+
+  database-test:
+    container_name: kob_database_test
+    image: mysql:5.6.41
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./data/mysql-test:/var/lib/mysql
+      - ./auto/db/:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
 
   search:
     container_name: kob_search
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
     environment:
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+     # - bootstrap.memory_lock=true
+     # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
     ports:
       - 9201:9200
       - 9301:9300
     volumes:
       - ./data/search/:/usr/share/elasticsearch/data
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "10m"
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-file: "5"
+    #     max-size: "10m"
+
+  test:
+    container_name: kob_web_test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database-test
+      - search
+    links:
+      - database-test
+      - search
+    environment:
+      - APPLICATION_ENVIRONMENT=development
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_NAME=klingogbang
+      - DB_USER=root
+      - DB_PASSWORD=example
+    volumes:
+      - ./config:/var/www/config
+      - ./src:/var/www/src
+      - ./templates:/var/www/templates
+      - ./public:/var/www/public
+      - ./bin:/var/www/bin
+      - ./data:/var/www/data
+      - ./vendor:/var/www/vendor
+      - ./test:/var/www/test
+      - ./phpunit.xml.dist:/var/www/./phpunit.xml
+      - ./phpcs.xml.dist:/var/www/./phpcs.xml
+    command: bash -c "./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
+    # command: bash -c "./vendor/bin/phpunit --coverage-html ./test/doc && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
+
+

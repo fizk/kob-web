@@ -1,46 +1,65 @@
-FROM php:7.3-apache
+FROM php:7.4.10-apache-buster
 
-RUN apt-get update \
- && apt-get install -y zip libzip-dev \
- && apt-get install -y libmagickwand-dev libmagickcore-dev \
- && apt-get install -y zip unzip \
- && apt-get install -y imagemagick \
- && apt-get install -y git zlib1g-dev vim \
- && apt-get install -y autoconf g++ make openssl libssl-dev libcurl4-openssl-dev pkg-config libsasl2-dev libpcre3-dev \
- && docker-php-ext-install zip \
- && docker-php-ext-install pdo_mysql \
- && docker-php-ext-install bcmath \
- && docker-php-ext-install sockets \
- && a2enmod rewrite \
- && a2enmod ssl \
- && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/apache2.conf \
- && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf \
- && mv /var/www/html /var/www/public
-
-COPY ./auto/server/apache2.conf /etc/apache2/sites-available/000-default.conf
-COPY ./auto/server/apache2-le-ssl.conf /etc/apache2/sites-available/000-default-le-ssl.conf
-
-RUN ln -s /etc/apache2/sites-available/000-default-le-ssl.conf /etc/apache2/sites-enabled/000-default-le-ssl.conf
-
-RUN curl -sS https://getcomposer.org/installer \
-  | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN pecl install -o -f imagick-3.4.4 \
-    && rm -rf /tmp/pear \
-    && docker-php-ext-enable imagick
-
-COPY ./auto/php/php.ini /usr/local/etc/php/php.ini
-
-WORKDIR /var/www
-
-COPY ./composer.json .
-COPY ./composer.lock .
-#COPY ./phpcs.xml .
-#COPY ./phpunit.xml.dist .
-
-RUN /usr/local/bin/composer install --prefer-source --no-interaction \
-    && /usr/local/bin/composer dump-autoload -o
+ARG ENV
 
 EXPOSE 80
 
+COPY ./auto/php/php.ini /usr/local/etc/php/php.ini
 
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends \
+        zip \
+        unzip \
+        git \
+        vim \
+        g++ \
+        openssl \
+        imagemagick \
+        libzip-dev \
+        libmagickwand-dev \
+        libmagickcore-dev \
+        zlib1g-dev \
+        libssl-dev \
+        libcurl4-openssl-dev; \
+    docker-php-ext-install zip; \
+    docker-php-ext-install pdo_mysql; \
+    docker-php-ext-install bcmath; \
+    docker-php-ext-install sockets; \
+    pecl install -o -f imagick-3.4.4; \
+    rm -rf /tmp/pear; \
+    docker-php-ext-enable imagick; \
+    a2enmod rewrite; \
+    a2enmod ssl; \
+    service apache2 restart
+
+RUN if [ "$ENV" != "production" ] ; then \
+    pecl install xdebug; \
+    docker-php-ext-enable xdebug; \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    fi ;
+
+WORKDIR /var/www
+
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin --filename=composer
+
+COPY ./composer.json .
+COPY ./composer.lock .
+
+RUN if [ "$ENV" != "production" ] ; then \
+    composer install --prefer-source --no-interaction --no-suggest \
+    && composer dump-autoload; \
+    fi ;
+
+RUN if [ "$ENV" = "production" ] ; then \
+    composer install --prefer-source --no-interaction --no-dev --no-suggest -o \
+    && composer dump-autoload -o; \
+    fi ;
+
+COPY ./config ./config
+COPY ./public ./html
+COPY ./src ./src
+COPY ./templates ./templates

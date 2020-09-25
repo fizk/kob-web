@@ -123,3 +123,4 @@ extras/documentation
 
 public/img/*
 !public/img/.gitkeep
+test/doc
