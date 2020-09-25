@@ -10,7 +10,6 @@ script:
     - docker-compose up --build test
 
 before_deploy:
-  - rm -Rf ./data
   - docker build --build-arg ENV=production -t "$IMAGE_NAME" .
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - git_sha="$(git rev-parse --short HEAD)"
