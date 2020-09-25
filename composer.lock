@@ -1852,61 +1852,6 @@
             "time": "2020-06-14T09:00:00+00:00"
         },
         {
-            "name": "fizk/highway",
-            "version": "0.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fizk/highway.git",
-                "reference": "ff68efbaf22be716695ea8df31378b7e16c89616"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fizk/highway/zipball/ff68efbaf22be716695ea8df31378b7e16c89616",
-                "reference": "ff68efbaf22be716695ea8df31378b7e16c89616",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2",
-                "psr/http-message": "^1.0",
-                "psr/http-server-handler": "^1.0",
-                "psr/http-server-middleware": "^1.0"
-            },
-            "require-dev": {
-                "laminas/laminas-diactoros": "^2.3",
-                "phpunit/phpunit": "^7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Highway\\": "src/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit --bootstrap vendor/autoload.php --testdox"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Robert Narvaez",
-                    "email": "narvaez.rm@gmail.com"
-                }
-            ],
-            "description": "Simple routing for PHP. PSR-7 and PSR-15 compatible.",
-            "keywords": [
-                "http",
-                "router",
-                "routing"
-            ],
-            "support": {
-                "source": "https://github.com/fizk/highway/tree/0.8.0"
-            },
-            "time": "2020-08-14T01:05:44+00:00"
-        },
-        {
             "name": "myclabs/deep-copy",
             "version": "1.10.1",
             "source": {

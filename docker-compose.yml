@@ -139,10 +139,9 @@ services:
       - ./config:/var/www/config
       - ./src:/var/www/src
       - ./templates:/var/www/templates
-      - ./public:/var/www/public
+      - ./public:/var/www/html
       - ./bin:/var/www/bin
       - ./data:/var/www/data
-      - ./vendor:/var/www/vendor
       - ./test:/var/www/test
       - ./phpunit.xml.dist:/var/www/./phpunit.xml
       - ./phpcs.xml.dist:/var/www/./phpcs.xml
