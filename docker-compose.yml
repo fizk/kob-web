@@ -26,6 +26,16 @@ services:
     volumes:
       - ./data:/var/www/data
       - ./img:/var/www/html/img
+
+      - ./config:/var/www/config
+      - ./src:/var/www/src
+      - ./templates:/var/www/templates
+      - ./public:/var/www/html
+      - ./bin:/var/www/bin
+      - ./vendor:/var/www/vendor
+      - ./composer.json:/var/www/composer.json
+      - ./composer.lock:/var/www/composer.lock
+
     #   - /etc/letsencrypt/:/etc/letsencrypt/
     # logging:
     #   driver: "json-file"
@@ -71,14 +81,13 @@ services:
 
   database:
     container_name: kob_database
-    image: mysql:5.6.41
+    image: einarvalur/kob-db:5fe1b81
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
-      - 5506:3306
+      - 3306:3306
     volumes:
       - ./data/mysql:/var/lib/mysql
-      - ./auto/db/:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=example
     # logging:
@@ -89,11 +98,9 @@ services:
 
   database-test:
     container_name: kob_database_test
-    image: mysql:5.6.41
+    image: einarvalur/kob-db:5fe1b81
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    volumes:
-      - ./auto/db/:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=example
 
