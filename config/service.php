@@ -10,11 +10,13 @@ use App\Filters;
 use App\Router\RouterInterface;
 use App\Router\RouteCollection;
 use App\Template\TwigRenderer;
+use App\Template\TemplateRendererInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\AuthenticationServiceInterface;
 use Laminas\Authentication\Adapter\AdapterInterface;
+use Aptoma\Twig\Extension\MarkdownExtension;
 
 return [
     'factories'  => [
@@ -260,20 +262,20 @@ return [
             return new Service\Search($container->get(Client::class));
         },
         Service\Asset::class => function (ContainerInterface $container) {
-            return new Service\Asset();
+            return new Service\Asset('./image-cache/');
         },
 
-        PDO::class =>     function (ContainerInterface $container) {
-            $config = ['pdo' => [
-                'dsn' => 'mysql:host=database;port=3306;dbname=klingogbang',
-                'user' => 'root',
-                'password' => 'example'
-            ]];
+        PDO::class => function (ContainerInterface $container) {
+            $host = getenv('DB_HOST') ?: 'database';
+            $port = getenv('DB_PORT') ?: 3306;
+            $name = getenv('DB_NAME') ?: 'klingogbang';
+            $user = getenv('DB_USER') ?: 'root';
+            $passwd = getenv('DB_PASSWORD') ?: 'example';
 
             return new PDO(
-                $config['pdo']['dsn'],
-                $config['pdo']['user'],
-                $config['pdo']['password'],
+                "mysql:host={$host};port={$port};dbname={$name}",
+                $user,
+                $passwd,
                 [
                     PDO::MYSQL_ATTR_INIT_COMMAND =>
                         "SET NAMES 'utf8', ".
@@ -305,14 +307,17 @@ return [
         },
 
         TemplateRendererInterface::class => function (ContainerInterface $container) {
+            $host = getenv('GA_HOST') ?: 'http://klingogbang.is';
+            $tracking = getenv('GA_TRACH') ?: 'UA-146902881-1';
+
             return (new TwigRenderer('./templates/'))
                 ->addPath('./templates/app', 'app')
                 ->addPath('./templates/partials', 'partials')
                 ->addPath('./templates/error', 'error')
                 ->addPath('./templates/layout', 'layout')
-                ->addDefaultParam('app', 'host', 'http://klingogbang.is')
-                ->addDefaultParam('app', 'ga_tracking', 'UA-146902881-1')
-                ->addExtension(new \Aptoma\Twig\Extension\MarkdownExtension(new ParesDownAdapter()))
+                ->addDefaultParam('app', 'host', $host)
+                ->addDefaultParam('app', 'ga_tracking', $tracking)
+                ->addExtension(new MarkdownExtension(new ParesDownAdapter()))
                 ->addExtension(new Filters\Slug())
                 ->addExtension(new Filters\Date())
                 ->addExtension(new Filters\Year())

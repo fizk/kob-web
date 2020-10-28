@@ -1,10 +1,5 @@
 <?php
 
-// Delegate static file requests back to the PHP built-in webserver
-// if (PHP_SAPI === 'cli-server' && $_SERVER['SCRIPT_FILENAME'] !== __FILE__) {
-//     return false;
-// }
-
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
@@ -13,7 +8,9 @@ set_error_handler("exception_error_handler");
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\Diactoros\Response\HtmlResponse;
 use App\Router\RouterInterface;
+use App\Template\TemplateRendererInterface;
 use function App\Router\dispatch;
 
 $serviceManager = new ServiceManager(require './config/service.php');
@@ -25,11 +22,19 @@ $request = ServerRequestFactory::fromGlobals(
     $_FILES
 );
 
-$collection = $serviceManager->get(RouterInterface::class);
-$collection->setRouteConfig(require './config/router.php');
-$response = dispatch($request, $collection, $serviceManager);
-
-(new SapiEmitter)->emit($response);
+try {
+    $collection = $serviceManager->get(RouterInterface::class);
+    $collection->setRouteConfig(require './config/router.php');
+    $response = dispatch($request, $collection, $serviceManager);
+    (new SapiEmitter)->emit($response);
+} catch (Throwable $e) {
+    (new SapiEmitter)->emit(
+        new HtmlResponse(
+            $serviceManager->get(TemplateRendererInterface::class)->render('error::error'),
+            500
+        )
+    );
+}
 
 function exception_error_handler($severity, $message, $file, $line)
 {

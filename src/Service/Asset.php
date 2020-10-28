@@ -24,7 +24,12 @@ class Asset
     public function get(string $size, string $name) /* : ?resource */
     {
         if (!file_exists($this->cache . $name)) {
-            return false;
+            $dimensions = $this->parseRequestedDimensions($size);
+            $imagine = new Imagine();
+            $img = $imagine->create(new Box($dimensions['width'] ?: 100, $dimensions['height'] ?: 100));
+            $pointer = fopen('php://memory', 'r+');
+            fputs($pointer, $img->get('jpeg'));
+            return $pointer;
         }
 
         if (!file_exists(sprintf('./%s/img/%s/%s', $this->htdocs, $size, $name))) {
@@ -70,36 +75,36 @@ class Asset
         return fopen(sprintf('./%s/img/%s/%s', $this->htdocs, $size, $name), 'r');
     }
 
-    public function save(UploadedFileInterface $value)
+    public function save(UploadedFileInterface $value): array
     {
         if (!is_dir($this->cache)) {
             mkdir($this->cache);
         }
 
-        $prefix = rand(100000, 999999);
+        $name = $this->constructFileName($value->getClientFilename());
 
-        $name = $prefix . str_replace(
-            ['?', '/', '#', ' '],
-            '',
-            filter_var($value->getClientFilename(), FILTER_SANITIZE_SPECIAL_CHARS, FILTER_FLAG_STRIP_HIGH)
-        );
-        $value->moveTo($this->cache . $name);
+        $handle = fopen('php://temp', 'wb+');
+        $stream = $value->getStream();
+        $stream->rewind();
+        while (!$stream->eof()) {
+            fwrite($handle, $stream->read(4096));
+        }
+        fseek($handle, 0);
 
         $imagine = new Imagine();
-        $image = $imagine->open($this->cache . $name);
-
-        $height = $image->getSize()->getHeight();
-        $width = $image->getSize()->getWidth();
-        // $image->save($this->cache . $name);
+        $sizes = $imagine->read($handle)
+            ->thumbnail(new Box(2560, 1600), ImageInterface::THUMBNAIL_INSET)
+            ->save($this->cache . $name, ['jpeg_quality' => 90])
+            ->getSize();
 
         return [
             'name' => $name,
-            'height' => $height,
-            'width' => $width,
+            'height' => $sizes->getHeight(),
+            'width' => $sizes->getWidth(),
         ];
     }
 
-    private function parseRequestedDimensions(string $size)
+    private function parseRequestedDimensions(string $size): array
     {
         $sizeResult = [];
         preg_match('/([0-9]*)x([0-9]*)(max)?/', $size, $sizeResult);
@@ -109,5 +114,18 @@ class Asset
             'height' => is_numeric($sizeResult[2]) ? (int) $sizeResult[2] : null,
             'max' => isset($sizeResult[3]) && $sizeResult[3] === 'max'
         ];
+    }
+
+    private function constructFileName(string $filename, string $extension = 'jpg'): string
+    {
+        $prefix = rand(100000, 999999);
+
+        $name = $prefix . str_replace(
+            ['?', '/', '#', ' '],
+            '',
+            filter_var($filename, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_FLAG_STRIP_HIGH)
+        );
+
+        return preg_replace('/\.[a-z]{3,4}$/', '', $name) . ".{$extension}";
     }
 }

@@ -41,7 +41,7 @@ class ImageSavePageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Asset::class, function () {
             return new class extends Service\AbstracAsset
             {
-                public function save(UploadedFileInterface $value)
+                public function save(UploadedFileInterface $value): array
                 {
                     return [
                         'name' => '$name',

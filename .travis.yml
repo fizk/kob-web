@@ -4,7 +4,7 @@ services:
   - docker
 
 env:
-  - IMAGE_NAME=einarvalur/klingogbang
+  - IMAGE_NAME=einarvalur/kob-web
 
 script:
     - docker-compose up --build test

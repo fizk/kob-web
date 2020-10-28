@@ -112,7 +112,7 @@ class FileUploader extends HTMLElement {
             progressmessage.innerHTML = 'Error';
         });
         xhr.addEventListener('load', (event) => {
-            if (event.target.status === 200) {
+            if (event.target.status === 201) {
                 try {
                     const result = JSON.parse(event.target.response);
                     progressbar.style.backgroundColor = '#28d776';
@@ -180,7 +180,7 @@ class ImageDisplay extends HTMLElement {
         const shadowRoot = this.attachShadow({mode: 'open'});
         shadowRoot.innerHTML = `
             <style>
-                
+
                 textarea {
                     box-sizing: border-box;
                     display: block;
@@ -202,12 +202,12 @@ class ImageDisplay extends HTMLElement {
                     outline: 0;
                     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
                 }
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 .card {
                     position: relative;
                     display: -ms-flexbox;
@@ -231,12 +231,12 @@ class ImageDisplay extends HTMLElement {
                     flex: 1 1 auto;
                     padding: 1.25rem;
                 }
-                
-                
-                
+
+
+
             </style>
-            
-            
+
+
             <div class="card">
                 <slot name="icon"></slot>
                 <div class="card-body">
@@ -350,9 +350,9 @@ class AuthorSelect extends HTMLElement {
                     background-color: #c3e6cb
                 }
             </style>
-            <input type="search" 
-                class="form-control" 
-                aria-describedby="search" 
+            <input type="search"
+                class="form-control"
+                aria-describedby="search"
                 placeholder="Search for Author..." />
             <ul data-author-search-result class="list-group"></ul>
         `;

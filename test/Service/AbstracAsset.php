@@ -16,8 +16,10 @@ abstract class AbstracAsset extends Asset
         return $this->resource;
     }
 
-    public function save(UploadedFileInterface $value)
-    {}
+    public function save(UploadedFileInterface $value): array
+    {
+        return [];
+    }
 
     public function __destruct()
     {
