@@ -2,156 +2,140 @@ version: '3'
 
 services:
 
-  web:
-    container_name: kob_web
-    ports:
-      - 80:80
-      - 443:443
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - database
-      - search
-    links:
-      - database
-      - search
-    environment:
-      - APPLICATION_ENVIRONMENT=production
-      - DB_HOST=database
-      - DB_PORT=3306
-      - DB_NAME=klingogbang
-      - DB_USER=root
-      - DB_PASSWORD=example
-    volumes:
-      - ./data:/var/www/data
-      - ./img:/var/www/html/img
+    web:
+        container_name: kob_web
+        ports:
+            - 80:80
+            - 443:443
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - database
+            - search
+        links:
+            - database
+            - search
+        environment:
+            - APPLICATION_ENVIRONMENT=production
+            - DB_HOST=database
+            - DB_PORT=3306
+            - DB_NAME=klingogbang
+            - DB_USER=root
+            - DB_PASSWORD=example
 
-      - ./config:/var/www/config
-      - ./src:/var/www/src
-      - ./templates:/var/www/templates
-      - ./public:/var/www/html
-      - ./bin:/var/www/bin
-      - ./vendor:/var/www/vendor
-      - ./composer.json:/var/www/composer.json
-      - ./composer.lock:/var/www/composer.lock
+            # - ES_HOST=search
+            # - ES_PROTO=http
+            # - ES_PORT=9200
+            # - ES_USER=elastic
+            # - ES_PASSWORD=changeme
 
-    #   - /etc/letsencrypt/:/etc/letsencrypt/
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-file: "5"
-    #     max-size: "10m"
+            # - GA_HOST=http://klingogbang.is
+            # - GA_TRACH=UA-146902881-1
+        volumes:
+            - ./config:/var/www/config
+            - ./src:/var/www/src
+            - ./templates:/var/www/templates
+            - ./public:/var/www/html
+            - ./bin:/var/www/bin
+            # - ./vendor:/var/www/vendor
+            - ./composer.json:/var/www/composer.json
+            - ./composer.lock:/var/www/composer.lock
 
-  web-dev:
-    container_name: kob_web
-    ports:
-      - 80:80
-      - 443:443
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - database
-      - search
-    links:
-      - database
-      - search
-    environment:
-      - APPLICATION_ENVIRONMENT=development
-      - DB_HOST=database
-      - DB_PORT=3306
-      - DB_NAME=klingogbang
-      - DB_USER=root
-      - DB_PASSWORD=example
-    volumes:
-      - ./config:/var/www/config
-      - ./src:/var/www/src
-      - ./templates:/var/www/templates
-      - ./public:/var/www/html
-      - ./bin:/var/www/bin
-      - ./data:/var/www/data
-      - ./vendor:/var/www/vendor
-    #   - /etc/letsencrypt/:/etc/letsencrypt/
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-file: "5"
-    #     max-size: "10m"
+            - ./image-cache:/var/www/image-cache
+            - ./image-crop:/var/www/html/img
 
-  database:
-    container_name: kob_database
-    image: einarvalur/kob-db:5fe1b81
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    ports:
-      - 3306:3306
-    volumes:
-      - ./data/mysql:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=example
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-file: "5"
-    #     max-size: "10m"
+            - /etc/letsencrypt/:/etc/letsencrypt/
+        # logging:
+        #     driver: "json-file"
+        #         options:
+        #         max-file: "5"
+        #         max-size: "10m"
 
-  database-test:
-    container_name: kob_database_test
-    image: einarvalur/kob-db:5fe1b81
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=example
+    test:
+        container_name: kob_web_test
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - database-test
+            - search-test
+        environment:
+            - APPLICATION_ENVIRONMENT=production
+            - DB_HOST=database
+            - DB_PORT=3306
+            - DB_NAME=klingogbang
+            - DB_USER=root
+            - DB_PASSWORD=example
+            - ES_HOST=search
+            - ES_PROTO=http
+            - ES_PORT=9200
+            - ES_USER=elastic
+            - ES_PASSWORD=changeme
+        volumes:
+            - ./config:/var/www/config
+            - ./src:/var/www/src
+            - ./templates:/var/www/templates
+            - ./public:/var/www/html
+            - ./bin:/var/www/bin
+            - ./vendor:/var/www/vendor
+            - ./composer.json:/var/www/composer.json
+            - ./composer.lock:/var/www/composer.lock
+            - ./test:/var/www/test
+            - ./phpunit.xml.dist:/var/www/phpunit.xml
+            - ./phpcs.xml.dist:/var/www/phpcs.xml
+        command: bash -c "./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
+        # logging:
+        #     driver: "json-file"
+        #         options:
+        #         max-file: "5"
+        #         max-size: "10m"
 
-  search:
-    container_name: kob_search
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
-    environment:
-     # - bootstrap.memory_lock=true
-     # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.type=single-node
-    ports:
-      - 9201:9200
-      - 9301:9300
-    volumes:
-      - ./data/search/:/usr/share/elasticsearch/data
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-file: "5"
-    #     max-size: "10m"
+    database:
+        container_name: kob_database
+        image: einarvalur/kob-db:5fe1b81
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - 3306:3306
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=example
+        # logging:
+        #     driver: "json-file"
+        #         options:
+        #         max-file: "5"
+        #         max-size: "10m"
 
-  test:
-    container_name: kob_web_test
-    build:
-      context: .
-      args:
-        - ENV=development
-    depends_on:
-      - database-test
-      - search
-    links:
-      - database-test
-      - search
-    environment:
-      - APPLICATION_ENVIRONMENT=development
-      - DB_HOST=database-test
-      - DB_PORT=3306
-      - DB_NAME=klingogbang
-      - DB_USER=root
-      - DB_PASSWORD=example
-    volumes:
-      - ./config:/var/www/config
-      - ./src:/var/www/src
-      - ./templates:/var/www/templates
-      - ./public:/var/www/html
-      - ./bin:/var/www/bin
-      - ./data:/var/www/data
-      - ./test:/var/www/test
-      - ./phpunit.xml.dist:/var/www/./phpunit.xml
-      - ./phpcs.xml.dist:/var/www/./phpcs.xml
-    command: bash -c "./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
-    # command: bash -c "./vendor/bin/phpunit --coverage-html ./test/doc && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
+    database-test:
+        container_name: kob_database_test
+        image: einarvalur/kob-db:5fe1b81
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=example
+
+    search:
+        container_name: kob_search
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        environment:
+            - discovery.type=single-node
+        ports:
+            - 9201:9200
+            - 9301:9300
+        volumes:
+            - ./data/search/:/usr/share/elasticsearch/data
+        # logging:
+        #     driver: "json-file"
+        #     options:
+        #         max-file: "5"
+        #         max-size: "10m"
+
+    search-test:
+        container_name: kob_search_test
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        environment:
+            - discovery.type=single-node
 
 
