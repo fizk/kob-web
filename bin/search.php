@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 chdir(__DIR__ . '/../');
-
 require 'vendor/autoload.php';
 
-$container = require 'config/container.php';
+use Laminas\ServiceManager\ServiceManager;
 
-$client = $container->get(\Elasticsearch\Client::class);
-$pdo = $container->get(\PDO::class);
+$serviceManager = new ServiceManager(require './config/service.php');
+
+$client = $serviceManager->get(\Elasticsearch\Client::class);
+$pdo = $serviceManager->get(\PDO::class);
 
 $entryModel = new \App\Service\Entry($pdo);
 $search = new \App\Service\Search($client);

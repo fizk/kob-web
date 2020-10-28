@@ -27,7 +27,7 @@ class Asset
             $dimensions = $this->parseRequestedDimensions($size);
             $imagine = new Imagine();
             $img = $imagine->create(new Box($dimensions['width'] ?: 100, $dimensions['height'] ?: 100));
-            $pointer = fopen('php://memory', 'r+');
+            $pointer = fopen('php://temp', 'r+');
             fputs($pointer, $img->get('jpeg'));
             return $pointer;
         }
@@ -96,6 +96,8 @@ class Asset
             ->thumbnail(new Box(2560, 1600), ImageInterface::THUMBNAIL_INSET)
             ->save($this->cache . $name, ['jpeg_quality' => 90])
             ->getSize();
+
+        fclose($handle);
 
         return [
             'name' => $name,

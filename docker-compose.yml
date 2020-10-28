@@ -2,58 +2,42 @@ version: '3'
 
 services:
 
-    web:
-        container_name: kob_web
+    dev:
+        container_name: kob-web-dev
         ports:
             - 80:80
-            - 443:443
         build:
             context: .
             dockerfile: Dockerfile
         depends_on:
-            - database
-            - search
-        links:
-            - database
-            - search
+            - database-dev
+            - search-dev
         environment:
-            - APPLICATION_ENVIRONMENT=production
-            - DB_HOST=database
+            - DB_HOST=database-dev
             - DB_PORT=3306
             - DB_NAME=klingogbang
             - DB_USER=root
             - DB_PASSWORD=example
 
-            # - ES_HOST=search
-            # - ES_PROTO=http
-            # - ES_PORT=9200
-            # - ES_USER=elastic
-            # - ES_PASSWORD=changeme
+            - ES_HOST=search-dev
+            - ES_PROTO=http
+            - ES_PORT=9200
+            - ES_USER=elastic
+            - ES_PASSWORD=changeme
 
-            # - GA_HOST=http://klingogbang.is
-            # - GA_TRACH=UA-146902881-1
+            - GA_HOST=http://no-site.is
+            - GA_TRACH=UA-000000000-1
         volumes:
             - ./config:/var/www/config
             - ./src:/var/www/src
             - ./templates:/var/www/templates
             - ./public:/var/www/html
             - ./bin:/var/www/bin
-            # - ./vendor:/var/www/vendor
-            - ./composer.json:/var/www/composer.json
-            - ./composer.lock:/var/www/composer.lock
-
             - ./image-cache:/var/www/image-cache
             - ./image-crop:/var/www/html/img
 
-            - /etc/letsencrypt/:/etc/letsencrypt/
-        # logging:
-        #     driver: "json-file"
-        #         options:
-        #         max-file: "5"
-        #         max-size: "10m"
-
     test:
-        container_name: kob_web_test
+        container_name: kob-web-test
         build:
             context: .
             dockerfile: Dockerfile
@@ -61,13 +45,12 @@ services:
             - database-test
             - search-test
         environment:
-            - APPLICATION_ENVIRONMENT=production
-            - DB_HOST=database
+            - DB_HOST=database-test
             - DB_PORT=3306
             - DB_NAME=klingogbang
             - DB_USER=root
             - DB_PASSWORD=example
-            - ES_HOST=search
+            - ES_HOST=search-test
             - ES_PROTO=http
             - ES_PORT=9200
             - ES_USER=elastic
@@ -78,46 +61,31 @@ services:
             - ./templates:/var/www/templates
             - ./public:/var/www/html
             - ./bin:/var/www/bin
-            - ./vendor:/var/www/vendor
-            - ./composer.json:/var/www/composer.json
-            - ./composer.lock:/var/www/composer.lock
             - ./test:/var/www/test
             - ./phpunit.xml.dist:/var/www/phpunit.xml
             - ./phpcs.xml.dist:/var/www/phpcs.xml
         command: bash -c "./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
-        # logging:
-        #     driver: "json-file"
-        #         options:
-        #         max-file: "5"
-        #         max-size: "10m"
 
-    database:
-        container_name: kob_database
+    database-dev:
+        container_name: kob-database-dev
         image: einarvalur/kob-db:5fe1b81
         command: --default-authentication-plugin=mysql_native_password
         restart: always
-        ports:
-            - 3306:3306
         volumes:
             - ./data/mysql:/var/lib/mysql
         environment:
             - MYSQL_ROOT_PASSWORD=example
-        # logging:
-        #     driver: "json-file"
-        #         options:
-        #         max-file: "5"
-        #         max-size: "10m"
 
     database-test:
-        container_name: kob_database_test
+        container_name: kob-database-test
         image: einarvalur/kob-db:5fe1b81
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=example
 
-    search:
-        container_name: kob_search
+    search-dev:
+        container_name: kob-search-dev
         image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
         environment:
             - discovery.type=single-node
@@ -126,16 +94,77 @@ services:
             - 9301:9300
         volumes:
             - ./data/search/:/usr/share/elasticsearch/data
+
+    search-test:
+        container_name: kob-search-test
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        environment:
+            - discovery.type=single-node
+
+
+    run:
+        container_name: kob-web
+        ports:
+            - 80:80
+            - 443:443
+        image: einarvalur/kob-web:latest
+        depends_on:
+            - database
+            - search
+        environment:
+            - DB_HOST=database
+            - DB_PORT=3306
+            - DB_NAME=klingogbang
+            - DB_USER=root
+            - DB_PASSWORD=example
+
+            - ES_HOST=search
+            - ES_PROTO=http
+            - ES_PORT=9200
+            - ES_USER=elastic
+            - ES_PASSWORD=changeme
+
+            - GA_HOST=http://klingogbang.is
+            - GA_TRACH=UA-146902881-1
+        volumes:
+            - ./image-cache:/var/www/image-cache
+            - ./image-crop:/var/www/html/img
+            # - /etc/letsencrypt/:/etc/letsencrypt/
+        # logging:
+        #     driver: "json-file"
+        #         options:
+        #         max-file: "5"
+        #         max-size: "10m"
+
+    database:
+        container_name: kob-database
+        image: einarvalur/kob-db:5fe1b81
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        volumes:
+            - database-volume:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=example
+        # logging:
+        #     driver: "json-file"
+        #         options:
+        #         max-file: "5"
+        #         max-size: "10m"
+
+    search:
+        container_name: kob-search
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        environment:
+            - discovery.type=single-node
+        volumes:
+            - search-volume:/usr/share/elasticsearch/data
         # logging:
         #     driver: "json-file"
         #     options:
         #         max-file: "5"
         #         max-size: "10m"
 
-    search-test:
-        container_name: kob_search_test
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
-        environment:
-            - discovery.type=single-node
 
-
+volumes:
+    database-volume:
+    search-volume:
