@@ -27,6 +27,10 @@ services:
 
             - GA_HOST=http://no-site.is
             - GA_TRACH=UA-000000000-1
+
+            - FB_ID=2085720918322296
+            - FB_SECRET=813a22630cace0901074dd8ad5188cb8
+            - FB_REDIRECT=http://localhost/fb-login
         volumes:
             - ./config:/var/www/config
             - ./src:/var/www/src
@@ -64,13 +68,16 @@ services:
             - ./test:/var/www/test
             - ./phpunit.xml.dist:/var/www/phpunit.xml
             - ./phpcs.xml.dist:/var/www/phpcs.xml
-        command: bash -c "./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
+            - ./wait-for-it.sh:/var/www/wait-for-it.sh
+        command: bash -c "./wait-for-it.sh database-test:3306 -t 80 -- echo \"MySQL up\" &&  ./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
 
     database-dev:
         container_name: kob-database-dev
-        image: einarvalur/kob-db:5fe1b81
+        image: db-test
         command: --default-authentication-plugin=mysql_native_password
         restart: always
+        ports:
+            - 3306:3306
         volumes:
             - ./data/mysql:/var/lib/mysql
         environment:

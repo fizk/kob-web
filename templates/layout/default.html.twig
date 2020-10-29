@@ -100,12 +100,16 @@
                 <a href="mailto:kob@this.is" class="app__nav-link">kob@this.is</a>
             </address>
             <div class="app__footer-control">
-                <a href="{{ path('update') }}" class="app__footer-control-dashboard">dashboard</a>
+                {% if user_session %}
+                    <a href="{{ path('update') }}" class="app__footer-control-dashboard">dashboard</a>
+                {% else %}
+                    <a href="{{ path('login') }}" class="app__footer-control-dashboard">login</a>
+                {% endif %}
             </div>
         </div>
     </footer>
     {% block javascript %}{% endblock %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146902881-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_tracking }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}

@@ -33,7 +33,7 @@ class HomePageHandler implements RequestHandlerInterface
 
         return new HtmlResponse(
             $this->template->render('app::home-page', [
-                'list' => $fallback ? : $list,
+                'list' => [], //$fallback ? : $list,
                 'upcoming' => $next,
             ])
         );

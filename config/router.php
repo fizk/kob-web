@@ -9,6 +9,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\HomePageHandler::class
             ],
             'heim'
@@ -19,6 +20,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\HomePageHandler::class
             ],
             'home'
@@ -29,6 +31,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'listi'
@@ -39,6 +42,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'list'
@@ -49,6 +53,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\ProjectsPageHandler::class
             ],
             'verkefni'
@@ -59,6 +64,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\ProjectsPageHandler::class
             ],
             'projects'
@@ -69,6 +75,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'syningar'
@@ -79,6 +86,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'entries'
@@ -89,6 +97,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntryPageHandler::class
             ],
             'syning'
@@ -99,6 +108,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Entry\EntryPageHandler::class
             ],
             'entry'
@@ -109,6 +119,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Author\AuthorsPageHandler::class
             ],
             'listamenn'
@@ -119,6 +130,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Author\AuthorsPageHandler::class
             ],
             'authors'
@@ -129,6 +141,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Author\AuthorPageHandler::class
             ],
             'listamadur'
@@ -139,6 +152,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Author\AuthorPageHandler::class
             ],
             'author'
@@ -149,6 +163,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\ManifestoPageHandler::class
             ],
             'um'
@@ -159,6 +174,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\ManifestoPageHandler::class
             ],
             'about'
@@ -169,6 +185,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\StorePageHandler::class
             ],
             'verslun'
@@ -179,6 +196,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\StorePageHandler::class
             ],
             'store'
@@ -189,6 +207,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\SupportersPageHandler::class
             ],
             'velunnarar'
@@ -199,6 +218,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\Page\SupportersPageHandler::class
             ],
             'supporters'
@@ -209,6 +229,7 @@ return [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\SearchPageHandler::class
             ],
             'leit'
@@ -219,6 +240,7 @@ return [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\SessionMiddleware::class,
                 Handler\SearchPageHandler::class
             ],
             'search'
@@ -240,6 +262,13 @@ return [
         'POST' => [
             Handler\Login\LoginSubmitPageHandler::class,
             'login-submit'
+        ],
+    ],
+
+    '/fb-login' => [
+        'GET' => [
+            Handler\Login\FbLoginSubmitPageHandler::class,
+            'fb-login-submit'
         ],
     ],
 
@@ -413,4 +442,34 @@ return [
         ],
     ],
 
+    '/update/user' => [
+        'GET' => [
+            [
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                Handler\User\UsersPageHandler::class
+            ],
+            'create-user'
+        ],
+        'POST' => [
+            [
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                BodyParamsMiddleware::class,
+                Handler\User\UsersCreatePageHandler::class
+            ],
+            'new-user'
+        ],
+    ],
+
+    '/delete/user/{id}' => [
+        'GET' => [
+            [
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                Handler\User\UsersDeletePageHandler::class
+            ],
+            'delete-user'
+        ],
+    ],
 ];

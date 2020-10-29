@@ -2,7 +2,7 @@
 
 namespace App\Handler\Login;
 
-use App\Auth\PasswordAuthAdapter;
+use App\Auth\FacebookAuthAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -10,16 +10,16 @@ use Laminas\Diactoros\Response\{RedirectResponse};
 use Laminas\Authentication\AuthenticationServiceInterface;
 use App\Router\RouterInterface;
 
-class LoginSubmitPageHandler implements RequestHandlerInterface
+class FbLoginSubmitPageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
     private AuthenticationServiceInterface $authService;
-    private PasswordAuthAdapter $authAdapter;
+    private FacebookAuthAdapter $authAdapter;
 
     public function __construct(
         RouterInterface $router,
         AuthenticationServiceInterface $authService,
-        PasswordAuthAdapter $authAdapter
+        FacebookAuthAdapter $authAdapter
     ) {
         $this->router      = $router;
         $this->authService = $authService;
@@ -28,8 +28,8 @@ class LoginSubmitPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $body = $request->getParsedBody();
-        $this->authAdapter->setCredentials($body['username'], $body['password']);
+        $params = (array) $request->getQueryParams();
+        $this->authAdapter->setCode($params['code']);
         $result = $this->authService->authenticate();
 
         if ($result->isValid()) {

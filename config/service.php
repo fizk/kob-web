@@ -1,12 +1,13 @@
 <?php
 
 use Psr\Container\ContainerInterface;
-use App\Auth\ParesDownAdapter;
-use App\Auth\SimpleAuthAdapter;
+use App\Auth\PasswordAuthAdapter;
+use App\Auth\FacebookAuthAdapter;
 use App\Service;
 use App\Handler;
 use App\Middleware;
 use App\Filters;
+use App\Filters\ParesDownAdapter;
 use App\Router\RouterInterface;
 use App\Router\RouteCollection;
 use App\Template\TwigRenderer;
@@ -15,7 +16,6 @@ use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\AuthenticationServiceInterface;
-use Laminas\Authentication\Adapter\AdapterInterface;
 use Aptoma\Twig\Extension\MarkdownExtension;
 
 return [
@@ -136,8 +136,19 @@ return [
         Handler\Login\LoginSubmitPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Login\LoginSubmitPageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(AuthenticationServiceInterface::class),
-                $container->get(AdapterInterface::class)
+                $container->get(AuthenticationServiceInterface::class)->setAdapter(
+                    $container->get(PasswordAuthAdapter::class)
+                ),
+                $container->get(PasswordAuthAdapter::class),
+            );
+        },
+        Handler\Login\FbLoginSubmitPageHandler::class => function (ContainerInterface $container) {
+            return new Handler\Login\FbLoginSubmitPageHandler(
+                $container->get(RouterInterface::class),
+                $container->get(AuthenticationServiceInterface::class)->setAdapter(
+                    $container->get(FacebookAuthAdapter::class)
+                ),
+                $container->get(FacebookAuthAdapter::class)
             );
         },
         Handler\Login\LogoutSubmitPageHandler::class => function (ContainerInterface $container) {
@@ -169,6 +180,25 @@ return [
                 $container->get(Service\Author::class)
             );
         },
+        Handler\User\UsersPageHandler::class => function (ContainerInterface $container) {
+            return new Handler\User\UsersPageHandler(
+                $container->get(Service\User::class),
+                $container->get(TemplateRendererInterface::class)
+            );
+        },
+        Handler\User\UsersCreatePageHandler::class => function (ContainerInterface $container) {
+            return new Handler\User\UsersCreatePageHandler(
+                $container->get(Service\User::class),
+                $container->get(RouterInterface::class),
+            );
+        },
+        Handler\User\UsersDeletePageHandler::class => function (ContainerInterface $container) {
+            return new Handler\User\UsersDeletePageHandler(
+                $container->get(Service\User::class),
+                $container->get(RouterInterface::class),
+            );
+        },
+
         Handler\Page\ManifestoSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\ManifestoSavePageHandler(
                 $container->get(RouterInterface::class),
@@ -228,19 +258,24 @@ return [
             );
         },
 
-        AdapterInterface::class => function (ContainerInterface $container) {
-            return new SimpleAuthAdapter(
+        PasswordAuthAdapter::class => function (ContainerInterface $container) {
+            return new PasswordAuthAdapter(
                 $container->get(Service\User::class)
             );
         },
-        AuthenticationServiceInterface::class => function (ContainerInterface $container) {
-            return new AuthenticationService(
-                null,
-                $container->get(AdapterInterface::class)
+        FacebookAuthAdapter::class => function (ContainerInterface $container) {
+            return new FacebookAuthAdapter(
+                $container->get(Service\User::class),
+                getenv('FB_ID') ?: '2085720918322296',
+                getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8',
+                getenv('FB_REDIRECT') ?: 'http://localhost/login'
             );
         },
-        \Mezzio\Helper\BodyParams\BodyParamsMiddleware::class => function () {
-            return new \Mezzio\Helper\BodyParams\BodyParamsMiddleware();
+        AuthenticationServiceInterface::class => function (ContainerInterface $container) {
+            return new AuthenticationService();
+        },
+        Mezzio\Helper\BodyParams\BodyParamsMiddleware::class => function () {
+            return new Mezzio\Helper\BodyParams\BodyParamsMiddleware();
         },
 
         Service\Entry::class => function (ContainerInterface $container) {
@@ -285,7 +320,7 @@ return [
                 ]
             );
         },
-        Client::class =>     function (ContainerInterface $container) {
+        Client::class => function (ContainerInterface $container) {
             $esHost = getenv('ES_HOST') ?: 'search';
             $esProto = getenv('ES_PROTO') ?: 'http';
             $esPort = getenv('ES_PORT') ?: 9200;
@@ -310,6 +345,10 @@ return [
             $host = getenv('GA_HOST') ?: 'http://klingogbang.is';
             $tracking = getenv('GA_TRACH') ?: 'UA-146902881-1';
 
+            $fbId = getenv('FB_ID') ?: '2085720918322296';
+            $fbSecret = getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8';
+            $fbRedirect = getenv('FB_REDIRECT') ?: 'http://localhost/login';
+
             return (new TwigRenderer('./templates/'))
                 ->addPath('./templates/app', 'app')
                 ->addPath('./templates/partials', 'partials')
@@ -317,6 +356,9 @@ return [
                 ->addPath('./templates/layout', 'layout')
                 ->addDefaultParam('app', 'host', $host)
                 ->addDefaultParam('app', 'ga_tracking', $tracking)
+                ->addDefaultParam('app', 'fb_id', $fbId)
+                ->addDefaultParam('app', 'fb_secret', $fbSecret)
+                ->addDefaultParam('app', 'fb_redirect', $fbRedirect)
                 ->addExtension(new MarkdownExtension(new ParesDownAdapter()))
                 ->addExtension(new Filters\Slug())
                 ->addExtension(new Filters\Date())

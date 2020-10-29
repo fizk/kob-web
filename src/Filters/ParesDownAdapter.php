@@ -1,5 +1,5 @@
 <?php
-namespace App\Auth;
+namespace App\Filters;
 
 use Parsedown;
 use Aptoma\Twig\Extension\MarkdownEngineInterface;

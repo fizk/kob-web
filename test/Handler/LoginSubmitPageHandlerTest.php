@@ -11,7 +11,7 @@ use Laminas\Authentication\AuthenticationServiceInterface;
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use App\Router\RouterInterface;
-use App\Auth\SimpleAuthAdapter;
+use App\Auth\PasswordAuthAdapter;
 use function App\Router\dispatch;
 
 class LoginSubmitPageHandlerTest extends TestCase
@@ -42,10 +42,14 @@ class LoginSubmitPageHandlerTest extends TestCase
                 public function clearIdentity()
                 {
                 }
+                public function setAdapter($adapter)
+                {
+                    return $this;
+                }
             };
         });
         $serviceManager->setFactory(AdapterInterface::class, function () {
-            return new class extends SimpleAuthAdapter{
+            return new class extends PasswordAuthAdapter{
                 public function __construct()
                 {
 
@@ -63,7 +67,7 @@ class LoginSubmitPageHandlerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(['/home'], $response->getHeader('Location'));
+        $this->assertEquals(['/update'], $response->getHeader('Location'));
     }
 
     public function testLoginFail()
@@ -92,10 +96,14 @@ class LoginSubmitPageHandlerTest extends TestCase
                 public function clearIdentity()
                 {
                 }
+                public function setAdapter($adapter)
+                {
+                    return $this;
+                }
             };
         });
         $serviceManager->setFactory(AdapterInterface::class, function () {
-            return new class extends SimpleAuthAdapter{
+            return new class extends PasswordAuthAdapter{
                 public function __construct()
                 {
 
