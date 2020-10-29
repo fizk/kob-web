@@ -24,7 +24,7 @@ class EntryUpdatePageHandler implements RequestHandlerInterface
     {
         //@todo entry not found
         return new HtmlResponse(
-            $this->template->render('app::entry-update-page', [
+            $this->template->render('dashboard::entry-update-page', [
                 'entry' => $this->entry->get($request->getAttribute('id'))
             ])
         );

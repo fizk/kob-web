@@ -20,7 +20,7 @@ class LoginPageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new HtmlResponse(
-            $this->template->render('app::login-page')
+            $this->template->render('dashboard::login-page')
         );
     }
 }

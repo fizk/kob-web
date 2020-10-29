@@ -25,7 +25,7 @@ class DashboardPageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new HtmlResponse(
-            $this->template->render('app::dashboard-page', [
+            $this->template->render('dashboard::dashboard-page', [
                 'entries' => $this->entry->fetchAffected(),
                 'authors' => $this->author->fetchAffected(),
             ])

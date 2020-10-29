@@ -23,7 +23,7 @@ class UsersPageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new HtmlResponse(
-            $this->template->render('app::users-page', ['users' => $this->user->fetch()])
+            $this->template->render('dashboard::users-page', ['users' => $this->user->fetch()])
         );
     }
 }

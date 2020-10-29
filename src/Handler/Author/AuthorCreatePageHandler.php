@@ -20,7 +20,7 @@ class AuthorCreatePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new HtmlResponse(
-            $this->template->render('app::author-update-page', ['author' => []])
+            $this->template->render('dashboard::author-update-page', ['author' => []])
         );
     }
 }

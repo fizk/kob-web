@@ -24,7 +24,7 @@ class AuthorUpdatePageHandler implements RequestHandlerInterface
     {
         //@todo author not found
         return new HtmlResponse(
-            $this->template->render('app::author-update-page', [
+            $this->template->render('dashboard::author-update-page', [
                 'author' => $this->author->get($request->getAttribute('id'))
             ])
         );

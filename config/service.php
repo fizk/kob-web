@@ -351,6 +351,7 @@ return [
 
             return (new TwigRenderer('./templates/'))
                 ->addPath('./templates/app', 'app')
+                ->addPath('./templates/dashboard', 'dashboard')
                 ->addPath('./templates/partials', 'partials')
                 ->addPath('./templates/error', 'error')
                 ->addPath('./templates/layout', 'layout')
