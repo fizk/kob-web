@@ -73,7 +73,7 @@ services:
 
     database-dev:
         container_name: kob-database-dev
-        image: db-test
+        image: einarvalur/kob-db:d1e6021
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         ports:
@@ -85,7 +85,7 @@ services:
 
     database-test:
         container_name: kob-database-test
-        image: einarvalur/kob-db:5fe1b81
+        image: einarvalur/kob-db:d1e6021
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         environment:
@@ -145,7 +145,7 @@ services:
 
     database:
         container_name: kob-database
-        image: einarvalur/kob-db:5fe1b81
+        image: einarvalur/kob-db:d1e6021
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         volumes:
