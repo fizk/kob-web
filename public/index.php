@@ -30,7 +30,9 @@ try {
 } catch (Throwable $e) {
     (new SapiEmitter)->emit(
         new HtmlResponse(
-            $serviceManager->get(TemplateRendererInterface::class)->render('error::error'),
+            $serviceManager->get(TemplateRendererInterface::class)->render('error::error', getenv('ENVIRONMENT') === 'development'
+                ? ['message' => $e->getMessage(), 'trace' => $e->getTrace()] : ['message' => null, 'trace' => []]
+            ),
             500
         )
     );

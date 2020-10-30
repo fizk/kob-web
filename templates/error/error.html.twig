@@ -10,6 +10,11 @@
             </aside>
             <div class="article__body">
                 {% include '@partials/header.html.twig' %}
+
+                {% if message %}
+                <p>{{message}}</p>
+                {% endif %}
+
                 <form method="get" class="search search--tail" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">
                     <input class="search__text" type="search" name="q" value="{{ query|default('') }}" placeholder="{{ language|default('is') == 'is' ? 'Leit...' : 'Search...' }}" />
                     <button class="search__button">{{ language|default('is') == 'is' ? 'leit' : 'search' }}</button>

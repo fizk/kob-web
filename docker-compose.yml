@@ -13,6 +13,7 @@ services:
             - database-dev
             - search-dev
         environment:
+            - ENVIRONMENT=development
             - DB_HOST=database-dev
             - DB_PORT=3306
             - DB_NAME=klingogbang
@@ -93,7 +94,7 @@ services:
 
     search-dev:
         container_name: kob-search-dev
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        image:  einarvalur/kob-search:97862d1
         environment:
             - discovery.type=single-node
         ports:
@@ -104,7 +105,7 @@ services:
 
     search-test:
         container_name: kob-search-test
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        image: einarvalur/kob-search:97862d1
         environment:
             - discovery.type=single-node
 
@@ -160,7 +161,7 @@ services:
 
     search:
         container_name: kob-search
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+        image: einarvalur/kob-search:97862d1
         environment:
             - discovery.type=single-node
         volumes:
@@ -170,6 +171,15 @@ services:
         #     options:
         #         max-file: "5"
         #         max-size: "10m"
+
+    kib01:
+        image: docker.elastic.co/kibana/kibana:7.9.3
+        container_name: kib01
+        ports:
+            - 5601:5601
+        environment:
+            ELASTICSEARCH_URL: http://search-dev:9200
+            ELASTICSEARCH_HOSTS: http://search-dev:9200
 
 
 volumes:

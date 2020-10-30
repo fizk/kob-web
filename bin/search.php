@@ -24,5 +24,3 @@ foreach ($entryModel->fetchAll() as $item) {
         echo $item->id . " ERROR\n";
     }
 }
-
-
