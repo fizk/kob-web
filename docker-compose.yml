@@ -55,10 +55,14 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+            args:
+                - ENV=development
         depends_on:
             - database-test
             - search-test
         environment:
+            - ENV=development
+            - ENVIRONMENT=development
             - DB_HOST=database-test
             - DB_PORT=3306
             - DB_NAME=klingogbang
