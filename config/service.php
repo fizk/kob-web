@@ -204,6 +204,7 @@ return [
         Handler\Page\ManifestoSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\ManifestoSavePageHandler(
                 $container->get(RouterInterface::class),
+                $container->get(TemplateRendererInterface::class),
                 $container->get(Service\Manifesto::class)
             );
         },

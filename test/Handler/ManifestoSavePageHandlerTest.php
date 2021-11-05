@@ -22,7 +22,7 @@ class ManifestoSavePageHandlerTest extends TestCase
     {
         $request = (new ServerRequest())
             ->withParsedBody([
-                'type' => '',
+                'type' => 'sometype',
                 'body_is' => '',
                 'body_en' => '',
             ])
