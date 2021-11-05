@@ -63,6 +63,7 @@ return [
         Handler\Entry\EntrySavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\EntrySavePageHandler(
                 $container->get(RouterInterface::class),
+                $container->get(TemplateRendererInterface::class),
                 $container->get(Service\Entry::class),
                 $container->get(Service\Search::class)
             );
@@ -166,6 +167,7 @@ return [
         Handler\Author\AuthorSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorSavePageHandler(
                 $container->get(RouterInterface::class),
+                $container->get(TemplateRendererInterface::class),
                 $container->get(Service\Author::class)
             );
         },
@@ -349,7 +351,8 @@ return [
             $fbSecret = getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8';
             $fbRedirect = getenv('FB_REDIRECT') ?: 'http://localhost/login';
 
-            return (new TwigRenderer('./templates/'))
+            return (new TwigRenderer('./templates/', getenv('ENVIRONMENT') === 'development'))
+
                 ->addPath('./templates/app', 'app')
                 ->addPath('./templates/dashboard', 'dashboard')
                 ->addPath('./templates/partials', 'partials')

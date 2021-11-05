@@ -5,20 +5,24 @@ namespace App\Handler\Entry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{RedirectResponse};
+use Laminas\Diactoros\Response\{HtmlResponse, RedirectResponse};
 use App\Router\RouterInterface;
+use App\Template\TemplateRendererInterface;
 use App\Service\{Entry, Search};
+use App\Form\{EntryForm};
 use DateTime;
 
 class EntrySavePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
+    private TemplateRendererInterface $template;
     private Entry $entry;
     private Search $search;
 
-    public function __construct(RouterInterface $router, Entry $entry, Search $search)
+    public function __construct(RouterInterface $router, TemplateRendererInterface $template, Entry $entry, Search $search)
     {
         $this->router = $router;
+        $this->template = $template;
         $this->entry  = $entry;
         $this->search = $search;
     }
@@ -28,30 +32,32 @@ class EntrySavePageHandler implements RequestHandlerInterface
         $id = $request->getAttribute('id', null);
         $post = $request->getParsedBody();
 
-        $data = [
+        $data = array_merge($post, [
             'id' => $id,
-            'title' => $post['title'],
-            'body_is' => $post['body_is'],
-            'body_en' => $post['body_en'],
-            'from' => $post['from'],
-            'to' => $post['to'],
-            'type' => $post['type'],
-            'orientation' => $post['orientation'],
             'affected' => (new DateTime())->format('Y-m-d H:i:s')
-        ];
-        $data = array_merge($data, $id ? [] : [
+        ], $id ? [] : [
             'created' => (new DateTime())->format('Y-m-d H:i:s'),
         ]);
 
-        $insertedId = $this->entry->save($data);
-        $this->entry->attachAuthors((string) $insertedId, isset($post['author']) ? $post['author'] : []);
-        $this->entry->attachImages((string) $insertedId, isset($post['poster']) ? $post['poster'] : [], 1);
-        $this->entry->attachImages((string) $insertedId, isset($post['gallery']) ? $post['gallery'] : [], 2);
+        $form = new EntryForm();
+        $form->setData($data);
 
-        $entry = $this->entry->get((string) $insertedId);
+        if ($form->isValid()) {
+            $insertedId = $this->entry->save($form->getData());
+            $this->entry->attachAuthors((string) $insertedId, isset($post['author']) ? $post['author'] : []);
+            $this->entry->attachImages((string) $insertedId, isset($post['poster']) ? $post['poster'] : [], 1);
+            $this->entry->attachImages((string) $insertedId, isset($post['gallery']) ? $post['gallery'] : [], 2);
 
-        $this->search->save($entry);
+            $entry = $this->entry->get((string) $insertedId);
 
-        return new RedirectResponse($this->router->generateUri('entry', ['id' => $insertedId]));
+            $this->search->save($entry);
+
+            return new RedirectResponse($this->router->generateUri('entry', ['id' => $insertedId]));
+        }
+
+        return new HtmlResponse($this->template->render('dashboard::entry-update-page', [
+            'entry' => $data,
+            'messages' => $form->getMessages(),
+        ]), 400);
     }
 }

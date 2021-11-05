@@ -1,0 +1,9 @@
+{% macro error(name, messages = []) %}
+    {% if name in messages|keys %}
+    <ul class="form-error">
+        {% for item in messages[name] %}
+        <li>{{item}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endmacro %}

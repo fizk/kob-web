@@ -14,10 +14,14 @@ class TwigRenderer implements TemplateRendererInterface
     private FilesystemLoader $loader;
     private Environment $twig;
 
-    public function __construct($path)
+    public function __construct(string $path, bool $debug = false)
     {
         $this->loader = new FilesystemLoader($path);
-        $this->twig = new Environment($this->loader);
+        $this->twig = new Environment($this->loader, ['debug' => $debug]);
+
+        if ($debug) {
+            $this->twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
     }
 
     public function render(string $name, $params = []) : string

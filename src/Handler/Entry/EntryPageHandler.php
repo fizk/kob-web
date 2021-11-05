@@ -22,7 +22,6 @@ class EntryPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // print_r($request);
         $result = [];
         preg_match('/[0-9]*$/', $request->getAttribute('id'), $result);
         $entry = $this->entry->fetch($result[0], $request->getAttribute('language', 'is'));

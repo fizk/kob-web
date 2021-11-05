@@ -22,11 +22,9 @@ class EntryUpdatePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        //@todo entry not found
-        return new HtmlResponse(
-            $this->template->render('dashboard::entry-update-page', [
-                'entry' => $this->entry->get($request->getAttribute('id'))
-            ])
-        );
+        $entry = $this->entry->get($request->getAttribute('id'));
+        return $entry
+            ? new HtmlResponse($this->template->render('dashboard::entry-update-page', ['entry' => $entry]))
+            : new HtmlResponse($this->template->render('error::404'), 404);
     }
 }

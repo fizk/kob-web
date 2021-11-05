@@ -4,12 +4,16 @@ namespace App\Service;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
+
+use HJerichen\DBUnit\Dataset\Dataset;
+use HJerichen\DBUnit\Dataset\DatasetArray;
+use HJerichen\DBUnit\MySQLTestCaseTrait;
+
 use PDO;
 
 class EntryTest extends TestCase
 {
-    use TestCaseTrait;
+    use MySQLTestCaseTrait;
     protected ?PDO $pdo = null;
     static protected $connection;
 
@@ -21,7 +25,7 @@ class EntryTest extends TestCase
         $this->assertTrue(true);
     }
 
-    protected function getConnection()
+    protected function getDatabase(): PDO
     {
         $dbName = getenv('DB_NAME');
         $dbHost = getenv('DB_HOST');
@@ -39,12 +43,12 @@ class EntryTest extends TestCase
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
             ]
         );
-        return $this->createDefaultDBConnection($this->pdo);
+        return self::$connection;
     }
 
-    protected function getDataSet()
+    protected function getDatasetForSetup(): Dataset
     {
-        return $this->createArrayDataSet([
+        return new DatasetArray([
             'Entry' => [
                 [
                     'id' => 1,
