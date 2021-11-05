@@ -126,8 +126,7 @@ services:
     run:
         container_name: kob-web
         ports:
-            - 80:80
-            - 443:443
+            - 8080:80
         image: einarvalur/kob-web:latest
         depends_on:
             - database
@@ -150,12 +149,11 @@ services:
         volumes:
             - ./image-cache:/var/www/image-cache
             - ./image-crop:/var/www/html/img
-            # - /etc/letsencrypt/:/etc/letsencrypt/
-        # logging:
-        #     driver: "json-file"
-        #         options:
-        #         max-file: "5"
-        #         max-size: "10m"
+        logging:
+            driver: "json-file"
+            options:
+                max-file: "5"
+                max-size: "10m"
 
     database:
         container_name: kob-database

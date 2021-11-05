@@ -38,6 +38,5 @@ class ManifestoSavePageHandler implements RequestHandlerInterface
 
             return new RedirectResponse($this->router->generateUri('about'));
         }
-
     }
 }
