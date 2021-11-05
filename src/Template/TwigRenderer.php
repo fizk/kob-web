@@ -14,13 +14,17 @@ class TwigRenderer implements TemplateRendererInterface
     private FilesystemLoader $loader;
     private Environment $twig;
 
-    public function __construct(string $path, bool $debug = false)
+    public function __construct(string $path, bool $debug = false, string $cache = null)
     {
         $this->loader = new FilesystemLoader($path);
         $this->twig = new Environment($this->loader, ['debug' => $debug]);
 
         if ($debug) {
             $this->twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
+
+        if ($cache) {
+            $this->twig->setCache($cache);
         }
     }
 

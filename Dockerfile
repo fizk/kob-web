@@ -30,7 +30,7 @@ RUN apt-get update; \
     docker-php-ext-install pdo_mysql; \
     docker-php-ext-install bcmath; \
     docker-php-ext-install sockets; \
-    pecl install -o -f imagick-3.4.4; \
+    pecl install -o -f imagick-3.5.1; \
     rm -rf /tmp/pear; \
     docker-php-ext-enable imagick; \
     a2enmod rewrite; \

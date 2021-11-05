@@ -2,6 +2,16 @@ version: '3'
 
 services:
 
+    # Run DEVELOPMENT service.
+    #   - This is a service for development. It mounts the source-code
+    #       on the local machine into the docker container so any changes done
+    #       in the IDE will be refelcted inside the running container.
+    #   - This service will build the container with xDebug, so the IDE can use
+    #       breakpoints etc...
+    #   - This service is dependent on a a *-dev version of the DB and Search and
+    #       they will be started as well.
+    #
+    #   $ docker-compose up dev
     dev:
         container_name: kob-web-dev
         ports:
@@ -50,6 +60,41 @@ services:
             - ./image-cache:/var/www/image-cache
             - ./image-crop:/var/www/html/img
 
+    database-dev:
+        container_name: kob-database-dev
+        image: einarvalur/kob-db:d1e6021
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - 3306:3306
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=example
+
+    search-dev:
+        container_name: kob-search-dev
+        image:  einarvalur/kob-search:97862d1
+        environment:
+            - discovery.type=single-node
+        ports:
+            - 9201:9200
+            - 9301:9300
+        volumes:
+            - ./data/search/:/usr/share/elasticsearch/data
+
+
+    # Run TEST service
+    #   - This service will not start up Apache, it is to run the PHPUnit tests
+    #       and is used in the CI/CD pipeline but can be used in development as
+    #       well to makes sure that everything is OK before committing to Github.
+    #   - Because this service can be used in local development, it also mounts all
+    #       the local code into the container.
+    #   - This service will spin up a *-test instances of the DB and Search. This is so
+    #       That the development DB and search won't be affected by the unit-tests
+    #       being run.
+    #
+    #   $ docker-compose run --rm test
     test:
         container_name: kob-web-test
         build:
@@ -85,18 +130,6 @@ services:
             - ./wait-for-it.sh:/var/www/wait-for-it.sh
         command: bash -c "./wait-for-it.sh database-test:3306 -t 80 -- echo \"MySQL up\" &&  ./vendor/bin/phpunit && ./vendor/bin/phpcs --standard=./phpcs.xml ./src"
 
-    database-dev:
-        container_name: kob-database-dev
-        image: einarvalur/kob-db:d1e6021
-        command: --default-authentication-plugin=mysql_native_password
-        restart: always
-        ports:
-            - 3306:3306
-        volumes:
-            - ./data/mysql:/var/lib/mysql
-        environment:
-            - MYSQL_ROOT_PASSWORD=example
-
     database-test:
         container_name: kob-database-test
         image: einarvalur/kob-db:d1e6021
@@ -105,24 +138,42 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=example
 
-    search-dev:
-        container_name: kob-search-dev
-        image:  einarvalur/kob-search:97862d1
-        environment:
-            - discovery.type=single-node
-        ports:
-            - 9201:9200
-            - 9301:9300
-        volumes:
-            - ./data/search/:/usr/share/elasticsearch/data
-
     search-test:
         container_name: kob-search-test
         image: einarvalur/kob-search:97862d1
         environment:
             - discovery.type=single-node
 
+    kib01:
+        image: docker.elastic.co/kibana/kibana:7.9.3
+        container_name: kib01
+        ports:
+            - 5601:5601
+        environment:
+            ELASTICSEARCH_URL: http://search-dev:9200
+            ELASTICSEARCH_HOSTS: http://search-dev:9200
+        logging:
+            driver: "json-file"
+            options:
+                max-file: "5"
+                max-size: "10m"
 
+
+    # Run PRODUCTION service
+    #   - This service is the actual production service.
+    #   - This service will pull containers from the Docker registry and run
+    #   - This service will mount Docker volumes from the images cache and crop
+    #       directories, but apart from that, it will use the baked-in code
+    #       from the docker containers to run the app.
+    #   - This service depends on production DB and Search (which are also pulled
+    #       from the Docker registry) and mound Docker volumes for these container
+    #       as well.
+    #   - This service will bind to port 8080 (not 80 like the dev server) because
+    #       on the production server, there is a Reverse proxy Apache server that
+    #       will handle 80 and 443 port connections
+    #   - This service uses the "main-kob-network" network for all three containers
+    #
+    #   $ docker-compose up -d run
     run:
         container_name: kob-web
         ports:
@@ -132,6 +183,8 @@ services:
             - database
             - search
         environment:
+            - ENV=production
+            - ENVIRONMENT=production
             - DB_HOST=database
             - DB_PORT=3306
             - DB_NAME=klingogbang
@@ -147,8 +200,12 @@ services:
             - GA_HOST=http://klingogbang.is
             - GA_TRACH=UA-146902881-1
         volumes:
+            # - image-cache-volume:/var/www/image-cache
+            # - image-crop-volume:/var/www/html/img
             - ./image-cache:/var/www/image-cache
             - ./image-crop:/var/www/html/img
+        networks:
+            - main-kob-network
         logging:
             driver: "json-file"
             options:
@@ -162,13 +219,15 @@ services:
         restart: always
         volumes:
             - database-volume:/var/lib/mysql
+        networks:
+            - main-kob-network
         environment:
             - MYSQL_ROOT_PASSWORD=example
-        # logging:
-        #     driver: "json-file"
-        #         options:
-        #         max-file: "5"
-        #         max-size: "10m"
+        logging:
+            driver: "json-file"
+            options:
+                max-file: "5"
+                max-size: "10m"
 
     search:
         container_name: kob-search
@@ -177,22 +236,22 @@ services:
             - discovery.type=single-node
         volumes:
             - search-volume:/usr/share/elasticsearch/data
-        # logging:
-        #     driver: "json-file"
-        #     options:
-        #         max-file: "5"
-        #         max-size: "10m"
-
-    kib01:
-        image: docker.elastic.co/kibana/kibana:7.9.3
-        container_name: kib01
-        ports:
-            - 5601:5601
-        environment:
-            ELASTICSEARCH_URL: http://search-dev:9200
-            ELASTICSEARCH_HOSTS: http://search-dev:9200
+        networks:
+            - main-kob-network
+        logging:
+            driver: "json-file"
+            options:
+                max-file: "5"
+                max-size: "10m"
 
 
 volumes:
     database-volume:
     search-volume:
+    image-cache-volume:
+    image-crop-volume:
+
+networks:
+    main-kob-network:
+        driver: bridge
+        name: main-kob-network

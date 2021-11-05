@@ -31,7 +31,7 @@ try {
     (new SapiEmitter)->emit(
         new HtmlResponse(
             $serviceManager->get(TemplateRendererInterface::class)->render('error::error', getenv('ENVIRONMENT') === 'development'
-                ? ['message' => $e->getMessage(), 'trace' => $e->getTrace()] : ['message' => null, 'trace' => []]
+                ? ['message' => $e->getMessage(), 'trace' => $e->getTrace()] : ['message' => null, 'trace' => null]
             ),
             500
         )

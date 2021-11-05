@@ -12,7 +12,22 @@
                 {% include '@partials/header.html.twig' %}
 
                 {% if message %}
-                <p>{{message}}</p>
+                <h2 style="background-color:white">{{message}}</h2>
+                {% endif %}
+                {% if trace %}
+                <ol style="padding:1rem;background-color:white">
+                {% for item in trace %}
+                    <li>
+                        <ul style="padding:1rem;">
+                            <li><strong>file</strong> | {{item.file}}</li>
+                            <li><strong>line</strong> | {{item.line}}</li>
+                            <li><strong>function</strong> | {{item.function}}</li>
+                            <li><strong>class</strong> | {{item.class}}</li>
+                            <li><strong>type</strong> | {{item.type}}</li>
+                        </ul>
+                    </li>
+                {% endfor %}
+                </ol>
                 {% endif %}
 
                 <form method="get" class="search search--tail" action="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}">

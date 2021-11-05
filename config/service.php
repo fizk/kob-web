@@ -352,8 +352,11 @@ return [
             $fbSecret = getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8';
             $fbRedirect = getenv('FB_REDIRECT') ?: 'http://localhost/login';
 
-            return (new TwigRenderer('./templates/', getenv('ENVIRONMENT') === 'development'))
-
+            return (new TwigRenderer(
+                    './templates/',
+                    getenv('ENVIRONMENT') === 'development',
+                    getenv('ENVIRONMENT') !== 'development' ? './data/cache' : null
+                ))
                 ->addPath('./templates/app', 'app')
                 ->addPath('./templates/dashboard', 'dashboard')
                 ->addPath('./templates/partials', 'partials')
