@@ -93,7 +93,7 @@ class Asset
 
         $imagine = new Imagine();
         $sizes = $imagine->read($handle)
-            ->thumbnail(new Box(2560, 1600), ImageInterface::THUMBNAIL_INSET , ImageInterface::FILTER_LANCZOS)
+            ->thumbnail(new Box(2560, 1600), ImageInterface::THUMBNAIL_INSET, ImageInterface::FILTER_LANCZOS)
             ->save($this->cache . $name, ['jpeg_quality' => 90])
             ->getSize();
 

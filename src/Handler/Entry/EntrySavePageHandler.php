@@ -19,8 +19,12 @@ class EntrySavePageHandler implements RequestHandlerInterface
     private Entry $entry;
     private Search $search;
 
-    public function __construct(RouterInterface $router, TemplateRendererInterface $template, Entry $entry, Search $search)
-    {
+    public function __construct(
+        RouterInterface $router,
+        TemplateRendererInterface $template,
+        Entry $entry,
+        Search $search
+    ) {
         $this->router = $router;
         $this->template = $template;
         $this->entry  = $entry;
