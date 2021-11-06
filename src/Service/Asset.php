@@ -81,7 +81,10 @@ class Asset
             mkdir($this->cache);
         }
 
-        $name = $this->constructFileName($value->getClientFilename());
+        $name = Asset::fileName(
+            $value->getClientFilename(),
+            'jpg'
+        );
 
         $handle = fopen('php://temp', 'wb+');
         $stream = $value->getStream();
@@ -118,16 +121,32 @@ class Asset
         ];
     }
 
-    private function constructFileName(string $filename, string $extension = 'jpg'): string
+    public static function fileName(string $filename, string $extension = 'jpg', string $postfix = null): string
     {
-        $prefix = rand(100000, 999999);
+        $postfix = $postfix ?? rand(10, 99);
 
-        $name = $prefix . str_replace(
-            ['?', '/', '#', ' '],
-            '',
-            filter_var($filename, FILTER_SANITIZE_SPECIAL_CHARS, FILTER_FLAG_STRIP_HIGH)
+        $filename = strtolower($filename);
+        $filename = htmlentities($filename, ENT_NOQUOTES, 'utf-8');
+
+        $filename = preg_replace(
+            '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
+            '\1',
+            $filename
         );
+        $filename = preg_replace(
+            '#&([A-za-z]{2})(?:lig);#',
+            '\1',
+            $filename
+        ); // pour les ligatures e.g. '&oelig;'
+        $filename = preg_replace(
+            '#&[^;]+;#',
+            '',
+            $filename
+        ); // supprime les autres caractères
 
-        return preg_replace('/\.[a-z]{3,4}$/', '', $name) . ".{$extension}";
+        $filename = preg_replace('/(\.[a-z0-9]*)$/', '', $filename);
+        $filename = str_replace(' ', '-', $filename);
+
+        return preg_replace('/[^a-z0-9]/', '-', $filename) . $postfix . '.' . $extension;
     }
 }

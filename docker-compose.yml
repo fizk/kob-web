@@ -200,8 +200,6 @@ services:
             - GA_HOST=http://klingogbang.is
             - GA_TRACH=UA-146902881-1
         volumes:
-            # - image-cache-volume:/var/www/image-cache
-            # - image-crop-volume:/var/www/html/img
             - ./image-cache:/var/www/image-cache
             - ./image-crop:/var/www/html/img
         networks:

@@ -25,6 +25,16 @@ class EntryTest extends TestCase
         $this->assertTrue(true);
     }
 
+    protected function tearDown(): void
+    {
+        try {
+            $this->getDatabase()->exec('SET foreign_key_checks=0');
+            $this->getDatabase()->exec('truncate table Entry');
+        } finally {
+            $this->getDatabase()->exec('SET foreign_key_checks=1');
+        }
+    }
+
     protected function getDatabase(): PDO
     {
         $dbName = getenv('DB_NAME');
