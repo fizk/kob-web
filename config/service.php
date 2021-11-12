@@ -220,6 +220,11 @@ return [
                 $container->get(TemplateRendererInterface::class)
             );
         },
+        Handler\ApiSearchPageHandler::class => function (ContainerInterface $container) {
+            return new Handler\ApiSearchPageHandler(
+                $container->get(Service\Search::class)
+            );
+        },
         Handler\Page\RssPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\RssPageHandler(
                 $container->get(Service\Entry::class),
@@ -227,6 +232,11 @@ return [
             );
         },
 
+        Middleware\DetectLanguageMiddleware::class => function (ContainerInterface $container) {
+            return new Middleware\DetectLanguageMiddleware(
+                $container->get(TemplateRendererInterface::class)
+            );
+        },
         Middleware\SecondaryLanguageMiddleware::class => function (ContainerInterface $container) {
             return new Middleware\SecondaryLanguageMiddleware(
                 $container->get(TemplateRendererInterface::class)

@@ -2,86 +2,50 @@
 
 {% block title %}Dashboard{% endblock %}
 
-{% block style %}
-<style>
-    .dashboard__card-list {
-        list-style: none;
-        padding: 0;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 1rem;
-    }
-</style>
+{% block nav %}
+    {% include '@partials/dashboard-menu.html.twig' %}
 {% endblock %}
 
 {% block content %}
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+    <section>
+        <h2>Entries</h2>
+        <ul class="entry-grid">
+            {% for item in entries %}
+            <li class="entry-grid__item">
+                <div class="card">
+                    {% if item.poster %}
+                    <img src="{{ path('asset', {size: '100x100', name: item.poster.name}) }}" style="object-fit: cover; height: 100%"
+                        class="card-img" alt="...">
+                    {% else %}
+                    {% endif %}
 
-    <main class="container">
-
-        <div class="row">
-            <div class="col-2">
-                {% include '@partials/dashboard-menu.html.twig' %}
-            </div>
-            <div class="col-10">
-                <div class="jumbotron">
-                    <div class="row">
-                        <div class="col">
-                            <h1 class="display-4">Dashboard</h1>
-                        </div>
-                        <div class="col">
-                            <p class="lead">
-                                The Dashboard contains a list of the latest Entries and Authors
-                            </p>
-                        </div>
-                    </div>
+                    <a href="{{path('update-entry', {id: item.id})}}">{{ item.title }}</a>
+                    <ul>
+                        {% for author in item.authors %}
+                        <li>{{ author.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <small>Last updated {{ item.affected }}</small>
                 </div>
-                <p class="h2">Entries</p>
-                <ul class="dashboard__card-list">
-                    {% for item in entries %}
-                        <li class="dashboard__card-item">
-                            <div class="card">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        {% if item.poster %}
-                                        <img src="{{ path('asset', {size: '100x100', name: item.poster.name}) }}" style="object-fit: cover; height: 100%" class="card-img" alt="...">
-                                        {% else %}
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                <a href="{{path('update-entry', {id: item.id})}}">{{ item.title }}</a>
-                                            </h5>
-                                            <ul>
-                                                {% for author in item.authors %}
-                                                    <li>{{ author.name }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                            <p class="card-text"><small class="text-muted">Last updated {{ item.affected }}</small></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section>
+        <h2>Authors</h2>
+        <ul class="entry-grid">
+            {% for item in authors %}
+            <li class="entry-grid__item">
+                <div class="card">
+                    <a href="{{path('update-author', {id: item.id})}}">{{ item.name }}</a>
+                    <small>Last updated {{ item.affected }}</small>
 
-                <p class="h2">Authors</p>
-                <ul class="dashboard__card-list">
-                    {% for item in authors %}
-                        <li class="dashboard__card-item">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="{{path('update-author', {id: item.id})}}">{{ item.name }}</a>
-                                    </h5>
-                                    <p class="card-text"><small class="text-muted">Last updated {{ item.affected }}</small></p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </main>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
 {% endblock %}

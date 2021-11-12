@@ -8,7 +8,7 @@ return [
     '/' => [
         'GET' => [
             [
-                Middleware\PrimaryLanguageMiddleware::class,
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
                 Handler\HomePageHandler::class
             ],
@@ -19,7 +19,7 @@ return [
     '/home' => [
         'GET' => [
             [
-                Middleware\SecondaryLanguageMiddleware::class,
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
                 Handler\HomePageHandler::class
             ],
@@ -303,9 +303,22 @@ return [
         ],
     ],
 
+    '/api/search' => [
+        'GET' => [
+            Handler\ApiSearchPageHandler::class,
+            'api-search'
+        ],
+    ],
+
+    //
+    //
+    //
+    //
+
     '/update' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\DashboardPageHandler::class
@@ -317,6 +330,7 @@ return [
     '/update/entry' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Entry\EntryCreatePageHandler::class
@@ -325,6 +339,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Entry\EntrySavePageHandler::class
@@ -336,6 +351,7 @@ return [
     '/update/entry/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Entry\EntryUpdatePageHandler::class
@@ -344,6 +360,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Entry\EntrySavePageHandler::class
@@ -355,6 +372,7 @@ return [
     '/delete/entry/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Entry\EntryDeletePageHandler::class
@@ -366,6 +384,7 @@ return [
     '/update/author/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Author\AuthorUpdatePageHandler::class
@@ -374,6 +393,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Author\AuthorSavePageHandler::class
@@ -385,6 +405,7 @@ return [
     '/update/author' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Author\AuthorCreatePageHandler::class
@@ -393,6 +414,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Author\AuthorSavePageHandler::class
@@ -404,6 +426,7 @@ return [
     '/delete/author/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Author\AuthorDeletePageHandler::class
@@ -415,6 +438,7 @@ return [
     '/update/manifesto/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Page\ManifestoUpdatePageHandler::class
@@ -423,6 +447,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Page\ManifestoSavePageHandler::class
@@ -434,6 +459,7 @@ return [
     '/update/image/{id}' => [
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 Handler\Image\ImageUpdatePageHandler::class
@@ -445,6 +471,7 @@ return [
     '/update/user' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\User\UsersPageHandler::class
@@ -453,6 +480,7 @@ return [
         ],
         'POST' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 BodyParamsMiddleware::class,
@@ -465,6 +493,7 @@ return [
     '/delete/user/{id}' => [
         'GET' => [
             [
+                Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 Handler\User\UsersDeletePageHandler::class

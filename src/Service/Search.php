@@ -114,19 +114,21 @@ class Search
 
     public function save($item): bool
     {
+        $item = (array) $item;
+
         try {
             $this->client->update([
                 'index' => 'kob_entry',
-                'id' => $item->id,
-                'body' => ['doc'  => (array) $item],
+                'id' => $item['id'],
+                'body' => ['doc'  => $item],
             ]);
             return true;
         } catch (\Exception $e) {
             try {
                 $this->client->index([
                     'index' => 'kob_entry',
-                    'id' => $item->id,
-                    'body' => (array) $item,
+                    'id' => $item['id'],
+                    'body' => $item,
                 ]);
                 return true;
             } catch (\Exception $e) {

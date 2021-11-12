@@ -49,7 +49,7 @@ xdebug.idekey=$IDE_KEY\n \
 xdebug.discover_client_host=false\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
 fi ;
 
-RUN chown -R www-data /var/www
+RUN chown -R www-data:www-data /var/www
 WORKDIR /var/www
 USER www-data
 

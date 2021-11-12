@@ -103,8 +103,8 @@ class EntryForm extends Form
             ],
             'created' => [
                 'name' => 'created',
-                'required' => true,
-                'allow_empty' => false,
+                'required' => false,
+                'allow_empty' => true,
                 'validators' => [
                     [
                         'name' => Date::class,

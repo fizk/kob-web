@@ -3,7 +3,75 @@
 
 {% block title %}Home{% endblock %}
 
-{% block style %}
+{% block nav %}
+    {% include '@partials/dashboard-menu.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1 class="display-4">
+            {% if author.id is defined %}
+            Update author
+            {% else %}
+            Create author
+            {% endif %}
+        </h1>
+        {% if author.id is defined %}
+        <p>
+            You can also <a href="{{ path('delete-author', {id: author.id}) }}" class="btn btn-sm btn-danger">Delete</a>
+            this Author, just be careful, this can not be undone.
+        </p>
+        {% endif %}
+    </header>
+    <section>
+        {% if author.id is defined %}
+        <form method="post" class="dashboard__form" action="{{ path('save-author', {id: author.id}) }}">
+            {% else %}
+            <form method="post" class="dashboard__form" action="{{ path('new-author', {}) }}">
+                {% endif %}
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" onkeyup="searchAuthor(event)" class="form-control" id="name"
+                                aria-describedby="name" value="{{ author.name is defined ? author.name : null}}">
+                            <small id="emailHelp" class="form-text text-muted">Full name of author</small>
+                            {{ form.error('name', messages) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="name">These already exist</label>
+                            <ul data-authors-list class="text-muted"></ul>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    const searchAuthor = (inputEvent) => {
+                        fetch(`/api/author/search?q=${inputEvent.target.value}`)
+                            .then(response => response.json())
+                            .then(json => {
+                                const list = document.querySelector('[data-authors-list]');
+                                list.innerHTML = '';
+
+                                json.forEach(item => {
+
+                                    const listItem = document.createElement('li');
+                                    listItem.appendChild(document.createTextNode(item.name));
+                                    list.appendChild(listItem);
+                                });
+                            });
+                    };
+                </script>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="{{ path('authors') }}">Cancel</a>
+            </form>
+    </section>
+{% endblock %}
+
+
+{# {% block style %}
 <style>
     .form-error {
         list-style: none;
@@ -96,4 +164,4 @@
             </div>
         </div>
     </main>
-{% endblock %}
+{% endblock %} #}

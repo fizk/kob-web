@@ -62,7 +62,7 @@ services:
 
     database-dev:
         container_name: kob-database-dev
-        image: einarvalur/kob-db:d1e6021
+        image: einarvalur/kob-db:latest
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         ports:
@@ -74,7 +74,7 @@ services:
 
     search-dev:
         container_name: kob-search-dev
-        image:  einarvalur/kob-search:97862d1
+        image:  einarvalur/kob-search:latest
         environment:
             - discovery.type=single-node
         ports:
@@ -132,7 +132,7 @@ services:
 
     database-test:
         container_name: kob-database-test
-        image: einarvalur/kob-db:d1e6021
+        image: einarvalur/kob-db:latest
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         environment:
@@ -140,7 +140,7 @@ services:
 
     search-test:
         container_name: kob-search-test
-        image: einarvalur/kob-search:97862d1
+        image: einarvalur/kob-search:latest
         environment:
             - discovery.type=single-node
 
@@ -212,7 +212,7 @@ services:
 
     database:
         container_name: kob-database
-        image: einarvalur/kob-db:d1e6021
+        image: einarvalur/kob-db:latest
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         volumes:
@@ -229,7 +229,7 @@ services:
 
     search:
         container_name: kob-search
-        image: einarvalur/kob-search:97862d1
+        image: einarvalur/kob-search:latest
         environment:
             - discovery.type=single-node
         volumes:

@@ -1,5 +1,38 @@
 # Kling&amp;Bang Website.
 
+Kling&Bang Web is a simple CMS system for the Kling&Bang Gallery.
+
+It is a PHP.8 web application using the classic MVC programing paradigm. Is uses MySQL as the data-store and Elasticsearch to perform free-text search.
+
+## Architecture / overview.
+This application tries to use the [PSR](https://www.php-fig.org/psr/) interfaces when it can. All requests are (or should be) routed to `public/index.php`, that is the entry-point for the application.
+
+Incoming requests are wrapped in a [PSR 7 ServerRequestInterface](https://www.php-fig.org/psr/psr-7/). An instance of a [PSR-11: Container interface](https://www.php-fig.org/psr/psr-11/) is created and a Router is extracted from it. (The Router is configured in `config.router.php`) The request is matched against the Router and if a match is found, an associated [PSR-15: HTTP Server Request Handlers](https://www.php-fig.org/psr/psr-15/) is executed.
+
+Handlers are also extracted from a [PSR-11: Container interface](https://www.php-fig.org/psr/psr-11/). (The Container is configured in `config/service.php`). Before they are executed, they are initialized in the Container and [injected](https://en.wikipedia.org/wiki/Dependency_injection) with the services they need. (Mostly the Template Engine and the Database Services).
+
+The Container interface, or the ServiceManager initializes all services. This includes the TemplateEngine, the Router, the Database Services, the Database Gateway, the Search Gateway and the various [Middlewares](https://www.php-fig.org/psr/psr-15/) requires to service the Request.
+
+The `App\Template\TwigRenderer` is an [Adapter](https://en.wikipedia.org/wiki/Adapter_pattern) for the [Twig](https://twig.symfony.com/) Template Engine. It abstracts away the Twig details so if there would ever be a need to switch template engine, that would be possible.
+
+Database services (`src/Service`) are injected with a PDO objects in the Container. Their job is to interact with the Database (which is MySQL) without letting layers above (mostly the Handlers) know the database tables. Database services are used the Handlers to read or modify data in the database.
+
+Authentication is performed by [laminas-authentication](https://github.com/laminas/laminas-authentication). This application comes with two Authentication Adapters. **PasswordAuthAdapter** for a username/password authentication and a **FacebookAuthAdapter** to login via a Facebook account.
+
+This application uses a few Middleware functions. Middleware intercepts an incoming Requests and augments them as required.
+
+* **AuthenticationMiddleware**, Does authentication.
+* **SessionMiddleware**, Restricts access to a Handler if user is not logged in.
+* **DetectLanguageMiddleware**, Tries to figure out which language should be used (IS/EN)
+* **PrimaryLanguageMiddleware** Forces primary language (IS)
+* **SecondaryLanguageMiddleware** Forces secondary language (EN)
+
+
+
+
+
+
+
 ### Development.
 Clone this repo.
 ```sh

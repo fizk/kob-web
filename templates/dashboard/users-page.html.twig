@@ -2,7 +2,40 @@
 
 {% block title %}Home{% endblock %}
 
-{% block style %}
+{% block nav %}
+    {% include '@partials/dashboard-menu.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Users</h1>
+    </header>
+    <section>
+        <ul class="entry-grid">
+            {% for user in users %}
+            <li class="entry-grid__item">
+                <div class="card">
+                    {{user.email}}
+                    {{user.name}}
+                    <a href="{{path('delete-user', {id: user.id})}}" class="btn btn-outline-danger btn-sm">delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section>
+        <form accept="{{path('new-user')}}" method="POST" class="form-inline">
+            <div class="form-group mb-2">
+                <input type="email" name="email" class="form-control" placeholder="user email address" />
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <button type="submit" class="btn btn-primary">Create user</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+{# {% block style %}
 <style>
     .image-list {
         list-style: none;
@@ -98,4 +131,4 @@
             </div>
         </div>
     </main>
-{% endblock %}
+{% endblock %} #}

@@ -36,12 +36,11 @@ class EntrySavePageHandler implements RequestHandlerInterface
         $id = $request->getAttribute('id', null);
         $post = $request->getParsedBody();
 
+
         $data = array_merge($post, [
             'id' => $id,
             'affected' => (new DateTime())->format('Y-m-d H:i:s')
-        ], $id ? [] : [
-            'created' => (new DateTime())->format('Y-m-d H:i:s'),
-        ]);
+        ], $id ? [] : ['created' => (new DateTime())->format('Y-m-d H:i:s'),]);
 
         $form = new EntryForm();
         $form->setData($data);
