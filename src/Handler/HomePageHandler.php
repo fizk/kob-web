@@ -23,17 +23,17 @@ class HomePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $current = $this->entry->fetchByDate(new DateTime(), $request->getAttribute('language', 'is'));
-        $upcoming = $this->entry->fetchAfter(new DateTime(), $request->getAttribute('language', 'is'));
+        $language = $request->getAttribute('language', 'is');
 
-        $list = empty($current) ? $upcoming : $current;
-        $next = empty($current) ? [] : $upcoming;
-        // $fallback = empty($list) && empty($next) ? $this->entry->fetchList((new DateTime())->format('Y')) : null;
-        $fallback = empty($list) && empty($next) ? $this->entry->fetchList() : null;
+        $list = $this->entry->fetchCurrent(new DateTime(), $language);
+        $list = count($list) > 0
+            ? $list
+            : $this->entry->fetchLatestByType(Entry::PROJECT, $language);
+        $next = $this->entry->fetchAfter(new DateTime(), $language);
 
         return new HtmlResponse(
             $this->template->render('app::home-page', [
-                'list' => [], //$fallback ? : $list,
+                'list' => $list,
                 'upcoming' => $next,
             ])
         );

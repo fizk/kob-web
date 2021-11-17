@@ -6,6 +6,12 @@ use DateTime;
 
 class Entry
 {
+    use EntryTrait;
+
+    const SHOW = 'show';
+    const NEWS = 'news';
+    const PROJECT = 'proj';
+
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -28,31 +34,9 @@ class Entry
         $statement->execute(['id' => $id]);
 
         $entry = $statement->fetch();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-
-        $authorStatement->execute(['id' => $entry->id]);
-        $entry->authors = $authorStatement->fetchAll();
-
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $posterStatement->execute(['id' => $entry->id]);
-        $entry->poster = $posterStatement->fetch();
-
-        $galleryStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 2;
-        ');
-        $galleryStatement->execute(['id' => $entry->id]);
-        $entry->gallery = $galleryStatement->fetchAll();
+        $entry->authors = $this->fetchAuthors($entry->id);
+        $entry->poster = $this->fetchPosters($entry->id);
+        $entry->gallery = $this->fetchGallery($entry->id);
 
         return $entry;
     }
@@ -100,85 +84,83 @@ class Entry
         }
 
         if ($result['current']) {
-            $authorStatement = $this->pdo->prepare('
-                select A.* from Entry_has_Author EA
-                    join Author A on (A.id = EA.author_id)
-                where EA.entry_id = :id;
-            ');
-
-            $authorStatement->execute(['id' => $result['current']->id]);
-            $result['current']->authors = $authorStatement->fetchAll();
-
-            $posterStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 1;
-            ');
-            $posterStatement->execute(['id' => $result['current']->id]);
-            $result['current']->poster = $posterStatement->fetch();
-
-            $galleryStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 2;
-            ');
-            $galleryStatement->execute(['id' => $result['current']->id]);
-            $result['current']->gallery = $galleryStatement->fetchAll();
+            $result['current']->authors = $this->fetchAuthors($result['current']->id);
+            $result['current']->poster = $this->fetchPosters($result['current']->id);
+            $result['current']->gallery = $this->fetchGallery($result['current']->id);
         }
 
         if ($result['previous']) {
-            $authorStatement = $this->pdo->prepare('
-                select A.* from Entry_has_Author EA
-                    join Author A on (A.id = EA.author_id)
-                where EA.entry_id = :id;
-            ');
-
-            $authorStatement->execute(['id' => $result['previous']->id]);
-            $result['previous']->authors = $authorStatement->fetchAll();
-
-            $posterStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 1;
-            ');
-            $posterStatement->execute(['id' => $result['previous']->id]);
-            $result['previous']->poster = $posterStatement->fetch();
+            $result['previous']->authors = $this->fetchAuthors($result['previous']->id);
+            $result['previous']->poster = $this->fetchPosters($result['previous']->id);
+            // $result['previous']->gallery = $this->fetchGallery($result['previous']->id);
         }
 
         if ($result['next']) {
-            $authorStatement = $this->pdo->prepare('
-                select A.* from Entry_has_Author EA
-                    join Author A on (A.id = EA.author_id)
-                where EA.entry_id = :id;
-            ');
-
-            $authorStatement->execute(['id' => $result['next']->id]);
-            $result['next']->authors = $authorStatement->fetchAll();
-
-            $posterStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 1;
-            ');
-            $posterStatement->execute(['id' => $result['next']->id]);
-            $result['next']->poster = $posterStatement->fetch();
+            $result['next']->authors = $this->fetchAuthors($result['next']->id);
+            $result['next']->poster = $this->fetchPosters($result['next']->id);
+            // $result['next']->gallery = $this->fetchGallery($result['next']->id);
         }
 
         return $result;
     }
 
-    public function fetchPromoted(DateTime $date, $language = 'is'): array
+    /**
+     * Fetch entries where the `from` is smaller then $date and `to` is bigger
+     * that $date.
+     *
+     * Current entry includes:
+     * authors
+     * posters
+     * gallery
+     *
+     * @param DateTime $date
+     * @param string $language
+     */
+    public function fetchCurrent(DateTime $date, $language = 'is'): array
     {
         $statement = $this->pdo->prepare(
             $language == 'is'
-                ? 'select *, body_is as body from Entry where `from` <= :date and `to` >= :date;'
-                : 'select *, body_en as body from Entry where `from` <= :date and `to` >= :date;'
+            ? 'select *, body_is as body from Entry where `from` <= :date and `to` >= :date order by `from`;'
+            : 'select *, body_en as body from Entry where `from` <= :date and `to` >= :date; order by `from`'
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
+            return $item;
+        }, $statement->fetchAll());
+    }
 
-        $list = $statement->fetchAll();
-        return $list;
+    /**
+     * Fetch latest entry (biggest `from` date) that is of `type` $type.
+     * The result is returned as an array with one (or zero) item(s)
+     *
+     * Current entry includes:
+     * authors
+     * posters
+     * gallery
+     *
+     * @param string $type
+     * @param string $language
+     */
+    public function fetchLatestByType($type = self::SHOW, $language = 'is'): array
+    {
+        $statement = $this->pdo->prepare(
+            $language == 'is'
+            ? 'select *, body_is as body from Entry where `type` = :type order by `from` desc limit 0, 1;'
+            : 'select *, body_en as body from Entry where `type` = :type order by `from` desc limit 0, 1;'
+        );
+        $statement->execute(['type' => $type]);
+
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
+
+            return $item;
+        }, $statement->fetchAll());
     }
 
     /**
@@ -208,37 +190,13 @@ class Entry
             $statement->execute([]);
         }
 
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $galleryStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 2;
-        ');
-
-        return array_map(function ($item) use ($authorStatement, $posterStatement, $galleryStatement) {
-
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
-            $galleryStatement->execute(['id' => $item->id]);
-            $item->gallery = $galleryStatement->fetchAll();
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
 
             return $item;
-        }, $list);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -258,38 +216,13 @@ class Entry
         ');
         $statement->execute([]);
 
-
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-        $posterStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 1;
-            ');
-        $galleryStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 2;
-            ');
-
-        return array_map(function ($item) use ($authorStatement, $posterStatement, $galleryStatement) {
-
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
-            $galleryStatement->execute(['id' => $item->id]);
-            $item->gallery = $galleryStatement->fetchAll();
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
 
             return $item;
-        }, $list);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -314,90 +247,11 @@ class Entry
         ');
         $statement->execute(['type' => $type]);
 
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $galleryStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 2;
-        ');
-
-        return array_map(function ($item) use ($authorStatement, $posterStatement, $galleryStatement) {
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
-            $galleryStatement->execute(['id' => $item->id]);
-            $item->gallery = $galleryStatement->fetchAll();
-
-            return $item;
-        }, $list);
-    }
-
-    /**
-     * Fetch entries that are active for a given date, in a given language.
-     *
-     * Entries include:
-     * authors
-     * posters
-     * gallery
-     *
-     * @param DateTime $date
-     * @param string $language
-     * @return array
-     */
-    public function fetchByDate(DateTime $date, $language = 'is'): array
-    {
-        $statement = $this->pdo->prepare(
-            $language == 'is'
-                ? 'select *, body_is as body from Entry where `from` <= :date and `to` >= :date;'
-                : 'select *, body_en as body from Entry where `from` <= :date and `to` >= :date;'
-        );
-        $statement->execute(['date' => $date->format('Y-m-d')]);
-
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $galleryStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 2;
-        ');
-
-        return array_map(function ($item) use ($authorStatement, $posterStatement, $galleryStatement) {
-
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
-            $galleryStatement->execute(['id' => $item->id]);
-            $item->gallery = $galleryStatement->fetchAll();
-
-            return $item;
-        }, $list);
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -422,37 +276,11 @@ class Entry
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $galleryStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 2;
-        ');
-
-        return array_map(function ($item) use ($authorStatement, $posterStatement, $galleryStatement) {
-
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
-            $galleryStatement->execute(['id' => $item->id]);
-            $item->gallery = $galleryStatement->fetchAll();
-
-            return $item;
-        }, $list);
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            $item->gallery = $this->fetchGallery($item->id);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -469,31 +297,11 @@ class Entry
         ');
         $statement->execute([]);
 
-        $list = $statement->fetchAll();
-
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
-
-        return array_map(function ($item) use ($authorStatement) {
-
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement = $this->pdo->prepare('
-                select I.*, EI.`type` from Entry_has_Image EI
-                join Image I on (I.id = EI.image_id)
-                where EI.entry_id = :id and `type` = 1;
-            ');
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
-
+        return array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
             $item->gallery = [];
-
-            return $item;
-        }, $list);
+        }, $statement->fetchAll());
     }
 
     /**
@@ -589,7 +397,6 @@ class Entry
      */
     public function attachImages(string $entryId, array $images, int $type = 1)
     {
-
         $deleteStatement = $this->pdo->prepare(
             'delete from Entry_has_Image where entry_id = :entry_id and type = :type'
         );

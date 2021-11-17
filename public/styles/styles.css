@@ -1,0 +1,51 @@
+@import 'app.css';
+@import 'entry.css';
+@import 'gallery.css';
+
+html, body {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+@font-face {
+    font-family: 'Graphik';
+    src: url('/fonts/garphik/graphik-regular.woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+@font-face {
+    font-family: 'Graphik';
+    src: url('/fonts/garphik/graphik-medium.woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: block;
+}
+
+:root {
+    --space-s: 0.8rem;
+    --space-m: 1rem;
+    --space-l: 1.563rem;
+    --space-x: 2.441rem;
+    --space-xx: 4.768rem;
+
+    --color-shade: rgb(241, 238, 238);
+    --color-text: rgb(34, 34, 34);
+    --color-text-shade: rgb(65, 64, 64);
+    --color-headline: rgb(49, 49, 49);
+    --color-link: rgb(68, 69, 148);
+    --color-accend: #019fb6;
+}
+
+body {
+    font-family: Graphik, sans-serif;
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-text);
+}

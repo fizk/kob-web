@@ -23,9 +23,9 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?array
+                public function fetch(string $id): ?\stdClass
                 {
-                    return ['id' => 1];
+                    return (object)['id' => 1];
                 }
             };
         });
@@ -47,9 +47,9 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?array
+                public function fetch(string $id): ?\stdClass
                 {
-                    return ['id' => 1];
+                    return (object)['id' => 1];
                 }
             };
         });
@@ -71,8 +71,7 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?array
-                {
+                public function fetch(string $id): ?\stdClass {
                     return null;
                 }
             };

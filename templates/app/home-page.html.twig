@@ -2,6 +2,57 @@
 
 {% block title %}Kling &amp; Bang{% endblock %}
 
+{% block content %}
+    {% for item in list %}
+        <article class="entry">
+            <header class="entry__header">
+                <ul class="entry__author-list">
+                {% for author in item.authors %}
+                    <li>
+                        <h2 class="entry__author">
+                            <a class="entry__author-link" href="{{path('listamadur', {id: author.id})}}">{{author.name}}</a>
+                        </h2>
+                    </li>
+                {% endfor %}
+                </ul>
+                <h3>{{item.title}}</h3>
+                <time class="entry__time">{{item.from}}</time> | <time class="entry__time">{{item.to}}</time>
+            </header>
+            <aside class="entry__aside">
+                {% if item.poster %}
+                <img class="entry__poster" src="/img/640x/{{item.poster.name}}" />
+                {% endif %}
+                <ul class="gallery">
+                {% for image in item.gallery %}
+                    {% if image.width > image.height %}
+                    <li class="gallery__item--landscape">
+                        <img src="{{ path('asset', {size: '200x', name: image.name}) }}" class="gallery__image" />
+                    </li>
+                    {% else %}
+                    <li class="gallery__item--portraid">
+                        <img src="{{ path('asset', {size: 'x320', name: image.name}) }}" class="gallery__image" />
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            </aside>
+            <section class="entry__body">
+                {% if user_session %}
+                <a href="{{ path('update-entry', {id: item.id}) }}">edit</a>
+                {% endif %}
+                {% markdown %}
+                {{ item.body|raw }}
+                {% endmarkdown %}
+            </section>
+            <footer class="entry__footer">&nbsp;</footer>
+        </article>
+    {% endfor %}
+{% endblock %}
+
+{# {% extends '@layout/default.html.twig' %}
+
+{% block title %}Kling &amp; Bang{% endblock %}
+
 {% block meta %}
     <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'heim' : 'home') }}" />
     <meta property="og:url" content="{{ host }}{{ path(language == 'is' ? 'heim' : 'home') }}" />
@@ -77,4 +128,4 @@
             </article>
         {% endfor %}
     </main>
-{% endblock %}
+{% endblock %} #}

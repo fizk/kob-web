@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Service;
+
 
 use DateTime;
 
@@ -8,12 +10,23 @@ abstract class AbstractEntry extends Entry
     public function __construct()
     {
     }
+
     public function get(string $id): \stdClass
     {
         return new \stdClass;
     }
 
     public function fetch(string $id, $lang = 'is'): ?array
+    {
+        return [];
+    }
+
+    public function fetchCurrent(DateTime $date, $language = 'is'): array
+    {
+        return [];
+    }
+
+    public function fetchLatestByType($type = 'show', $language = 'is'): array
     {
         return [];
     }
@@ -30,7 +43,7 @@ abstract class AbstractEntry extends Entry
 
     public function fetchByType($type)
     {
-
+        return [];
     }
 
     public function fetchByDate(DateTime $date, $language = 'is'): array
@@ -65,14 +78,10 @@ abstract class AbstractEntry extends Entry
 
     public function attachAuthors(string $id, array $authors)
     {
-
-
     }
 
     public function attachImages(string $entryId, array $images, int $type = 1)
     {
-
-
     }
 
     public function delete(string $id): int

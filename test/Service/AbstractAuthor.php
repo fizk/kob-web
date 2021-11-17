@@ -12,9 +12,9 @@ abstract class AbstractAuthor extends Author
         return new \stdClass;
     }
 
-    public function fetch(string $id)
+    public function fetch(string $id): ?\stdClass
     {
-
+        return null;
     }
 
     public function fetchList(): array

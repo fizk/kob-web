@@ -2,200 +2,114 @@
 
 {% block title %}{{ entry.current.title }}{% endblock %}
 
-{% block meta %}
-    <link rel="canonical" href="{{ host }}{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.current.title|slug(entry.current.id)}) }}" />
-    <meta property="og:url"         content="{{ host }}{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.current.title|slug(entry.current.id)}) }}" />
-    <meta property="og:type"        content="article" />
-    <meta property="og:title"       content="{{ entry.current.title }}" />
-    <meta property="og:description" content="{{ entry.current.body|length > 100 ? entry.current.body|slice(0, 100) ~ '...' : entry.current.body  }}" />
-    {% if entry.current.poster %}
-    <meta property="og:image"       content="{{ path('asset', {size: 'x', name: entry.current.poster.name}) }}" />
-    {% else %}
-    <meta property="og:image" content="/images/poster.jpg" />
-    {% endif %}
-{% endblock %}
-
-{% block language_switch %}
-    {% if language == 'is' %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('entry', {id: entry.current.title|slug(entry.current.id)}) }}">English</a></li>
-    {% else %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('syning', {id: entry.current.title|slug(entry.current.id)}) }}">Íslenska</a></li>
-    {% endif %}
-{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="/styles/baguetteBox.min.css" />
-{% endblock %}
-
-{% block javascript %}
-<script src="/scripts/baguetteBox.min.js"></script>
-<script>
-    baguetteBox.run('.image__gallery', {
-        // Custom options
-    });
-</script>
-{% endblock %}
-
 {% block content %}
-    <main class="app__main">
-        {% if entry.current.orientation == "h" %}
-            <div style="display: flex; position: absolute; width: 100%">
-                <div style="width: 50%; padding: 1.953rem;">
-                    {% include '@partials/header.html.twig' with {color: 'white'} %}
-                </div>
-                <div style="width: 50%"></div>
-            </div>
+    <article class="entry">
+        <header class="entry__header">
+            <ul class="entry__author-list">
+                {% for author in entry.current.authors %}
+                <li>
+                    <h2 class="entry__author">
+                        <a class="entry__author-link" href="{{path('listamadur', {id: author.id})}}">{{author.name}}</a>
+                    </h2>
+                </li>
+                {% endfor %}
+            </ul>
+            <h3>{{entry.current.title}}</h3>
+            <time class="entry__time">{{entry.current.from}}</time> | <time class="entry__time">{{entry.current.to}}</time>
+        </header>
+        <aside class="entry__aside">
             {% if entry.current.poster %}
-                <img style="height: 80vh; width: 100vw; object-fit: cover; background-color: rgb(200,200,200); vertical-align: bottom;"
-                     width="{{ entry.current.poster.width }}"
-                     height="{{ entry.current.poster.height }}"
-                     src="{{ path('asset', {size: '1280x', name: entry.current.poster.name}) }}" />
-            {% else %}
-                <div style="height: 100vh; width: 100vw; background-color: rgb(200,200,200)"></div>
+            <img class="entry__poster" src="/img/640x/{{entry.current.poster.name}}" />
             {% endif %}
-        {% endif %}
-
-        <article class="entry">
-            <aside class="entry__aside">
-                {% if entry.current.orientation == "v" %}
-                {% if entry.current.poster %}
-                    {% include '@partials/header.html.twig' %}
-                    {#<ul class="entry__primary-caption">#}
-                        {#{% if entry.current.type == 'show' %}#}
-                            {#{% for author in entry.current.authors %}#}
-                                {#<li class="entry__primary-caption-item">#}
-                                    {#<h2 class="entry__primary-caption-text">#}
-                                        {#{{ author.name }}#}
-                                    {#</h2>#}
-                                {#</li>#}
-                            {#{% endfor %}#}
-                        {#{% else %}#}
-                            {#<li class="entry__primary-caption-item">#}
-                                {#<h2 class="entry__primary-caption-text">#}
-                                    {#{{ entry.current.title }}#}
-                                {#</h2>#}
-                            {#</li>#}
-                        {#{% endif %}#}
-                    {#</ul>#}
-                    <img class="entry__poster entry__poster--full"
-                         width="{{ entry.current.poster.width }}"
-                         height="{{ entry.current.poster.height }}"
-                         src="{{ path('asset', {size: 'x', name: entry.current.poster.name}) }}" />
+            <ul class="gallery">
+                {% for image in entry.current.gallery %}
+                {% if image.width > image.height %}
+                <li class="gallery__item--landscape">
+                    <img src="{{ path('asset', {size: '200x', name: image.name}) }}" class="gallery__image" />
+                </li>
+                {% else %}
+                <li class="gallery__item--portraid">
+                    <img src="{{ path('asset', {size: 'x320', name: image.name}) }}" class="gallery__image" />
+                </li>
                 {% endif %}
-                {% endif %}
+                {% endfor %}
+            </ul>
+        </aside>
+        <section class="entry__body">
+            {% if user_session %}
+            <a href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
+            {% endif %}
 
-                {% if entry.current.gallery|length > 0 %}
-                <ul class="image__gallery">
-                    {% for image in entry.current.gallery %}
-                        {% if image.width > image.height %}
-                            <li class="image__gallery-item image__gallery-item--landscape">
-                                <a data-caption="{{ image.description }}" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
-                                    <img class="image__gallery-image" src="{{ path('asset', {size: '400x', name: image.name}) }}" />
-                                </a>
-                            </li>
-                        {% else %}
-                            <li class="image__gallery-item image__gallery-item--portrait">
-                                <a data-caption="{{ image.description }}" data-fslightbox="gallery" href="{{ path('asset', {size: '1920x1080max', name: image.name}) }}">
-                                    <img class="image__gallery-image" src="{{ path('asset', {size: 'x600', name: image.name}) }}" />
-                                </a>
-                            </li>
-                        {% endif %}
+            {% markdown %}
+            {{ entry.current.body|raw }}
+            {% endmarkdown %}
+        </section>
+        <footer class="entry__footer">
+
+            <div class="entry__preview">
+                {% if entry.next %}
+                <h3>
+                    <a href="{{path('syning', {id: entry.next.id})}}">{{entry.next.title}}</a>
+                </h3>
+                <ul>
+                    {% for author in entry.next.authors %}
+                        <li>{{author.name}}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
-            </aside>
-            <div class="entry__body">
-                {% if entry.current.orientation == "v" %}
-                {% include '@partials/header.html.twig' %}
-                {% endif %}
-                {% if user_session %}
-                    <a class="entry__edit-button" href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
-                {% endif %}
-                <ul class="entry__primary-caption">
-                    {% if entry.current.type == 'show' %}
-                        {% for author in entry.current.authors %}
-                            <li class="entry__primary-caption-item">
-                                <h2 class="entry__primary-caption-text">
-                                    <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id) }) }}" class="entry__primary-caption-link">{{ author.name }}</a>
-                                </h2>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="entry__primary-caption-item">
-                            <h2 class="entry__primary-caption-text">
-                                {{ entry.current.title }}
-                            </h2>
-                        </li>
-                    {% endif %}
-                </ul>
-                {% if entry.current.type == 'show' or entry.current.type == 'proj' %}
-                    <time class="entry__time">
-                        {{ entry.current.from|date(language|default('is'), false) }} - {{ entry.current.to|date(language|default('is'), false) }}
-                        <a href="{{ path(language|default('is') == 'is' ? 'listi' : 'list', {year: entry.current.from|year}) }}" class="entry__time-link">{{ entry.current.from|year }}</a>
-                    </time>
-                {% endif %}
-
-                {% if entry.current.type == 'proj' %}
-                    |
-                <a href="{{ path(language|default('is') == 'is' ? 'verkefni' : 'projects') }}" class="entry__time-link">
-                    {% if language|default('is') == 'is' %}
-                        Öll verkefni
-                    {% else %}
-                        All projects
-                    {% endif %}
-                </a>
-                {% endif %}
-
-                {% if entry.current.type == 'show' %}
-                    <h3 class="entry__secondary-caption-text">
-                        {{ entry.current.title }}
-                    </h3>
-                {% endif %}
-
-                <div class="entry__text markdown-text">
-                    {% markdown %}
-                        {{ entry.current.body|raw }}
-                    {% endmarkdown %}
-                </div>
             </div>
-        </article>
-    </main>
 
-    <aside class="pagination">
-        <div class="pagination__item pagination--next">
+            <div class="entry__preview">
+                {% if entry.previous %}
+                <h3>
+                    <a href="{{path('syning', {id: entry.previous.id})}}">{{entry.previous.title}}</a>
+                </h3>
+                <ul>
+                    {% for author in entry.previous.authors %}
+                        <li>{{author.name}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+
+
+        {# <div class="pagination__item pagination--next">
             {% if entry.next %}
-                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}"
-                   aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}">
-                    {% if entry.next.poster %}
-                        <img class="pagination__image" src="{{ path('asset', {size: '60x60', name: entry.next.poster.name}) }}" />
-                    {% else %}
-                        <span class="pagination__image"></span>
-                    {% endif %}
-                </a>
-                <a class="pagination__title"
-                   aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}"
-                   href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
-                    {{ entry.next.title }}
-                </a>
+            <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}"
+                aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}">
+                {% if entry.next.poster %}
+                <img class="pagination__image" src="{{ path('asset', {size: '60x60', name: entry.next.poster.name}) }}" />
+                {% else %}
+                <span class="pagination__image"></span>
+                {% endif %}
+            </a>
+            <a class="pagination__title" aria-label="{{ language|default('is') == 'is' ? 'Fyrri sýning' : 'Previous Show'}}"
+                href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.next.title|slug(entry.next.id)}) }}">
+                {{ entry.next.title }}
+            </a>
             {% endif %}
         </div>
 
         <div class="pagination__item pagination--previous">
             {% if entry.previous %}
-                <a class="pagination__title"
-                   aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}"
-                   href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
-                    {{ entry.previous.title }}
-                </a>
-                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}"
-                   aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}">
-                    {% if entry.previous.poster %}
-                        <img class="pagination__image"  src="{{ path('asset', {size: '60x60', name: entry.previous.poster.name}) }}" />
-                    {% else %}
-                        <span class="pagination__image"></span>
-                    {% endif %}
-                </a>
+            <a class="pagination__title" aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}"
+                href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}">
+                {{ entry.previous.title }}
+            </a>
+            <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: entry.previous.title|slug(entry.previous.id)}) }}"
+                aria-label="{{ language|default('is') == 'is' ? 'Næsta sýning' : 'Next Show'}}">
+                {% if entry.previous.poster %}
+                <img class="pagination__image" src="{{ path('asset', {size: '60x60', name: entry.previous.poster.name}) }}" />
+                {% else %}
+                <span class="pagination__image"></span>
+                {% endif %}
+            </a>
             {% endif %}
-        </div>
-    </aside>
+        </div> #}
+
+
+
+        </footer>
+    </article>
 {% endblock %}

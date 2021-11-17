@@ -5,6 +5,8 @@ use PDO;
 
 class Author
 {
+    use EntryTrait;
+
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -12,22 +14,32 @@ class Author
         $this->pdo = $pdo;
     }
 
-    public function get(string $id): \stdClass
+    /**
+     * Get on Author in its basic form
+     */
+    public function get(string $id): ?\stdClass
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
         ');
         $statement->execute(['id' => $id]);
-        return $statement->fetch();
+        $author = $statement->fetch();
+        return $author ? $author : null;
     }
 
-    public function fetch(string $id)
+    /**
+     * Fetch one Author and all the Entries assosiated
+     * with that person
+     */
+    public function fetch(string $id): ?\stdClass
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
         ');
         $statement->execute(['id' => $id]);
         $item = $statement->fetch();
+
+        if (!$item) return null;
 
         $entriesStatement = $this->pdo->prepare('
             select E.* from Entry_has_Author EA
@@ -38,26 +50,12 @@ class Author
         $entriesStatement->execute(['id' => $item->id]);
         $item->entries = $entriesStatement->fetchAll();
 
-        $posterStatement = $this->pdo->prepare('
-            select I.*, EI.`type` from Entry_has_Image EI
-            join Image I on (I.id = EI.image_id)
-            where EI.entry_id = :id and `type` = 1;
-        ');
-        $authorStatement = $this->pdo->prepare('
-            select A.* from Entry_has_Author EA
-                join Author A on (A.id = EA.author_id)
-            where EA.entry_id = :id;
-        ');
+        $item->entries = array_map(function ($item) {
+            $item->authors = $this->fetchAuthors($item->id);
+            $item->poster = $this->fetchPosters($item->id);
+            // $item->gallery = $this->fetchGallery($item->id);
+            $item->gallery = [];
 
-        $authorStatement->execute(['id' => $item->id]);
-        $item->authors = $authorStatement->fetchAll();
-
-        $item->entries = array_map(function ($item) use ($posterStatement, $authorStatement) {
-            $authorStatement->execute(['id' => $item->id]);
-            $item->authors = $authorStatement->fetchAll();
-
-            $posterStatement->execute(['id' => $item->id]);
-            $item->poster = $posterStatement->fetch();
             return $item;
         }, $item->entries);
 

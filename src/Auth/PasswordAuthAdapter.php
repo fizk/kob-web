@@ -34,7 +34,7 @@ class PasswordAuthAdapter implements AdapterInterface
             return new Result(Result::SUCCESS, [
                 'name' => $userProperties->name,
                 'id' => $userProperties->id,
-                'email' => $userProperties->email,
+                'email' => 'my@email.com',// 'email' => $userProperties->email,
             ]);
         }
 
