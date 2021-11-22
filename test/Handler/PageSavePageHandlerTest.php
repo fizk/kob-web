@@ -16,7 +16,7 @@ use App\Middleware;
 use App\Service;
 use function App\Router\dispatch;
 
-class ManifestoSavePageHandlerTest extends TestCase
+class PageSavePageHandlerTest extends TestCase
 {
     public function testSaveAndRedirect()
     {
@@ -48,8 +48,8 @@ class ManifestoSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto{};
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage {};
         });
         $collection = $serviceManager->get(RouterInterface::class);
         $collection->setRouteConfig(require './config/router.php');

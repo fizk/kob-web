@@ -39,8 +39,8 @@ class EntryUpdatePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage
             {
             };
         });

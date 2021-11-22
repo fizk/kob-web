@@ -9,6 +9,7 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Diactoros\Uri;
 use App\Router\RouterInterface;
 use App\Service;
+use App\Model;
 use function App\Router\dispatch;
 
 class ManifestoPageHandlerTest extends TestCase
@@ -20,11 +21,11 @@ class ManifestoPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto{
-                public function getByType($type, $lang = 'is')
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage {
+                public function getByType($type, $lang = 'is'): ?Model\Page
                 {
-                    return new \stdClass;
+                    return new Model\Page();
                 }
             };
         });
@@ -43,11 +44,11 @@ class ManifestoPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto{
-                public function getByType($type, $lang = 'is')
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage {
+                public function getByType($type, $lang = 'is'): ?Model\Page
                 {
-                    return new \stdClass;
+                    return new Model\Page();
                 }
             };
         });

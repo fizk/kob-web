@@ -1,6 +1,8 @@
 <?php
 namespace App\Service;
 
+
+use App\Model;
 use PDO;
 use DateTime;
 
@@ -24,21 +26,31 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param string $id
-     * @return \stdClass
      */
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\Entry
     {
         $statement = $this->pdo->prepare('select * from `Entry` where id = :id');
         $statement->execute(['id' => $id]);
 
         $entry = $statement->fetch();
-        $entry->authors = $this->fetchAuthors($entry->id);
-        $entry->poster = $this->fetchPosters($entry->id);
-        $entry->gallery = $this->fetchGallery($entry->id);
+        if (!$entry) return null;
 
-        return $entry;
+        return (new Model\Entry())
+            ->setId($entry->id)
+            ->setTitle($entry->title)
+            ->setFrom(new DateTime($entry->from))
+            ->setTo(new DateTime($entry->to))
+            ->setCreated(new DateTime($entry->created))
+            ->setAffected(new DateTime($entry->affected))
+            ->setType($entry->type)
+            ->setBodyIs($entry->body_is)
+            ->setBodyEn($entry->body_en)
+            ->setBody(null)
+            ->setOrientation($entry->orientation)
+            ->setAuthors($this->fetchAuthors($entry->id))
+            ->setPoster($this->fetchPosters($entry->id))
+            ->setGallery($this->fetchGallery($entry->id))
+            ;
     }
 
     /**
@@ -49,12 +61,8 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param string $id
-     * @param string $lang
-     * @return array|null
      */
-    public function fetch(string $id, $lang = 'is'): ?array
+    public function fetch(string $id, string $lang = 'is'): ?Model\Entries
     {
         $statement = $this->pdo->prepare(
             $lang === 'is'
@@ -78,30 +86,66 @@ class Entry
                 $result['previous'] = $item;
             }
         }
+        if (!$result['current']) return null;
 
-        if ($result['current'] === null) {
-            return null;
-        }
+        $entries = new Model\Entries();
 
         if ($result['current']) {
-            $result['current']->authors = $this->fetchAuthors($result['current']->id);
-            $result['current']->poster = $this->fetchPosters($result['current']->id);
-            $result['current']->gallery = $this->fetchGallery($result['current']->id);
+            $entries->setCurrent((new Model\Entry())
+                ->setId($result['current']->id)
+                ->setTitle($result['current']->title)
+                ->setFrom(new DateTime($result['current']->from))
+                ->setTo(new DateTime($result['current']->to))
+                ->setCreated(new DateTime($result['current']->created))
+                ->setAffected(new DateTime($result['current']->affected))
+                ->setType($result['current']->type)
+                ->setBodyIs($result['current']->body_is)
+                ->setBodyEn($result['current']->body_en)
+                ->setBody($result['current']->body)
+                ->setOrientation($result['current']->orientation)
+                ->setAuthors($this->fetchAuthors($result['current']->id))
+                ->setPoster($this->fetchPosters($result['current']->id))
+                ->setGallery($this->fetchGallery($result['current']->id)));
+
         }
 
         if ($result['previous']) {
-            $result['previous']->authors = $this->fetchAuthors($result['previous']->id);
-            $result['previous']->poster = $this->fetchPosters($result['previous']->id);
-            // $result['previous']->gallery = $this->fetchGallery($result['previous']->id);
+            $entries->setPrevious((new Model\Entry())
+                ->setId($result['previous']->id)
+                ->setTitle($result['previous']->title)
+                ->setFrom(new DateTime($result['previous']->from))
+                ->setTo(new DateTime($result['previous']->to))
+                ->setCreated(new DateTime($result['previous']->created))
+                ->setAffected(new DateTime($result['previous']->affected))
+                ->setType($result['previous']->type)
+                ->setBodyIs($result['previous']->body_is)
+                ->setBodyEn($result['previous']->body_en)
+                ->setBody($result['previous']->body)
+                ->setOrientation($result['previous']->orientation)
+                ->setAuthors($this->fetchAuthors($result['previous']->id))
+                ->setPoster($this->fetchPosters($result['previous']->id))
+                ->setGallery($this->fetchGallery($result['previous']->id)));
         }
 
         if ($result['next']) {
-            $result['next']->authors = $this->fetchAuthors($result['next']->id);
-            $result['next']->poster = $this->fetchPosters($result['next']->id);
-            // $result['next']->gallery = $this->fetchGallery($result['next']->id);
+            $entries->setNext((new Model\Entry())
+                ->setId($result['next']->id)
+                ->setTitle($result['next']->title)
+                ->setFrom(new DateTime($result['next']->from))
+                ->setTo(new DateTime($result['next']->to))
+                ->setCreated(new DateTime($result['next']->created))
+                ->setAffected(new DateTime($result['next']->affected))
+                ->setType($result['next']->type)
+                ->setBodyIs($result['next']->body_is)
+                ->setBodyEn($result['next']->body_en)
+                ->setBody($result['next']->body)
+                ->setOrientation($result['next']->orientation)
+                ->setAuthors($this->fetchAuthors($result['next']->id))
+                ->setPoster($this->fetchPosters($result['next']->id))
+                ->setGallery($this->fetchGallery($result['next']->id)));
         }
 
-        return $result;
+        return $entries;
     }
 
     /**
@@ -112,11 +156,8 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param DateTime $date
-     * @param string $language
      */
-    public function fetchCurrent(DateTime $date, $language = 'is'): array
+    public function fetchCurrent(DateTime $date, string $language = 'is'): array
     {
         $statement = $this->pdo->prepare(
             $language == 'is'
@@ -126,10 +167,21 @@ class Entry
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
-            return $item;
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
@@ -141,11 +193,8 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param string $type
-     * @param string $language
      */
-    public function fetchLatestByType($type = self::SHOW, $language = 'is'): array
+    public function fetchLatestByType(string $type = self::SHOW, string $language = 'is'): array
     {
         $statement = $this->pdo->prepare(
             $language == 'is'
@@ -155,11 +204,21 @@ class Entry
         $statement->execute(['type' => $type]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
-
-            return $item;
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
@@ -171,9 +230,6 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param null|string $year
-     * @return array
      */
     public function fetchList(?string $year = null): array
     {
@@ -191,11 +247,21 @@ class Entry
         }
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
-
-            return $item;
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
@@ -206,8 +272,6 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @return array
      */
     public function fetchFeed(): array
     {
@@ -217,11 +281,21 @@ class Entry
         $statement->execute([]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
-
-            return $item;
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
@@ -233,11 +307,8 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param $type
-     * @return array
      */
-    public function fetchByType($type)
+    public function fetchByType(string $type): array
     {
         $statement = $this->pdo->prepare('
             select *
@@ -248,9 +319,21 @@ class Entry
         $statement->execute(['type' => $type]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
@@ -262,12 +345,8 @@ class Entry
      * authors
      * posters
      * gallery
-     *
-     * @param DateTime $date
-     * @param string $language
-     * @return array
      */
-    public function fetchAfter(DateTime $date, $language = 'is'): array
+    public function fetchAfter(DateTime $date, string $language = 'is'): array
     {
         $statement = $this->pdo->prepare(
             $language == 'is'
@@ -277,17 +356,27 @@ class Entry
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = $this->fetchGallery($item->id);
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id))
+                ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
 
     /**
      * Fetch 6 most recently affected entries.
      * Mostly for the Dashboard.
-     *
-     * @return array
      */
     public function fetchAffected(): array
     {
@@ -298,16 +387,25 @@ class Entry
         $statement->execute([]);
 
         return array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            $item->gallery = [];
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id));
         }, $statement->fetchAll());
     }
 
     /**
      * Fetch a list of all 'years'.
-     *
-     * @return array
      */
     public function fetchYears(): array
     {
@@ -323,21 +421,31 @@ class Entry
 
     /**
      * Fetch all entries.
-     *
-     * @return array
      */
     public function fetchAll(): array
     {
         $statement = $this->pdo->prepare('select * from `Entry` order by `from` desc');
         $statement->execute();
+        return array_map(function ($item) {
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setBody($item->body ?? null)
+                ->setOrientation($item->orientation);
+        }, $statement->fetchAll());
+
         return $statement->fetchAll();
     }
 
     /**
      * Save an entry.
-     *
-     * @param array $data
-     * @return int
      */
     public function save(array $data): int
     {
@@ -365,9 +473,6 @@ class Entry
 
     /**
      * Attach an array of AuthorIDs to an entry.
-     *
-     * @param string $id
-     * @param array $authors
      */
     public function attachAuthors(string $id, array $authors)
     {

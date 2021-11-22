@@ -1,18 +1,20 @@
 <?php
 namespace App\Service;
 
+use App\Model;
+
 abstract class AbstractAuthor extends Author
 {
     public function __construct()
     {
 
     }
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\Author
     {
-        return new \stdClass;
+        return null;
     }
 
-    public function fetch(string $id): ?\stdClass
+    public function fetch(string $id): ?Model\Author
     {
         return null;
     }

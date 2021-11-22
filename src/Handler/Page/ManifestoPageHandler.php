@@ -8,23 +8,23 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Router\RouterInterface;
-use App\Service\Manifesto;
+use App\Service\Page;
 
 class ManifestoPageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Manifesto $manifesto;
+    private Page $page;
 
-    public function __construct(RouterInterface $router, Manifesto $manifesto, TemplateRendererInterface $template)
+    public function __construct(RouterInterface $router, Page $page, TemplateRendererInterface $template)
     {
         $this->router    = $router;
-        $this->manifesto = $manifesto;
+        $this->page = $page;
         $this->template  = $template;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $entry = $this->manifesto->getByType('manifesto', $request->getAttribute('language', 'is'));
+        $entry = $this->page->getByType('manifesto', $request->getAttribute('language', 'is'));
 
         return $entry
             ? new HtmlResponse($this->template->render('app::manifesto-page', ['manifesto' => $entry]))

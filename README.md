@@ -55,3 +55,6 @@ When an image is uploaded, it is cropped so that is doesn't exceed 2560x1600 px.
 When a cropped version of an image is requested, first the system will go into `image-cache` and find the "original" version and then crop it to size. The cropped version is kept in the public's `img` directory. Again, to persist the cropped images between containers, mount the `img` folder to the host system. To mount in the project's root directory, you can do this `./image-crop:/var/www/html/img`.
 
 Both these directories need to have read/write for any user.
+
+
+`XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html ./test/doc`

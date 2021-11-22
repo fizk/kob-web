@@ -25,7 +25,9 @@ RUN apt-get update; \
         libmagickcore-dev \
         zlib1g-dev \
         libssl-dev \
-        libcurl4-openssl-dev; \
+        libcurl4-openssl-dev \
+        locales \
+        locales-all; \
     docker-php-ext-install zip; \
     docker-php-ext-install pdo_mysql; \
     docker-php-ext-install bcmath; \

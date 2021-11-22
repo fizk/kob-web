@@ -6,17 +6,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use App\Template\TemplateRendererInterface;
-use App\Service\Manifesto;
+use App\Service\Page;
 
 class AdminMenuMiddleware implements MiddlewareInterface
 {
     private TemplateRendererInterface $templateRenderer;
-    private Manifesto $manifesto;
+    private Page $page;
 
-    public function __construct(TemplateRendererInterface $template, Manifesto $manifesto)
+    public function __construct(TemplateRendererInterface $template, Page $page)
     {
         $this->templateRenderer = $template;
-        $this->manifesto = $manifesto;
+        $this->page = $page;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -24,7 +24,7 @@ class AdminMenuMiddleware implements MiddlewareInterface
         $this->templateRenderer->addDefaultParam(
             TemplateRendererInterface::TEMPLATE_ALL,
             'admin_menu_pages',
-            $this->manifesto->fetch()
+            $this->page->fetch()
         );
 
         return $handler->handle($request);

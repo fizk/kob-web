@@ -15,6 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use App\Router\RouterInterface;
 use App\Middleware;
 use App\Service;
+use App\Model;
 use function App\Router\dispatch;
 
 class EntrySavePageHandlerTest extends TestCase
@@ -57,9 +58,9 @@ class EntrySavePageHandlerTest extends TestCase
                 {
                     return 2;
                 }
-                public function get(string $id): \stdClass
+                public function get(string $id): ?Model\Entry
                 {
-                    return new \stdClass;
+                    return new Model\Entry();
                 }
             };
         });
@@ -120,9 +121,9 @@ class EntrySavePageHandlerTest extends TestCase
                 {
                     return 2;
                 }
-                public function get(string $id): \stdClass
+                public function get(string $id): ?Model\Entry
                 {
-                    return new \stdClass;
+                    return new Model\Entry();
                 }
             };
         });

@@ -21,7 +21,11 @@ class RssPageHandlerTest extends TestCase
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
         $serviceManager->setFactory(\App\Service\Entry::class, function () {
-            return new class extends AbstractEntry{};
+            return new class extends AbstractEntry {
+                    public function fetchFeed(): array {
+                        return [];
+                    }
+            };
         });
         $collection = $serviceManager->get(RouterInterface::class);
         $collection->setRouteConfig(require './config/router.php');

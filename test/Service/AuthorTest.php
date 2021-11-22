@@ -3,11 +3,11 @@
 namespace App\Service;
 
 use PHPUnit\Framework\TestCase;
-
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-
+use App\Model;
+use DateTime;
 use PDO;
 
 class AuthorTest extends TestCase
@@ -19,12 +19,12 @@ class AuthorTest extends TestCase
     public function testGet()
     {
         $service = new Author($this->pdo);
-        $expected = (object)[
-            'id' => '1',
-            'name' => 'author 1',
-            'created' => '2001-01-01 00:00:00',
-            'affected' => '2001-01-01 00:00:00',
-        ];
+        $expected = (new Model\Author())
+            ->setId(1)
+            ->setName('author 1')
+            ->setCreated(new DateTime('2001-01-01 00:00:00'))
+            ->setAffected(new DateTime('2001-01-01 00:00:00'));
+
         $actual = $service->get('1');
 
         $this->assertEquals($expected, $actual);
@@ -33,52 +33,46 @@ class AuthorTest extends TestCase
     public function testFetch()
     {
         $service = new Author($this->pdo);
-        $expected = (object)[
-            'id' => '1',
-            'name' => 'author 1',
-            'created' => '2001-01-01 00:00:00',
-            'affected' => '2001-01-01 00:00:00',
-            'entries' => [
-                (object)[
-                    'id' => '1',
-                    'title' => 'show #1',
-                    'from' => '2001-06-01',
-                    'to' => '2001-07-01',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => Entry::PROJECT,
-                    'body_is' => 'is',
-                    'body_en' => 'en',
-                    'orientation' => '',
-                    'gallery' => [],
-                    'poster' => (object)[
-                        'id' => '1',
-                        'name' => 'name1',
-                        'description' => null,
-                        'size' => '0',
-                        'width' => '0',
-                        'height' => '0',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '1',
-                    ],
-                    'authors' => [
-                        (object)[
-                            'id' => '1',
-                            'name' => 'author 1',
-                            'created' => '2001-01-01 00:00:00',
-                            'affected' => '2001-01-01 00:00:00',
-                        ],
-                        (object)[
-                            'id' => '2',
-                            'name' => 'author 2',
-                            'created' => '2001-01-01 00:00:00',
-                            'affected' => '2001-01-01 00:00:00',
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        $expected = (new Model\Author())
+            ->setId(1)
+            ->setName('author 1')
+            ->setCreated(new DateTime('2001-01-01 00:00:00'))
+            ->setAffected(new DateTime('2001-01-01 00:00:00'))
+            ->setEntries([
+                (new Model\Entry())
+                ->setId(1)
+                ->setTitle('show #1')
+                ->setFrom(new DateTime('2001-06-01'))
+                ->setTo(new DateTime('2001-07-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+                ->setAuthors([
+                    (new Model\Author())
+                        ->setId(1)
+                        ->setName('author 1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                    (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                    ])
+                    ->setPoster(
+                        (new Model\Image())
+                            ->setId(1)
+                            ->setName('name1')
+                            ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                            ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                    )
+
+            ])
+            ;
+
         $actual = $service->fetch('1');
 
         $this->assertEquals($expected, $actual);
@@ -90,6 +84,299 @@ class AuthorTest extends TestCase
         $actual = $service->fetch('1234567');
 
         $this->assertNull($actual);
+    }
+
+    public function testFetchList()
+    {
+        $service = new Author($this->pdo);
+        $expected = [
+            (new Model\Author())
+                ->setId(1)
+                ->setName('author 1')
+                ->setCreated(new DateTime('2001-01-01'))
+                ->setAffected(new DateTime('2001-01-01'))
+                ->setEntries([
+                    (new Model\Entry())
+                    ->setId(1)
+                    ->setTitle('show #1')
+                    ->setFrom(new DateTime('2001-06-01'))
+                    ->setTo(new DateTime('2001-07-01'))
+                    ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                    ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                    ->setType(Entry::PROJECT)
+                    ->setBodyIs('is')
+                    ->setBodyEn('en')
+                    ->setOrientation('')
+                    ->setAuthors([
+                        (new Model\Author())
+                        ->setId(1)
+                        ->setName('author 1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                        (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                    ])
+                    ->setPoster(
+                        (new Model\Image())
+                        ->setId(1)
+                        ->setName('name1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                    ),
+                ]),
+            (new Model\Author())
+                ->setId(2)
+                ->setName('author 2')
+                ->setCreated(new DateTime('2001-01-01'))
+                ->setAffected(new DateTime('2001-01-01'))
+                ->setEntries([
+                    (new Model\Entry())
+                        ->setId(1)
+                        ->setTitle('show #1')
+                        ->setFrom(new DateTime('2001-06-01'))
+                        ->setTo(new DateTime('2001-07-01'))
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ->setType(Entry::PROJECT)
+                        ->setBodyIs('is')
+                        ->setBodyEn('en')
+                        ->setOrientation('')
+                        ->setAuthors([
+                            (new Model\Author())
+                                ->setId(1)
+                                ->setName('author 1')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                            (new Model\Author())
+                                ->setId(2)
+                                ->setName('author 2')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                        ])
+                        ->setPoster(
+                            (new Model\Image())
+                                ->setId(1)
+                                ->setName('name1')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ),
+                    (new Model\Entry())
+                        ->setId(4)
+                        ->setTitle('show #4')
+                        ->setFrom(new DateTime('2010-01-15'))
+                        ->setTo(new DateTime('2010-02-01'))
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ->setType(Entry::SHOW)
+                        ->setBodyIs('is')
+                        ->setBodyEn('en')
+                        ->setOrientation('')
+                        ->setPoster(
+                            (new Model\Image())
+                                ->setId(1)
+                                ->setName('name1')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        )
+                        ->setAuthors([
+                            (new Model\Author())
+                                ->setId(2)
+                                ->setName('author 2')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ]),
+                    (new Model\Entry())
+                        ->setId(6)
+                        ->setTitle('show #6')
+                        ->setFrom(new DateTime('2020-01-01'))
+                        ->setTo(new DateTime('2020-01-01'))
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ->setType(Entry::PROJECT)
+                        ->setBodyIs('is')
+                        ->setBodyEn('en')
+                        ->setOrientation('')
+                        ->setPoster(
+                            (new Model\Image())
+                                ->setId(1)
+                                ->setName('name1')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        )
+                        ->setAuthors([
+                            (new Model\Author())
+                                ->setId(2)
+                                ->setName('author 2')
+                                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                        ]),
+            ]),
+            (new Model\Author())
+                ->setId(3)
+                ->setName('author 3')
+                ->setCreated(new DateTime('2001-01-01'))
+                ->setAffected(new DateTime('2001-01-01')),
+        ];
+        $actual = $service->fetchList();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFetchAffected()
+    {
+        $service = new Author($this->pdo);
+        $actual = $service->fetchAffected();
+        $this->assertCount(3, $actual);
+    }
+
+    public function testUpdate()
+    {
+        $service = new Author($this->pdo);
+
+        $service->save([
+            'id' => '1',
+            'name' => 'author one',
+            'created' => '2001-01-01',
+            'affected' => '2001-01-01',
+        ]);
+
+        $expected = [
+            (object)[
+                'id' => '1',
+                'name' => 'author one',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '2',
+                'name' => 'author 2',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '3',
+                'name' => 'author 3',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+        ];
+
+        $statement = $this->getDatabase()->prepare('select * from Author');
+        $statement->execute();
+        $actual = $statement->fetchAll();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testSave()
+    {
+        $service = new Author($this->pdo);
+
+        $id = $service->save([
+            'name' => 'author new',
+            'created' => '2001-01-01',
+            'affected' => '2001-01-01',
+        ]);
+
+        $expected = [
+            (object)[
+                'id' => '1',
+                'name' => 'author 1',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '2',
+                'name' => 'author 2',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '3',
+                'name' => 'author 3',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => $id,
+                'name' => 'author new',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+        ];
+
+        $statement = $this->getDatabase()->prepare('select * from Author');
+        $statement->execute();
+        $actual = $statement->fetchAll();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testDelete()
+    {
+        $service = new Author($this->pdo);
+
+        $count = $service->delete('1');
+
+        $expected = [
+            (object)[
+                'id' => '2',
+                'name' => 'author 2',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '3',
+                'name' => 'author 3',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+        ];
+
+        $statement = $this->getDatabase()->prepare('select * from Author');
+        $statement->execute();
+        $actual = $statement->fetchAll();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(1, $count);
+    }
+
+    public function testDeleteNotFound()
+    {
+        $service = new Author($this->pdo);
+
+        $count = $service->delete('12345678');
+
+        $expected = [
+            (object)[
+                'id' => '1',
+                'name' => 'author 1',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '2',
+                'name' => 'author 2',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+            (object)[
+                'id' => '3',
+                'name' => 'author 3',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+            ],
+        ];
+
+        $statement = $this->getDatabase()->prepare('select * from Author');
+        $statement->execute();
+        $actual = $statement->fetchAll();
+
+        $this->assertEquals($expected, $actual);
+        $this->assertEquals(0, $count);
     }
 
     protected function tearDown(): void
@@ -195,7 +482,7 @@ class AuthorTest extends TestCase
                 // ------------------
                 [
                     'id' => 6,
-                    'title' => 'show #5',
+                    'title' => 'show #6',
                     'from' => '2020-01-01',
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',

@@ -1,21 +1,27 @@
 <?php
 namespace App\Service;
 
-abstract class AbstracManifesto extends Manifesto
+use App\Model;
+
+abstract class AbstracPage extends Page
 {
     public function __construct()
     {
     }
-    public function get(string $id)
+
+    public function get(string $id): ?Model\Page
     {
+        return null;
     }
 
-    public function fetch()
+    public function fetch(): array
     {
+        return [];
     }
 
-    public function getByType($type, $lang = 'is')
+    public function getByType($type, $lang = 'is'): ?Model\Page
     {
+        return null;
     }
 
     public function attachImages(string $manifestoId, array $images): array

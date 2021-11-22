@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Model;
 use PDO;
 use DateTime;
 
@@ -13,13 +14,25 @@ class Image
         $this->pdo = $pdo;
     }
 
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\Image
     {
         $statement = $this->pdo->prepare('
             select * from Image where id = :id
         ');
         $statement->execute(['id' => $id]);
-        return $statement->fetch();
+
+        $object = $statement->fetch();
+        return $object
+            ? (new Model\Image())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setDescription($object->description)
+                ->setSize($object->size)
+                ->setWidth($object->width)
+                ->setHeight($object->height)
+                ->setCreated(new DateTime($object->created))
+                ->setAffected(new DateTime($object->affected))
+            : null;
     }
 
 

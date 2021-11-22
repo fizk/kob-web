@@ -4,6 +4,7 @@ namespace App\Service;
 
 
 use DateTime;
+use App\Model;
 
 abstract class AbstractEntry extends Entry
 {
@@ -11,14 +12,20 @@ abstract class AbstractEntry extends Entry
     {
     }
 
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\Entry
     {
-        return new \stdClass;
+        return (new Model\Entry)
+            ->setId(1)
+            ->setTitle('title1')
+            ->setType(Entry::NEWS)
+            ->setFrom(new DateTime())
+            ->setOrientation('')
+            ->setTo(new DateTime());
     }
 
-    public function fetch(string $id, $lang = 'is'): ?array
+    public function fetch(string $id, string $lang = 'is'): ?Model\Entries
     {
-        return [];
+        return (new Model\Entries());
     }
 
     public function fetchCurrent(DateTime $date, $language = 'is'): array
@@ -41,7 +48,7 @@ abstract class AbstractEntry extends Entry
         return [];
     }
 
-    public function fetchByType($type)
+    public function fetchByType(string $type): array
     {
         return [];
     }

@@ -1,6 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Model\Author;
+use App\Model\Image;
+use DateTime;
+
 trait EntryTrait
 {
     /**
@@ -10,7 +14,7 @@ trait EntryTrait
      * @param string $id
      * @return \stdClass|null
      */
-    private function fetchPosters(string $id): ?\stdClass
+    private function fetchPosters(string $id): ?Image
     {
         $posterStatement = $this->pdo->prepare('
             select I.*, EI.`type` from Entry_has_Image EI
@@ -20,7 +24,18 @@ trait EntryTrait
         ');
         $posterStatement->execute(['id' => $id]);
         $posters = $posterStatement->fetch();
-        return  $posters ? $posters : null;
+        return  $posters
+            ? (new Image())
+                ->setId($posters->id)
+                ->setName($posters->name)
+                ->setDescription($posters->description)
+                ->setSize($posters->size)
+                ->setWidth($posters->width)
+                ->setHeight($posters->height)
+                ->setOrder($posters->order ?? null)
+                ->setCreated(new DateTime($posters->created))
+                ->setAffected(new DateTime($posters->affected))
+            : null;
     }
 
     /**
@@ -39,7 +54,21 @@ trait EntryTrait
             order by EI.`order`;
         ');
         $galleryStatement->execute(['id' => $id]);
-        return $galleryStatement->fetchAll();
+
+        return array_map(function($object) {
+            return (new Image())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setDescription($object->description)
+                ->setSize($object->size)
+                ->setWidth($object->width)
+                ->setHeight($object->height)
+                ->setOrder($object->order ?? null)
+                ->setCreated(new DateTime($object->created))
+                ->setAffected(new DateTime($object->affected))
+                ;
+        }, $galleryStatement->fetchAll());
+
     }
 
     /**
@@ -59,6 +88,15 @@ trait EntryTrait
         ');
 
         $authorStatement->execute(['id' => $id]);
-        return $authorStatement->fetchAll();
+
+        return array_map(function ($object) {
+            return (new Author)
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setCreated(new DateTime($object->created))
+                ->setAffected(new DateTime($object->affected))
+                ->setOrder($object->order ?? null)
+                ;
+        }, $authorStatement->fetchAll());
     }
 }

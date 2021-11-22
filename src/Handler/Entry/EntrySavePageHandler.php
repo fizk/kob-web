@@ -58,6 +58,9 @@ class EntrySavePageHandler implements RequestHandlerInterface
             return new RedirectResponse($this->router->generateUri('entry', ['id' => $insertedId]));
         }
 
+        //FIXME
+        $data['from'] = new DateTime($data['from']);
+        $data['to'] = new DateTime($data['to']);
         return new HtmlResponse($this->template->render('dashboard::entry-update-page', [
             'entry' => $data,
             'messages' => $form->getMessages(),

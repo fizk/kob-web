@@ -2,6 +2,8 @@
 namespace App\Service;
 
 use PDO;
+use App\Model;
+use DateTime;
 
 class Author
 {
@@ -17,21 +19,27 @@ class Author
     /**
      * Get on Author in its basic form
      */
-    public function get(string $id): ?\stdClass
+    public function get(string $id): ?Model\Author
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
         ');
         $statement->execute(['id' => $id]);
         $author = $statement->fetch();
-        return $author ? $author : null;
+        return $author
+            ? (new Model\Author)
+                ->setId($author->id)
+                ->setName($author->name)
+                ->setCreated(new DateTime($author->created))
+                ->setAffected(new DateTime($author->affected))
+            : null;
     }
 
     /**
      * Fetch one Author and all the Entries assosiated
      * with that person
      */
-    public function fetch(string $id): ?\stdClass
+    public function fetch(string $id): ?Model\Author
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
@@ -40,6 +48,14 @@ class Author
         $item = $statement->fetch();
 
         if (!$item) return null;
+
+        $author = (new Model\Author)
+            ->setId($item->id)
+            ->setName($item->name)
+            ->setCreated(new DateTime($item->created))
+            ->setAffected(new DateTime($item->affected))
+            ->setOrder($item->order ?? null)
+            ;
 
         $entriesStatement = $this->pdo->prepare('
             select E.* from Entry_has_Author EA
@@ -50,16 +66,24 @@ class Author
         $entriesStatement->execute(['id' => $item->id]);
         $item->entries = $entriesStatement->fetchAll();
 
-        $item->entries = array_map(function ($item) {
-            $item->authors = $this->fetchAuthors($item->id);
-            $item->poster = $this->fetchPosters($item->id);
-            // $item->gallery = $this->fetchGallery($item->id);
-            $item->gallery = [];
-
+        $author->setEntries(array_map(function ($item) {
+            return (new Model\Entry())
+                ->setId($item->id)
+                ->setTitle($item->title)
+                ->setFrom(new DateTime($item->from))
+                ->setTo(new DateTime($item->to))
+                ->setCreated(new DateTime($item->created))
+                ->setAffected(new DateTime($item->affected))
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en)
+                ->setOrientation($item->orientation)
+                ->setAuthors($this->fetchAuthors($item->id))
+                ->setPoster($this->fetchPosters($item->id));
             return $item;
-        }, $item->entries);
+        }, $item->entries));
 
-        return $item;
+        return $author;
     }
 
     public function fetchList(): array
@@ -75,10 +99,29 @@ class Author
             where EA.author_id = :id;
         ');
 
-        return array_map(function ($item) use ($entriesStatement) {
-            $entriesStatement->execute(['id' => $item->id]);
-            $item->entries = $entriesStatement->fetchAll();
-            return $item;
+        return array_map(function ($author) use ($entriesStatement) {
+            $entriesStatement->execute(['id' => $author->id]);
+            return (new Model\Author)
+                ->setId($author->id)
+                ->setName($author->name)
+                ->setCreated(new DateTime($author->created))
+                ->setAffected(new DateTime($author->affected))
+                ->setEntries(array_map(function($item) {
+                    return (new Model\Entry())
+                        ->setId($item->id)
+                        ->setTitle($item->title)
+                        ->setFrom(new DateTime($item->from))
+                        ->setTo(new DateTime($item->to))
+                        ->setCreated(new DateTime($item->created))
+                        ->setAffected(new DateTime($item->affected))
+                        ->setType($item->type)
+                        ->setBodyIs($item->body_is)
+                        ->setBodyEn($item->body_en)
+                        ->setOrientation($item->orientation)
+                        ->setAuthors($this->fetchAuthors($item->id))
+                        ->setPoster($this->fetchPosters($item->id))
+                    ;
+                }, $entriesStatement->fetchAll()));
         }, $list);
     }
 
@@ -89,7 +132,13 @@ class Author
         ');
         $statement->execute([]);
 
-        return $statement->fetchAll();
+        return array_map(function ($author) {
+            return (new Model\Author)
+                ->setId($author->id)
+                ->setName($author->name)
+                ->setCreated(new DateTime($author->created))
+                ->setAffected(new DateTime($author->affected));
+        }, $statement->fetchAll());
     }
 
     public function save(array $data): int

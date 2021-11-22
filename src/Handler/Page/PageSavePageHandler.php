@@ -7,21 +7,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
-use App\Template\TemplateRendererInterface;
-use App\Service\Manifesto;
-use App\Form\ManifestoForm;
+use App\Service\Page;
+use App\Form\PageForm;
 
-class ManifestoSavePageHandler implements RequestHandlerInterface
+class PageSavePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
-    private TemplateRendererInterface $template;
-    private Manifesto $manifesto;
+    private Page $page;
 
-    public function __construct(RouterInterface $router, TemplateRendererInterface $template, Manifesto $manifesto)
+    public function __construct(RouterInterface $router, Page $page)
     {
         $this->router    = $router;
-        $this->template = $template;
-        $this->manifesto = $manifesto;
+        $this->page = $page;
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -29,12 +26,12 @@ class ManifestoSavePageHandler implements RequestHandlerInterface
         $id = $request->getAttribute('id');
         $post = $request->getParsedBody();
 
-        $form = new ManifestoForm();
+        $form = new PageForm();
         $form->setData(array_merge($post, ['id' => $id]));
 
         if ($form->isValid()) {
-            $this->manifesto->save($form->getData());
-            $this->manifesto->attachImages($id, isset($post['gallery']) ? $post['gallery'] : []);
+            $this->page->save($form->getData());
+            $this->page->attachImages($id, isset($post['gallery']) ? $post['gallery'] : []);
 
             return new RedirectResponse($this->router->generateUri('about'));
         }

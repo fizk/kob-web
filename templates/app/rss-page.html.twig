@@ -19,8 +19,10 @@
             ]]>
         </description>
         <link>{{ host }}</link>
-        <lastBuildDate>{{ list[0].affected|RFC822 }}</lastBuildDate>
-        <pubDate>{{ list[0].affected|RFC822 }}</pubDate>
+        {% if list|length > 0 %}
+            <lastBuildDate>{{ list[0].affected|RFC822 }}</lastBuildDate>
+            <pubDate>{{ list[0].affected|RFC822 }}</pubDate>
+        {% endif %}
         <image>
             <url>{{ host }}/images/poster.jpg</url>
             <title>Kling &amp; Bang</title>
@@ -40,7 +42,7 @@
                     {% endfor %}
                 </ul>
                 <h3>
-                    <time>{{ item.from }}</time> / <time>{{ item.to }}</time>
+                    <time>{{ item.from|date }}</time> / <time>{{ item.to|date }}</time>
                 </h3>
 
                 {% markdown %}

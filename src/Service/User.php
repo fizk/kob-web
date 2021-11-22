@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use PDO;
+use App\Model;
 
 class User
 {
@@ -14,37 +15,45 @@ class User
 
     /**
      * Get one User
-     *
-     * @param string $id
-     * @return \stdClass
      */
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\User
     {
-        $statement = $this->pdo->prepare('select * from `User` where id = :id');
+        $statement = $this->pdo->prepare(
+            'select * from `User` where id = :id'
+        );
         $statement->execute(['id' => $id]);
 
-        return $statement->fetch();
+        $object = $statement->fetch();
+        return $object
+            ? (new Model\User())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setEmail($object->email)
+                ->setPassword($object->password)
+                ->setType($object->type)
+            : null;
     }
 
     /**
      * Get all Users
-     *
-     * @param string $id
-     * @return \stdClass
      */
     public function fetch(): array
     {
         $statement = $this->pdo->prepare('select * from `User`');
         $statement->execute();
 
-        return $statement->fetchAll();
+        return array_map(function ($object) {
+            return (new Model\User())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setEmail($object->email)
+                ->setPassword($object->password)
+                ->setType($object->type);
+        }, $statement->fetchAll());
     }
 
     /**
      * Save a User.
-     *
-     * @param array $data
-     * @return int
      */
     public function save(array $data): int
     {
@@ -71,9 +80,6 @@ class User
 
     /**
      * Delete a User.
-     *
-     * @param string $id
-     * @return int affected rows
      */
     public function delete(string $id): int
     {
@@ -82,7 +88,10 @@ class User
         return $statement->rowCount();
     }
 
-    public function fetchByEmail($email)
+    /**
+     * Get user by emails
+     */
+    public function fetchByEmail($email): ?Model\User
     {
         $statement = $this->pdo->prepare('
           select * from `User` where `email` = :email
@@ -91,10 +100,21 @@ class User
             'email' => $email,
         ]);
 
-        return $statement->fetch();
+        $object = $statement->fetch();
+        return $object
+                ? (new Model\User())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setEmail($object->email)
+                ->setPassword($object->password)
+                ->setType($object->type)
+            : null;
     }
 
-    public function fetchByCredentials($name, $password)
+    /**
+     * Get user by username and password
+     */
+    public function fetchByCredentials($name, $password): ?Model\User
     {
         $statement = $this->pdo->prepare('
           select * from `User` where `name` = :name and `password` = :password
@@ -104,6 +124,14 @@ class User
             'password' => $password,
         ]);
 
-        return $statement->fetch();
+        $object = $statement->fetch();
+        return $object
+            ? (new Model\User())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setEmail($object->email)
+                ->setPassword($object->password)
+                ->setType($object->type)
+            : null;
     }
 }

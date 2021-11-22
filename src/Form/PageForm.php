@@ -7,7 +7,7 @@ use App\Filters\ToInt;
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits};
 
-class ManifestoForm extends Form
+class PageForm extends Form
 {
     public function getInputFilterSpecification(): array
     {

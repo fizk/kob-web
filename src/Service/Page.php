@@ -2,8 +2,10 @@
 namespace App\Service;
 
 use PDO;
+use App\Model;
+use DateTime;
 
-class Manifesto
+class Page
 {
     private PDO $pdo;
 
@@ -12,15 +14,14 @@ class Manifesto
         $this->pdo = $pdo;
     }
 
-    public function get(string $id)
+    public function get(string $id): ?Model\Page
     {
         $entryStatement = $this->pdo->prepare('select * from `Manifesto` where id = :id');
         $entryStatement->execute(['id' => $id]);
 
-        $manifesto =  $entryStatement->fetch();
-        if (!$manifesto) {
-            return null;
-        }
+        $page =  $entryStatement->fetch();
+
+        if (!$page) return null;
 
         $galleryStatement = $this->pdo->prepare('
             select I.* from `Manifesto_has_Image` MI
@@ -28,20 +29,42 @@ class Manifesto
                 where MI.entry_id = :id
         ');
         $galleryStatement->execute(['id' => $id]);
-        $manifesto->gallery = $galleryStatement->fetchAll();
 
-        return $manifesto;
+        return (new Model\Page)
+            ->setId($page->id)
+            ->setType($page->type)
+            ->setBodyIs($page->body_is)
+            ->setBodyEn($page->body_en)
+            ->setGallery(array_map(function($item) {
+                return (new Model\Image())
+                    ->setId($item->id)
+                    ->setName($item->name)
+                    ->setDescription($item->description)
+                    ->setSize($item->size)
+                    ->setWidth($item->width)
+                    ->setHeight($item->height)
+                    ->setOrder($item->order ?? null)
+                    ->setCreated(new DateTime($item->created))
+                    ->setAffected(new DateTime($item->affected));
+            }, $galleryStatement->fetchAll()));
+
     }
 
-    public function fetch()
+    public function fetch(): array
     {
         $entryStatement = $this->pdo->prepare('select * from `Manifesto`');
         $entryStatement->execute([]);
 
-        return $entryStatement->fetchAll();
+        return array_map(function($item) {
+            return (new Model\Page)
+                ->setId($item->id)
+                ->setType($item->type)
+                ->setBodyIs($item->body_is)
+                ->setBodyEn($item->body_en);
+        }, $entryStatement->fetchAll());
     }
 
-    public function getByType($type, $lang = 'is')
+    public function getByType($type, $lang = 'is'): ?Model\Page
     {
         $entryStatement = $this->pdo->prepare(
             $lang === 'is'
@@ -50,8 +73,8 @@ class Manifesto
         );
         $entryStatement->execute(['type' => $type]);
 
-        $manifesto =  $entryStatement->fetch();
-        if (!$manifesto) {
+        $page =  $entryStatement->fetch();
+        if (!$page) {
             return null;
         }
         $galleryStatement = $this->pdo->prepare('
@@ -59,12 +82,26 @@ class Manifesto
                 join `Image` I on (I.`id` = MI.`image_id`)
                 where MI.entry_id = :id
         ');
-        $galleryStatement->execute(['id' => $manifesto->id]);
+        $galleryStatement->execute(['id' => $page->id]);
 
-
-        $manifesto->gallery = $galleryStatement->fetchAll();
-
-        return $manifesto;
+        return (new Model\Page)
+            ->setId($page->id)
+            ->setType($page->type)
+            ->setBody($page->body)
+            ->setBodyIs($page->body_is)
+            ->setBodyEn($page->body_en)
+            ->setGallery(array_map(function ($item) {
+                return (new Model\Image())
+                    ->setId($item->id)
+                    ->setName($item->name)
+                    ->setDescription($item->description)
+                    ->setSize($item->size)
+                    ->setWidth($item->width)
+                    ->setHeight($item->height)
+                    ->setOrder($item->order ?? null)
+                    ->setCreated(new DateTime($item->created))
+                    ->setAffected(new DateTime($item->affected));
+            }, $galleryStatement->fetchAll()));
     }
 
     public function attachImages(string $manifestoId, array $images): array

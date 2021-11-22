@@ -8,9 +8,9 @@ use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
 
+use App\Model;
 use DateTime;
 use PDO;
-
 
 class EntryTest extends TestCase
 {
@@ -21,57 +21,44 @@ class EntryTest extends TestCase
     public function testGet()
     {
         $service = new Entry($this->pdo);
-        $expected = (object)[
-            'id' => '1',
-            'title' => 'show #1',
-            'from' => '2001-06-01',
-            'to' => '2001-07-01',
-            'created' => '2001-01-01 00:00:00',
-            'affected' => '2001-01-01 00:00:00',
-            'type' => Entry::PROJECT,
-            'body_is' => 'is',
-            'body_en' => 'en',
-            'orientation' => '',
-            'authors' => [
-                (object)[
-                    'id' => '1',
-                    'name' => 'author 1',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                ],
-                (object)[
-                    'id' => '2',
-                    'name' => 'author 2',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                ],
-            ],
-            'poster' => (object)[
-                    'id' => '1',
-                    'name' => 'name1',
-                    'description' => null,
-                    'size' => '0',
-                    'width' => '0',
-                    'height' => '0',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => '1',
+        $expected = (new Model\Entry())
+            ->setId(1)
+            ->setTitle('show #1')
+            ->setFrom(new DateTime('2001-06-01'))
+            ->setTo(new DateTime('2001-07-01'))
+            ->setCreated(new DateTime('2001-01-01 00:00:00'))
+            ->setAffected(new DateTime('2001-01-01 00:00:00'))
+            ->setType(Entry::PROJECT)
+            ->setBodyIs('is')
+            ->setBodyEn('en')
+            ->setOrientation('')
+            ->setAuthors([
+                (new Model\Author())
+                    ->setId(1)
+                    ->setName('author 1')
+                    ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                    ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                (new Model\Author())
+                    ->setId(2)
+                    ->setName('author 2')
+                    ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                    ->setAffected(new DateTime('2001-01-01 00:00:00')),
+            ])
+            ->setPoster(
+                (new Model\Image())
+                    ->setId(1)
+                    ->setName('name1')
+                    ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                    ->setAffected(new DateTime('2001-01-01 00:00:00'))
+            )
+            ->setGallery([
+                (new Model\Image())
+                    ->setId(2)
+                    ->setName('name2')
+                    ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                    ->setAffected(new DateTime('2001-01-01 00:00:00'))
+            ]);
 
-            ],
-            'gallery' => [
-                (object)[
-                    'id' => '2',
-                    'name' => 'name2',
-                    'description' => null,
-                    'size' => 0,
-                    'width' => 0,
-                    'height' => 0,
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => '2',
-                ]
-            ],
-        ];
         $actual = $service->get('1');
 
         $this->assertEquals($expected, $actual);
@@ -80,92 +67,70 @@ class EntryTest extends TestCase
     public function testFetch()
     {
         $service = new Entry($this->pdo);
-        $expected = [
-                'previous' => (object)[
-                    'id' => '3',
-                    'title' => 'show #3',
-                    'from' => '2010-01-01',
-                    'to' => '2010-02-01',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => Entry::PROJECT,
-                    'body' => 'is',
-                    'body_is' => 'is',
-                    'body_en' => 'en',
-                    'orientation' => '',
-                    'body' => 'is',
-                    'authors' => [],
-                    'poster' => false,
-                ],
-                'current' => (object)[
-                'id' => '1',
-                'title' => 'show #1',
-                'from' => '2001-06-01',
-                'to' => '2001-07-01',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::PROJECT,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'authors' => [
-                    (object)[
-                        'id' => '1',
-                        'name' => 'author 1',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ],
-                    (object)[
-                        'id' => '2',
-                        'name' => 'author 2',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ],
-                ],
-                'poster' => (object)[
-                        'id' => '1',
-                        'name' => 'name1',
-                        'description' => null,
-                        'size' => '0',
-                        'width' => '0',
-                        'height' => '0',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '1',
+        $expected = (new Model\Entries())
+            ->setPrevious((new Model\Entry())
+                ->setId(3)
+                ->setTitle('show #3')
+                ->setFrom(new DateTime('2010-01-01'))
+                ->setTo(new DateTime('2010-02-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation(''))
+            ->setCurrent((new Model\Entry())
+                ->setId(1)
+                ->setTitle('show #1')
+                ->setFrom(new DateTime('2001-06-01'))
+                ->setTo(new DateTime('2001-07-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+                ->setAuthors([
+                    (new Model\Author())
+                        ->setId(1)
+                        ->setName('author 1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                    (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                ])
+                ->setPoster(
+                    (new Model\Image())
+                        ->setId(1)
+                        ->setName('name1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                )
+                ->setGallery([
+                    (new Model\Image())
+                        ->setId(2)
+                        ->setName('name2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ]))
+            ->setNext((new Model\Entry())
+                ->setId(2)
+                ->setTitle('show #2')
+                ->setFrom(new DateTime('2001-06-01'))
+                ->setTo(new DateTime('2001-07-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::SHOW)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation(''));
 
-                ],
-                'gallery' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'name2',
-                        'description' => null,
-                        'size' => 0,
-                        'width' => 0,
-                        'height' => 0,
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '2',
-                    ]
-                ],
-            ],
-            'next' => (object)[
-                'id' => '2',
-                'title' => 'show #2',
-                'from' => '2001-06-01',
-                'to' => '2001-07-01',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::SHOW,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'body' => 'is',
-                'authors' =>  [],
-                'poster' => false,
-            ],
-        ];
         $actual = $service->fetch('1', 'is');
 
         $this->assertEquals($expected, $actual);
@@ -175,84 +140,65 @@ class EntryTest extends TestCase
     {
         $service = new Entry($this->pdo);
         $expected = [
-            (object)[
-                'id' => '3',
-                'title' => 'show #3',
-                'from' => '2010-01-01',
-                'to' => '2010-02-01',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::PROJECT,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'poster' => null,
-                'gallery' => [],
-                'authors' => [],
-            ],
-            (object)[
-                'id' => '5',
-                'title' => 'show #5',
-                'from' => '2010-01-02',
-                'to' => '2010-01-31',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::SHOW,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'poster' => null,
-                'gallery' => [],
-                'authors' => [],
-            ],
-            (object)[
-                'id' => '4',
-                'title' => 'show #4',
-                'from' => '2010-01-15',
-                'to' => '2010-02-01',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::SHOW,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'poster' => (object)[
-                    'id' => '1',
-                    'name' => 'name1',
-                    'description' => null,
-                    'size' => '0',
-                    'width' => '0',
-                    'height' => '0',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => '1',
-                ],
-                'gallery' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'name2',
-                        'description' => null,
-                        'size' => '0',
-                        'width' => '0',
-                        'height' => '0',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '2',
-                    ]
-                ],
-                'authors' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'author 2',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ]
-                ],
-            ],
+            (new Model\Entry())
+                ->setId(3)
+                ->setTitle('show #3')
+                ->setFrom(new DateTime('2010-01-01'))
+                ->setTo(new DateTime('2010-02-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation(''),
+            (new Model\Entry())
+                ->setId(5)
+                ->setTitle('show #5')
+                ->setFrom(new DateTime('2010-01-02'))
+                ->setTo(new DateTime('2010-01-31'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::SHOW)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation(''),
+            (new Model\Entry())
+                ->setId(4)
+                ->setTitle('show #4')
+                ->setFrom(new DateTime('2010-01-15'))
+                ->setTo(new DateTime('2010-02-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::SHOW)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+                ->setPoster(
+                    (new Model\Image())
+                        ->setId(1)
+                        ->setName('name1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                )
+                ->setGallery([
+                    (new Model\Image())
+                        ->setId(2)
+                        ->setName('name2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ])
+                ->setAuthors([
+                    (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ])
         ];
+
         $actual = $service->fetchCurrent(new DateTime('2010-01-15'), 'is');
 
         $this->assertEquals($expected, $actual);
@@ -262,52 +208,41 @@ class EntryTest extends TestCase
     {
         $service = new Entry($this->pdo);
         $expected = [
-            (object)[
-                'id' => '6',
-                'title' => 'show #5',
-                'from' => '2020-01-01',
-                'to' => '2020-01-01',
-                'created' => '2001-01-01 00:00:00',
-                'affected' => '2001-01-01 00:00:00',
-                'type' => Entry::PROJECT,
-                'body' => 'is',
-                'body_is' => 'is',
-                'body_en' => 'en',
-                'orientation' => '',
-                'poster' => (object)[
-                    'id' => '1',
-                    'name' => 'name1',
-                    'description' => null,
-                    'size' => '0',
-                    'width' => '0',
-                    'height' => '0',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => '1',
-                ],
-                'gallery' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'name2',
-                        'description' => null,
-                        'size' => '0',
-                        'width' => '0',
-                        'height' => '0',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '2',
-                    ]
-                ],
-                'authors' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'author 2',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ]
-                ],
-            ],
+            (new Model\Entry())
+                ->setId(6)
+                ->setTitle('show #6')
+                ->setFrom(new DateTime('2020-01-01'))
+                ->setTo(new DateTime('2020-01-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBody('is')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+                ->setPoster(
+                    (new Model\Image())
+                        ->setId(1)
+                        ->setName('name1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                )
+                ->setGallery([
+                    (new Model\Image())
+                        ->setId(2)
+                        ->setName('name2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ])
+                ->setAuthors([
+                    (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ]),
         ];
+
         $actual = $service->fetchLatestByType(Entry::PROJECT, 'is');
 
         $this->assertEquals($expected, $actual);
@@ -319,7 +254,7 @@ class EntryTest extends TestCase
         $expected = ['6','4','5','3','1','2'];
         $list = $service->fetchList();
         $actual = array_map(function($item) {
-            return $item->id;
+            return $item->getId();
         }, $list);
 
         $this->assertEquals($expected, $actual);
@@ -329,59 +264,141 @@ class EntryTest extends TestCase
     {
         $service = new Entry($this->pdo);
         $expected = [
+            (new Model\Entry())
+                ->setId(1)
+                ->setTitle('show #1')
+                ->setFrom(new DateTime('2001-06-01'))
+                ->setTo(new DateTime('2001-07-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::PROJECT)
+                ->setBody(null)
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+                ->setAuthors([
+                    (new Model\Author())
+                        ->setId(1)
+                        ->setName('author 1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                    (new Model\Author())
+                        ->setId(2)
+                        ->setName('author 2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00')),
+                ])
+                ->setPoster(
+                    (new Model\Image())
+                        ->setId(1)
+                        ->setName('name1')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                )
+                ->setGallery([
+                    (new Model\Image())
+                        ->setId(2)
+                        ->setName('name2')
+                        ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                        ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ]),
+            (new Model\Entry())
+                ->setId(2)
+                ->setTitle('show #2')
+                ->setFrom(new DateTime('2001-06-01'))
+                ->setTo(new DateTime('2001-07-01'))
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+                ->setType(Entry::SHOW)
+                ->setBody(null)
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+                ->setOrientation('')
+        ];
+        $actual = $service->fetchList('2001');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFeed()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchFeed();
+        $this->assertCount(6, $expected);
+    }
+
+    public function testByType()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchByType(Entry::PROJECT);
+        $this->assertCount(3, $expected);
+    }
+
+    public function testFetchByAfter()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchAfter(new DateTime('2019-12-31'));
+        $this->assertCount(1, $expected);
+    }
+
+    public function testFetchAffected()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchAffected();
+        $this->assertCount(6, $expected);
+    }
+
+    public function testFetchAll()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchAll();
+        $this->assertCount(6, $expected);
+    }
+
+    public function testFetchYears()
+    {
+        $service = new Entry($this->pdo);
+        $expected = $service->fetchYears();
+        $actual = [
+            (object)['year' => '2020'],
+            (object)['year' => '2010'],
+            (object)['year' => '2001'],
+        ];
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testUpdate()
+    {
+        $service = new Entry($this->pdo);
+
+        $service->save([
+            'id' => 1,
+            'title' => 'show number one',
+            'from' => '2001-06-01',
+            'to' => '2001-07-01',
+            'created' => '2001-01-01 00:00:00',
+            'affected' => '2001-01-01 00:00:00',
+            'type' => Entry::PROJECT,
+            'body_is' => '<is>',
+            'body_en' => '<en>',
+            'orientation' => '',
+        ]);
+
+        $expected = [
             (object)[
-                'id' => '1',
-                'title' => 'show #1',
+                'id' => 1,
+                'title' => 'show number one',
                 'from' => '2001-06-01',
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
                 'type' => Entry::PROJECT,
-                'body_is' => 'is',
-                'body_en' => 'en',
+                'body_is' => '<is>',
+                'body_en' => '<en>',
                 'orientation' => '',
-                'authors' => [
-                    (object)[
-                        'id' => '1',
-                        'name' => 'author 1',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ],
-                    (object)[
-                        'id' => '2',
-                        'name' => 'author 2',
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                    ],
-                ],
-                'poster' => (object)[
-                    'id' => '1',
-                    'name' => 'name1',
-                    'description' => null,
-                    'size' => '0',
-                    'width' => '0',
-                    'height' => '0',
-                    'created' => '2001-01-01 00:00:00',
-                    'affected' => '2001-01-01 00:00:00',
-                    'type' => '1',
-
-                ],
-                'gallery' => [
-                    (object)[
-                        'id' => '2',
-                        'name' => 'name2',
-                        'description' => null,
-                        'size' => 0,
-                        'width' => 0,
-                        'height' => 0,
-                        'created' => '2001-01-01 00:00:00',
-                        'affected' => '2001-01-01 00:00:00',
-                        'type' => '2',
-                    ]
-                ],
             ],
             (object)[
-                'id' => '2',
+                'id' => 2,
                 'title' => 'show #2',
                 'from' => '2001-06-01',
                 'to' => '2001-07-01',
@@ -391,16 +408,173 @@ class EntryTest extends TestCase
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
-                'authors' => [],
-                'poster' => false,
-                'gallery' => [],
-            ]
+            ],
+            (object)[
+                'id' => 3,
+                'title' => 'show #3',
+                'from' => '2010-01-01',
+                'to' => '2010-02-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 4,
+                'title' => 'show #4',
+                'from' => '2010-01-15',
+                'to' => '2010-02-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::SHOW,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 5,
+                'title' => 'show #5',
+                'from' => '2010-01-02',
+                'to' => '2010-01-31',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::SHOW,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 6,
+                'title' => 'show #6',
+                'from' => '2020-01-01',
+                'to' => '2020-01-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
         ];
-        $actual = $service->fetchList('2001');
+
+        $statement = $this->getDatabase()->prepare('select * from Entry');
+        $statement->execute();
+        $actual = $statement->fetchAll();
 
         $this->assertEquals($expected, $actual);
     }
 
+    public function testSave()
+    {
+        $service = new Entry($this->pdo);
+
+        $id = $service->save([
+            'title' => 'new entry',
+            'from' => '2001-06-01',
+            'to' => '2001-07-01',
+            'created' => '2001-01-01 00:00:00',
+            'affected' => '2001-01-01 00:00:00',
+            'type' => Entry::PROJECT,
+            'body_is' => '<is>',
+            'body_en' => '<en>',
+            'orientation' => '',
+        ]);
+
+        $expected = [
+            (object)[
+                'id' => 1,
+                'title' => 'show #1',
+                'from' => '2001-06-01',
+                'to' => '2001-07-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 2,
+                'title' => 'show #2',
+                'from' => '2001-06-01',
+                'to' => '2001-07-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::SHOW,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 3,
+                'title' => 'show #3',
+                'from' => '2010-01-01',
+                'to' => '2010-02-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 4,
+                'title' => 'show #4',
+                'from' => '2010-01-15',
+                'to' => '2010-02-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::SHOW,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 5,
+                'title' => 'show #5',
+                'from' => '2010-01-02',
+                'to' => '2010-01-31',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::SHOW,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => 6,
+                'title' => 'show #6',
+                'from' => '2020-01-01',
+                'to' => '2020-01-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => 'is',
+                'body_en' => 'en',
+                'orientation' => '',
+            ],
+            (object)[
+                'id' => $id,
+                'title' => 'new entry',
+                'from' => '2001-06-01',
+                'to' => '2001-07-01',
+                'created' => '2001-01-01 00:00:00',
+                'affected' => '2001-01-01 00:00:00',
+                'type' => Entry::PROJECT,
+                'body_is' => '<is>',
+                'body_en' => '<en>',
+                'orientation' => '',
+            ]
+        ];
+
+        $statement = $this->getDatabase()->prepare('select * from Entry');
+        $statement->execute();
+        $actual = $statement->fetchAll();
+
+        $this->assertEquals($expected, $actual);
+    }
 
     protected function tearDown(): void
     {
@@ -505,7 +679,7 @@ class EntryTest extends TestCase
                 // ------------------
                 [
                     'id' => 6,
-                    'title' => 'show #5',
+                    'title' => 'show #6',
                     'from' => '2020-01-01',
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',

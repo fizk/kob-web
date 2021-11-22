@@ -2,15 +2,16 @@
 namespace App\Service;
 
 use DateTime;
+use App\Model;
 
 abstract class AbstractImage extends Image
 {
     public function __construct()
     {
     }
-    public function get(string $id): \stdClass
+    public function get(string $id): ?Model\Image
     {
-        return new \stdClass;
+        return new Model\Image();
     }
 
 

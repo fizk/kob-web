@@ -9,6 +9,7 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Diactoros\Uri;
 use App\Router\RouterInterface;
 use App\Service\AbstractEntry;
+use App\Model;
 use function App\Router\dispatch;
 
 class EntryPageHandlerTest extends TestCase
@@ -23,13 +24,9 @@ class EntryPageHandlerTest extends TestCase
         $serviceManager->setFactory(\App\Service\Entry::class, function () {
             return new class extends AbstractEntry
             {
-                public function fetch(string $id, $lang = 'is'): ?array
+                public function fetch(string $id, $lang = 'is'): Model\Entries
                 {
-                    return [
-                        'previous' => null,
-                        'current' => null,
-                        'next' => null,
-                    ];
+                    return (new Model\Entries());
                 }
             };
         });
@@ -51,13 +48,9 @@ class EntryPageHandlerTest extends TestCase
         $serviceManager->setFactory(\App\Service\Entry::class, function () {
             return new class extends AbstractEntry
             {
-                public function fetch(string $id, $lang = 'is'): ?array
+                public function fetch(string $id, $lang = 'is'): Model\Entries
                 {
-                    return [
-                        'previous' => null,
-                        'current' => null,
-                        'next' => null,
-                    ];
+                    return new Model\Entries();
                 }
             };
         });
@@ -77,7 +70,12 @@ class EntryPageHandlerTest extends TestCase
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
         $serviceManager->setFactory(\App\Service\Entry::class, function () {
-            return new class extends AbstractEntry {};
+            return new class extends AbstractEntry {
+                public function fetch(string $id, string $lang = 'is'): ?Model\Entries
+                {
+                    return null;
+                }
+            };
         });
         $collection = $serviceManager->get(RouterInterface::class);
         $collection->setRouteConfig(require './config/router.php');
@@ -95,7 +93,12 @@ class EntryPageHandlerTest extends TestCase
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
         $serviceManager->setFactory(\App\Service\Entry::class, function () {
-            return new class extends AbstractEntry {};
+            return new class extends AbstractEntry {
+                public function fetch(string $id, string $lang = 'is'): ?Model\Entries
+                {
+                    return null;
+                }
+            };
         });
         $collection = $serviceManager->get(RouterInterface::class);
         $collection->setRouteConfig(require './config/router.php');

@@ -2,7 +2,6 @@
 
 namespace App\Router;
 
-use Closure;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

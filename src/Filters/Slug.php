@@ -34,7 +34,7 @@ class Slug extends AbstractExtension
         $title = strtolower($title);
 
         if (empty($title)) {
-            return 'n-a';
+            return "n-a-{$id}";
         }
 
         return "{$title}-{$id}";

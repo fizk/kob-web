@@ -28,7 +28,7 @@
                         <li>{{ author.name }}</li>
                         {% endfor %}
                     </ul>
-                    <small>Last updated {{ item.affected }}</small>
+                    <small>Last updated {{ item.affected|datetime }}</small>
                 </div>
             </li>
             {% endfor %}
@@ -41,7 +41,7 @@
             <li class="entry-grid__item">
                 <div class="card">
                     <a href="{{path('update-author', {id: item.id})}}">{{ item.name }}</a>
-                    <small>Last updated {{ item.affected }}</small>
+                    <small>Last updated {{ item.affected|datetime }}</small>
 
                 </div>
             </li>

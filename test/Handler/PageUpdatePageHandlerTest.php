@@ -14,10 +14,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 use App\Router\RouterInterface;
 use App\Middleware;
 use App\Service;
+use App\Model;
 
 use function App\Router\dispatch;
 
-class ManifestoUpdatePageHandlerTest extends TestCase
+class PageUpdatePageHandlerTest extends TestCase
 {
     public function test200OK()
     {
@@ -26,12 +27,12 @@ class ManifestoUpdatePageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage
             {
-                public function get(string $id): \stdClass
+                public function get(string $id): ?Model\Page
                 {
-                    return (object)['id' => 1];
+                    return (new Model\Page)->setId(1)->setType('1');
                 }
             };
         });

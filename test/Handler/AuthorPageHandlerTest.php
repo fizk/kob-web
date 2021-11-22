@@ -9,6 +9,7 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Diactoros\Uri;
 use App\Router\RouterInterface;
 use App\Service;
+use App\Model;
 use function App\Router\dispatch;
 
 class AuthorPageHandlerTest extends TestCase
@@ -23,9 +24,11 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?\stdClass
+                public function fetch(string $id): ?Model\Author
                 {
-                    return (object)['id' => 1];
+                    return (new Model\Author())
+                        ->setId(1)
+                        ->setName('name1');
                 }
             };
         });
@@ -47,9 +50,11 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?\stdClass
+                public function fetch(string $id): ?Model\Author
                 {
-                    return (object)['id' => 1];
+                    return (new Model\Author())
+                        ->setId(1)
+                        ->setName('name1');
                 }
             };
         });
@@ -71,7 +76,8 @@ class AuthorPageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function fetch(string $id): ?\stdClass {
+                public function fetch(string $id): ?Model\Author
+                {
                     return null;
                 }
             };

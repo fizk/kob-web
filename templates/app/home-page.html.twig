@@ -10,13 +10,16 @@
                 {% for author in item.authors %}
                     <li>
                         <h2 class="entry__author">
-                            <a class="entry__author-link" href="{{path('listamadur', {id: author.id})}}">{{author.name}}</a>
+                            <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], false, {id: author.id})}}">{{author.name}}</a>
                         </h2>
                     </li>
                 {% endfor %}
                 </ul>
                 <h3>{{item.title}}</h3>
-                <time class="entry__time">{{item.from}}</time> | <time class="entry__time">{{item.to}}</time>
+                <time class="entry__time">{{item.from|date(language)}}</time> | <time class="entry__time">{{item.to|date(language)}}</time>
+                {% if user_session %}
+                <a href="{{ path('update-entry', {id: item.id}) }}">edit</a>
+                {% endif %}
             </header>
             <aside class="entry__aside">
                 {% if item.poster %}
@@ -37,15 +40,15 @@
                 </ul>
             </aside>
             <section class="entry__body">
-                {% if user_session %}
-                <a href="{{ path('update-entry', {id: item.id}) }}">edit</a>
-                {% endif %}
                 {% markdown %}
                 {{ item.body|raw }}
                 {% endmarkdown %}
             </section>
-            <footer class="entry__footer">&nbsp;</footer>
+
         </article>
+    {% endfor %}
+    {% for item in upcoming %}
+        <p>{{item.title}}</p>
     {% endfor %}
 {% endblock %}
 

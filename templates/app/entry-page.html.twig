@@ -9,13 +9,18 @@
                 {% for author in entry.current.authors %}
                 <li>
                     <h2 class="entry__author">
-                        <a class="entry__author-link" href="{{path('listamadur', {id: author.id})}}">{{author.name}}</a>
+                        <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], language == 'is', {id: author.id})}}">
+                            {{author.name}}
+                        </a>
                     </h2>
                 </li>
                 {% endfor %}
             </ul>
             <h3>{{entry.current.title}}</h3>
-            <time class="entry__time">{{entry.current.from}}</time> | <time class="entry__time">{{entry.current.to}}</time>
+            <time class="entry__time">{{entry.current.from|date(language)}}</time> | <time class="entry__time">{{entry.current.to|date(language)}}</time>
+            {% if user_session %}
+            <a href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
+            {% endif %}
         </header>
         <aside class="entry__aside">
             {% if entry.current.poster %}
@@ -36,10 +41,6 @@
             </ul>
         </aside>
         <section class="entry__body">
-            {% if user_session %}
-            <a href="{{ path('update-entry', {id: entry.current.id}) }}">edit</a>
-            {% endif %}
-
             {% markdown %}
             {{ entry.current.body|raw }}
             {% endmarkdown %}
@@ -49,7 +50,7 @@
             <div class="entry__preview">
                 {% if entry.next %}
                 <h3>
-                    <a href="{{path('syning', {id: entry.next.id})}}">{{entry.next.title}}</a>
+                    <a href="{{selectPath(['syning', 'entry'], language == 'is', {id: entry.next.id})}}">{{entry.next.title}}</a>
                 </h3>
                 <ul>
                     {% for author in entry.next.authors %}
@@ -62,7 +63,7 @@
             <div class="entry__preview">
                 {% if entry.previous %}
                 <h3>
-                    <a href="{{path('syning', {id: entry.previous.id})}}">{{entry.previous.title}}</a>
+                    <a href="{{selectPath(['syning', 'entry'], language == 'is', {id: entry.previous.id})}}">{{entry.previous.title}}</a>
                 </h3>
                 <ul>
                     {% for author in entry.previous.authors %}

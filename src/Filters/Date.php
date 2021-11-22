@@ -3,59 +3,42 @@ namespace App\Filters;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use DateTime;
 
 class Date extends AbstractExtension
 {
-    private array $monthIs = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'Maí',
-        'Jún',
-        'Júl',
-        'Ágú',
-        'Sep',
-        'Okt',
-        'Nóv',
-        'Des',
-    ];
-
-    private array $monthEn = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-    ];
-
     public function getFilters()
     {
         return [
             new TwigFilter('date', [$this, 'date']),
+            new TwigFilter('datetime', [$this, 'datetime']),
+            new TwigFilter('year', [$this, 'year']),
+            new TwigFilter('RFC822', [$this, 'RFC822']),
         ];
     }
 
-    public function date($date, $language = 'is', $year = true)
+    public function date(?DateTime $date = null, $language = 'is', $year = true)
     {
-        try {
-            $dateString = $year
-                ? (new \DateTime($date))->format('d. M Y')
-                : (new \DateTime($date))->format('d. M');
-            if ($language === 'is') {
-                $dateString = str_replace($this->monthEn, $this->monthIs, $dateString);
-            }
+        if (!$date) return '';
+        $currentLocale = setlocale(LC_ALL, 0);
+        setlocale(LC_TIME, $language == 'is' ? 'is_IS.utf8' : 'en_GB.utf8');
+        $string = strftime('%e.%B %Y', $date->getTimestamp());
+        setlocale(LC_TIME, $currentLocale);
+        return $string;
+    }
 
-            return $dateString;
-        } catch (\Exception $e) {
-            return '';
-        }
+    public function datetime(DateTime $date, $language = 'is', $year = true)
+    {
+        return $date->format('Y m d H:m');
+    }
+
+    public function year(DateTime $date): string
+    {
+        return $date->format('Y');
+    }
+
+    public function RFC822(DateTime $date): string
+    {
+        return $date->format('r');
     }
 }

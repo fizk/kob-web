@@ -14,6 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use App\Router\RouterInterface;
 use App\Middleware;
 use App\Service;
+use App\Model;
 
 use function App\Router\dispatch;
 
@@ -29,9 +30,11 @@ class AuthorUpdatePageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function get(string $id): \stdClass
+                public function get(string $id): ?Model\Author
                 {
-                    return (object)['id' => 1];
+                    return (new Model\Author)
+                        ->setId(1)
+                        ->setName('name1');
                 }
             };
         });
@@ -44,8 +47,8 @@ class AuthorUpdatePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Manifesto::class, function () {
-            return new class extends Service\AbstracManifesto {};
+        $serviceManager->setFactory(Service\Page::class, function () {
+            return new class extends Service\AbstracPage {};
         });
         $collection = $serviceManager->get(RouterInterface::class);
         $collection->setRouteConfig(require './config/router.php');

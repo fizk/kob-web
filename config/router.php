@@ -19,7 +19,7 @@ return [
     '/home' => [
         'GET' => [
             [
-                Middleware\DetectLanguageMiddleware::class,
+                Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
                 Handler\HomePageHandler::class
             ],
@@ -381,6 +381,60 @@ return [
         ],
     ],
 
+    '/update/store' => [
+        'GET' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                Handler\Store\StoreCreatePageHandler::class
+            ],
+            'create-store'
+        ],
+        'POST' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                BodyParamsMiddleware::class,
+                Handler\Store\StoreSavePageHandler::class
+            ],
+            'new-store'
+        ],
+    ],
+
+    '/update/store/{id}' => [
+        'GET' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                Handler\Store\StoreUpdatePageHandler::class
+            ],
+            'update-store'
+        ],
+        'POST' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                BodyParamsMiddleware::class,
+                Handler\Store\StoreSavePageHandler::class
+            ],
+            'save-store'
+        ],
+    ],
+
+    '/delete/store/{id}' => [
+        'GET' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdminMenuMiddleware::class,
+                Handler\Store\StoreDeletePageHandler::class
+            ],
+            'delete-store'
+        ],
+    ],
+
     '/update/author/{id}' => [
         'GET' => [
             [
@@ -441,7 +495,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
-                Handler\Page\ManifestoUpdatePageHandler::class
+                Handler\Page\PageUpdatePageHandler::class
             ],
             'update-manifesto'
         ],
@@ -450,7 +504,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
-                Handler\Page\ManifestoSavePageHandler::class
+                Handler\Page\PageSavePageHandler::class
             ],
             'new-manifesto'
         ],

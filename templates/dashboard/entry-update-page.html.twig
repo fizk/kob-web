@@ -36,14 +36,14 @@
                 <div class="form__entry">
                     <div><label for="from">From</label></div>
                     <div>
-                        <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from : null}}">
+                        <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from|RFC822 : null}}">
                         {{ form.error('from', messages) }}
                     </div>
                 </div>
                 <div class="form__entry">
                     <div><label for="to">To</label></div>
                     <div>
-                        <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to : null}}">
+                        <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to|RFC822 : null}}">
                         {{ form.error('to', messages) }}
                     </div>
                 </div>
