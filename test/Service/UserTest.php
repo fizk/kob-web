@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-use App\Model;
+use App\Model\{User};
 use PDO;
 
 class UserTest extends TestCase
@@ -17,8 +17,8 @@ class UserTest extends TestCase
 
     public function testGet()
     {
-        $service = new User($this->pdo);
-        $expected = (new Model\User())
+        $service = new UserService($this->pdo);
+        $expected = (new User())
             ->setId(1)
             ->setName('user1')
             ->setEmail('email1@service.com')
@@ -32,7 +32,7 @@ class UserTest extends TestCase
 
     public function testGetNotFound()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected = null;
 
         $actual = $service->get('123456789');
@@ -42,15 +42,15 @@ class UserTest extends TestCase
 
     public function testFetch()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected = [
-            (new Model\User())
+            (new User())
                 ->setId(1)
                 ->setName('user1')
                 ->setEmail('email1@service.com')
                 ->setPassword('pass1')
                 ->setType(1),
-            (new Model\User())
+            (new User())
                 ->setId(2)
                 ->setName('user2')
                 ->setEmail('email2@service.com')
@@ -65,9 +65,9 @@ class UserTest extends TestCase
 
     public function testFetchByEmail()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected =
-            (new Model\User())
+            (new User())
                 ->setId(2)
                 ->setName('user2')
                 ->setEmail('email2@service.com')
@@ -82,7 +82,7 @@ class UserTest extends TestCase
 
     public function testFetchByEmailNotFound()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected = null;
 
         $actual = $service->fetchByEmail('not@an.email');
@@ -92,9 +92,9 @@ class UserTest extends TestCase
 
     public function testFetchByCredentials()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected =
-            (new Model\User())
+            (new User())
                 ->setId(2)
                 ->setName('user2')
                 ->setEmail('email2@service.com')
@@ -102,14 +102,14 @@ class UserTest extends TestCase
                 ->setType(2)
             ;
 
-        $actual = $service->fetchByCredentials('user2', 'pass2');
+        $actual = $service->fetchByCredentials('email2@service.com', 'pass2');
 
         $this->assertEquals($expected, $actual);
     }
 
     public function testFetchByCredentialsNotFound()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
         $expected = null;
 
         $actual = $service->fetchByCredentials('not user', 'not password');
@@ -119,7 +119,7 @@ class UserTest extends TestCase
 
     public function testUpdate()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
 
         $service->save([
             'id' => '1',
@@ -155,7 +155,7 @@ class UserTest extends TestCase
 
     public function testSave()
     {
-        $service = new User($this->pdo);
+        $service = new UserService($this->pdo);
 
         $service->save([
             'id' => 'newid',

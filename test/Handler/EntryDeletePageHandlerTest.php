@@ -42,7 +42,7 @@ class EntryDeletePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Entry::class, function () {
+        $serviceManager->setFactory(Service\EntryService::class, function () {
             return new class extends Service\AbstractEntry
             {
             };

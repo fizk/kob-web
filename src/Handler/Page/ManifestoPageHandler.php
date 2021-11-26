@@ -8,14 +8,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Router\RouterInterface;
-use App\Service\Page;
+use App\Service\PageService;
 
 class ManifestoPageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Page $page;
+    private PageService $page;
 
-    public function __construct(RouterInterface $router, Page $page, TemplateRendererInterface $template)
+    public function __construct(RouterInterface $router, PageService $page, TemplateRendererInterface $template)
     {
         $this->router    = $router;
         $this->page = $page;

@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
-use App\Service\Search;
+use App\Service\SearchService;
 
 class SearchPageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Search $search;
+    private SearchService $search;
 
-    public function __construct(Search $search, TemplateRendererInterface $template)
+    public function __construct(SearchService $search, TemplateRendererInterface $template)
     {
         $this->search    = $search;
         $this->template = $template;

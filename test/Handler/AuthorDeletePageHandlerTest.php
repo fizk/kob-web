@@ -41,7 +41,7 @@ class AuthorDeletePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function delete(string $id): int

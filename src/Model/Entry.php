@@ -2,25 +2,24 @@
 
 namespace App\Model;
 
-use App\Model\Image;
 use DateTime;
-use DateTimeInterface;
 use JsonSerializable;
 
-class Entry implements JsonSerializable {
+class Entry implements JsonSerializable
+{
     private ?int $id = null;
     private string $title;
     private DateTime $from;
     private DateTime $to;
-    private DateTime $created;
-    private DateTime $affected;
+    private ?DateTime $created = null;
+    private ?DateTime $affected = null;
     private string $type;
-    private string $body_is;
     private ?string $body = null;
-    private string $body_en;
+    private ?string $body_is = null;
+    private ?string $body_en = null;
     private string $orientation;
     private array $authors = [];
-    private ?Image $poster = null;
+    private array $posters = [];
     private array $gallery = [];
 
     public function getId(): ?int
@@ -67,23 +66,23 @@ class Entry implements JsonSerializable {
         return $this;
     }
 
-    public function getCreated(): DateTime
+    public function getCreated(): ?DateTime
     {
         return $this->created;
     }
 
-    public function setCreated(DateTime $created): self
+    public function setCreated(?DateTime $created): self
     {
         $this->created = $created;
         return $this;
     }
 
-    public function getAffected(): DateTime
+    public function getAffected(): ?DateTime
     {
         return $this->affected;
     }
 
-    public function setAffected(DateTime $affected): self
+    public function setAffected(?DateTime $affected): self
     {
         $this->affected = $affected;
         return $this;
@@ -100,23 +99,23 @@ class Entry implements JsonSerializable {
         return $this;
     }
 
-    public function getBodyIs(): string
+    public function getBodyIs(): ?string
     {
         return $this->body_is;
     }
 
-    public function setBodyIs(string $body): self
+    public function setBodyIs(?string $body): self
     {
         $this->body_is = $body;
         return $this;
     }
 
-    public function getBodyEn(): string
+    public function getBodyEn(): ?string
     {
         return $this->body_en;
     }
 
-    public function setBodyEn(string $body): self
+    public function setBodyEn(?string $body): self
     {
         $this->body_en = $body;
         return $this;
@@ -155,15 +154,15 @@ class Entry implements JsonSerializable {
         return $this->authors;
     }
 
-    public function setPoster(?Image $poster): self
+    public function setPosters(array $posters): self
     {
-        $this->poster = $poster;
+        $this->posters = $posters;
         return $this;
     }
 
-    public function getPoster(): ?Image
+    public function getPosters(): array
     {
-        return $this->poster;
+        return $this->posters;
     }
 
     public function setGallery(array $gallery): self
@@ -182,15 +181,18 @@ class Entry implements JsonSerializable {
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'from' => $this->from?->format(DateTimeInterface::ISO8601),
-            'to' => $this->to?->format(DateTimeInterface::ISO8601),
-            'created' => $this->created?->format(DateTimeInterface::ISO8601),
-            'affected' => $this->affected?->format(DateTimeInterface::ISO8601),
+            'from' => $this->from?->format('Y-m-d'),
+            'to' => $this->to?->format('Y-m-d'),
+            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'affected' => $this->affected?->format('Y-m-d H:i:s'),
             'type' => $this->type,
             'body_is' => $this->body_is,
             'body' => $this->body,
             'body_en' => $this->body_en,
             'orientation' => $this->orientation,
+            'authors' => $this->authors,
+            'posters' => $this->posters,
+            'gallery' => $this->gallery,
         ];
     }
 }

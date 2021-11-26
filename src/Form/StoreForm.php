@@ -4,11 +4,21 @@ namespace App\Form;
 
 use App\Form\Form;
 use App\Filters\ToInt;
+use App\Model\Store;
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits, Date};
 
 class StoreForm extends Form
 {
+    public function getModel(): Store
+    {
+        $values = $this->inputFilter->getValues();
+
+        return (new Store())
+            ->setId($values['id'])
+            ;
+    }
+
     public function getInputFilterSpecification(): array
     {
         return [

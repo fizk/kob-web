@@ -8,7 +8,7 @@ use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
 
-use App\Model;
+use App\Model\{Image, Page};
 use DateTime;
 use PDO;
 
@@ -20,14 +20,14 @@ class PageTest extends TestCase
 
     public function testGet()
     {
-        $service = new Page($this->pdo);
-        $expected = (new Model\Page())
+        $service = new PageService($this->pdo);
+        $expected = (new Page())
             ->setId(1)
             ->setType('type1')
             ->setBodyEn('en')
             ->setBodyIs('is')
             ->setGallery([
-                (new Model\Image())
+                (new Image())
                     ->setId(1)
                     ->setName('name1')
                     ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -42,15 +42,15 @@ class PageTest extends TestCase
 
     public function testGetByType()
     {
-        $service = new Page($this->pdo);
-        $expected = (new Model\Page())
+        $service = new PageService($this->pdo);
+        $expected = (new Page())
             ->setId(1)
             ->setType('type1')
             ->setBody('is')
             ->setBodyEn('en')
             ->setBodyIs('is')
             ->setGallery([
-                (new Model\Image())
+                (new Image())
                     ->setId(1)
                     ->setName('name1')
                     ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -65,7 +65,7 @@ class PageTest extends TestCase
 
     public function testGetByTypeNotFound()
     {
-        $service = new Page($this->pdo);
+        $service = new PageService($this->pdo);
         $expected = null;
 
         $actual = $service->getByType('this is not an entry');
@@ -75,7 +75,7 @@ class PageTest extends TestCase
 
     public function testFetch()
     {
-        $service = new Page($this->pdo);
+        $service = new PageService($this->pdo);
         $actual = $service->fetch();
 
         $this->assertCount(3, $actual);
@@ -83,7 +83,7 @@ class PageTest extends TestCase
 
     public function testUpdate()
     {
-        $service = new Page($this->pdo);
+        $service = new PageService($this->pdo);
 
         $service->save([
             'id' => '1',
@@ -122,7 +122,7 @@ class PageTest extends TestCase
 
     public function testSave()
     {
-        $service = new Page($this->pdo);
+        $service = new PageService($this->pdo);
 
         $id = $service->save([
             'type' => 'new',

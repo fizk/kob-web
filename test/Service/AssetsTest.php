@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-use App\Service\Asset;
+use App\Service\AssetService;
 use Psr\Http\Message\UploadedFileInterface;
 use Laminas\Diactoros\Stream;
 
@@ -138,7 +138,7 @@ class AssetsTest extends TestCase
             }
         };
 
-        $service = new Asset(__DIR__ . '/');
+        $service = new AssetService(__DIR__ . '/');
         $file = $service->save($uploadedFile);
 
         //@fixme
@@ -155,7 +155,7 @@ class AssetsTest extends TestCase
      */
     public function testName(string $in, string $ext, string $out)
     {
-        $this->assertEquals($out, Asset::fileName($in, $ext, ''));
+        $this->assertEquals($out, AssetService::fileName($in, $ext, ''));
     }
 
     public function filenameProvider()

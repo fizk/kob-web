@@ -25,7 +25,7 @@ class EntryUpdatePageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Entry::class, function () {
+        $serviceManager->setFactory(Service\EntryService::class, function () {
             return new class extends Service\AbstractEntry
             {
             };
@@ -39,7 +39,7 @@ class EntryUpdatePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Page::class, function () {
+        $serviceManager->setFactory(Service\PageService::class, function () {
             return new class extends Service\AbstracPage
             {
             };

@@ -1,10 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Model\{User};
 use PDO;
-use App\Model;
 
-class User
+class UserService
 {
     private PDO $pdo;
 
@@ -16,7 +16,7 @@ class User
     /**
      * Get one User
      */
-    public function get(string $id): ?Model\User
+    public function get(string $id): ?User
     {
         $statement = $this->pdo->prepare(
             'select * from `User` where id = :id'
@@ -25,11 +25,11 @@ class User
 
         $object = $statement->fetch();
         return $object
-            ? (new Model\User())
+            ? (new User())
                 ->setId($object->id)
                 ->setName($object->name)
-                ->setEmail($object->email)
                 ->setPassword($object->password)
+                ->setEmail($object->email)
                 ->setType($object->type)
             : null;
     }
@@ -43,11 +43,11 @@ class User
         $statement->execute();
 
         return array_map(function ($object) {
-            return (new Model\User())
+            return (new User())
                 ->setId($object->id)
                 ->setName($object->name)
-                ->setEmail($object->email)
                 ->setPassword($object->password)
+                ->setEmail($object->email)
                 ->setType($object->type);
         }, $statement->fetchAll());
     }
@@ -91,7 +91,7 @@ class User
     /**
      * Get user by emails
      */
-    public function fetchByEmail($email): ?Model\User
+    public function fetchByEmail(string $email): ?User
     {
         $statement = $this->pdo->prepare('
           select * from `User` where `email` = :email
@@ -102,11 +102,11 @@ class User
 
         $object = $statement->fetch();
         return $object
-                ? (new Model\User())
+                ? (new User())
                 ->setId($object->id)
                 ->setName($object->name)
-                ->setEmail($object->email)
                 ->setPassword($object->password)
+                ->setEmail($object->email)
                 ->setType($object->type)
             : null;
     }
@@ -114,23 +114,23 @@ class User
     /**
      * Get user by username and password
      */
-    public function fetchByCredentials($name, $password): ?Model\User
+    public function fetchByCredentials($email, $password): ?User
     {
         $statement = $this->pdo->prepare('
-          select * from `User` where `name` = :name and `password` = :password
+          select * from `User` where `email` = :email and `password` = :password
         ');
         $statement->execute([
-            'name' => $name,
+            'email' => $email,
             'password' => $password,
         ]);
 
         $object = $statement->fetch();
         return $object
-            ? (new Model\User())
+            ? (new User())
                 ->setId($object->id)
                 ->setName($object->name)
-                ->setEmail($object->email)
                 ->setPassword($object->password)
+                ->setEmail($object->email)
                 ->setType($object->type)
             : null;
     }

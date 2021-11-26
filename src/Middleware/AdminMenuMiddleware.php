@@ -6,14 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use App\Template\TemplateRendererInterface;
-use App\Service\Page;
+use App\Service\PageService;
 
 class AdminMenuMiddleware implements MiddlewareInterface
 {
     private TemplateRendererInterface $templateRenderer;
-    private Page $page;
+    private PageService $page;
 
-    public function __construct(TemplateRendererInterface $template, Page $page)
+    public function __construct(TemplateRendererInterface $template, PageService $page)
     {
         $this->templateRenderer = $template;
         $this->page = $page;

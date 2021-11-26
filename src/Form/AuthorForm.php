@@ -3,12 +3,26 @@
 namespace App\Form;
 
 use App\Form\Form;
+use App\Model\Author;
 use App\Filters\ToInt;
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits, Date};
+use DateTime;
 
 class AuthorForm extends Form
 {
+    public function getModel(): Author
+    {
+        $values = $this->inputFilter->getValues();
+
+        return (new Author())
+            ->setId($values['id'])
+            ->setName($values['name'])
+            ->setCreated($values['created'] ? new DateTime($values['created']) : null)
+            ->setAffected(new DateTime($values['affected']))
+            ;
+    }
+
     public function getInputFilterSpecification(): array
     {
         return [

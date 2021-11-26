@@ -1,24 +1,24 @@
 <?php
 namespace App\Auth;
 
-use App\Service\User;
+use App\Service\UserService;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Result;
 
 class PasswordAuthAdapter implements AdapterInterface
 {
-    private User $user;
-    private string $username;
+    private UserService $user;
+    private string $email;
     private string $password;
 
-    public function __construct(User $user)
+    public function __construct(UserService $user)
     {
         $this->user = $user;
     }
 
-    public function setCredentials(string $username, string $password)
+    public function setCredentials(string $email, string $password)
     {
-        $this->username = $username;
+        $this->email = $email;
         $this->password = $password;
     }
 
@@ -29,17 +29,17 @@ class PasswordAuthAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        $userProperties = $this->user->fetchByCredentials($this->username, $this->password);
+        $userProperties = $this->user->fetchByCredentials($this->email, $this->password);
         if ($userProperties) {
             return new Result(Result::SUCCESS, [
-                'name' => $userProperties->name,
-                'id' => $userProperties->id,
-                'email' => 'my@email.com',// 'email' => $userProperties->email,
+                'name' => $userProperties->getName(),
+                'id' => $userProperties->getId(),
+                'email' => $userProperties->getEmail(),
             ]);
         }
 
         return new Result(Result::FAILURE_CREDENTIAL_INVALID, [
-            'name' => $this->username
+            'email' => $this->email
         ]);
     }
 }

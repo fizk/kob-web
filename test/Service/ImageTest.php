@@ -3,12 +3,10 @@
 namespace App\Service;
 
 use PHPUnit\Framework\TestCase;
-
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-
-use App\Model;
+use App\Model\Image;
 use DateTime;
 use PDO;
 
@@ -20,8 +18,8 @@ class ImageTest extends TestCase
 
     public function testGet()
     {
-        $service = new Image($this->pdo);
-        $expected = (new Model\Image())
+        $service = new ImageService($this->pdo);
+        $expected = (new Image())
             ->setId(1)
             ->setName('name1')
             ->setDescription(null)
@@ -39,7 +37,7 @@ class ImageTest extends TestCase
 
     public function testUpdate()
     {
-        $service = new Image($this->pdo);
+        $service = new ImageService($this->pdo);
 
         $service->save([
             'id' => '1',
@@ -84,7 +82,7 @@ class ImageTest extends TestCase
 
     public function testUpdateDescription()
     {
-        $service = new Image($this->pdo);
+        $service = new ImageService($this->pdo);
 
         $id = $service->updateDescription('1', 'new description', new DateTime('2020-01-01'));
 
@@ -120,7 +118,7 @@ class ImageTest extends TestCase
 
     public function testSave()
     {
-        $service = new Image($this->pdo);
+        $service = new ImageService($this->pdo);
 
         $id = $service->save([
             'name' => 'name new',
@@ -218,7 +216,7 @@ class ImageTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -230,7 +228,7 @@ class ImageTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -243,7 +241,7 @@ class ImageTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -255,7 +253,7 @@ class ImageTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -267,7 +265,7 @@ class ImageTest extends TestCase
                     'to' => '2010-01-31',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -280,7 +278,7 @@ class ImageTest extends TestCase
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',

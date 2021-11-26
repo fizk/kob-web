@@ -4,8 +4,7 @@ namespace App\Filters;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PHPUnit\Framework\TestCase;
-use App\Router\RouterInterface;
-use App\Router\Route;
+use App\Router\{RouterInterface, Route};
 use App\Filters\Path;
 use InvalidArgumentException;
 

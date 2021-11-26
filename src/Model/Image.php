@@ -3,8 +3,9 @@
 namespace App\Model;
 
 use DateTime;
+use JsonSerializable;
 
-class Image
+class Image implements JsonSerializable
 {
     private ?int $id = null;
     private string $name;
@@ -13,8 +14,8 @@ class Image
     private int $width = 0;
     private int $height = 0;
     private ?int $order = null;
-    private DateTime $created;
-    private DateTime $affected;
+    private ?DateTime $created = null;
+    private ?DateTime $affected = null;
 
     public function setId(?int $id): self
     {
@@ -93,25 +94,40 @@ class Image
         return $this->order;
     }
 
-    public function setCreated(DateTime $created): self
+    public function setCreated(?DateTime $created): self
     {
         $this->created = $created;
         return $this;
     }
 
-    public function getCreated(): DateTime
+    public function getCreated(): ?DateTime
     {
         return $this->created;
     }
 
-    public function setAffected(DateTime $affected): self
+    public function setAffected(?DateTime $affected): self
     {
         $this->affected = $affected;
         return $this;
     }
 
-    public function getAffected(): DateTime
+    public function getAffected(): ?DateTime
     {
         return $this->affected;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'size' => $this->size,
+            'width' => $this->width,
+            'height' => $this->height,
+            'order' => $this->order,
+            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'affected' => $this->affected?->format('Y-m-d H:i:s'),
+        ];
     }
 }

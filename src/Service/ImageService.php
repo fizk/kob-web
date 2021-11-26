@@ -1,11 +1,11 @@
 <?php
 namespace App\Service;
 
-use App\Model;
+use App\Model\Image;
 use PDO;
 use DateTime;
 
-class Image
+class ImageService
 {
     private PDO $pdo;
 
@@ -14,7 +14,7 @@ class Image
         $this->pdo = $pdo;
     }
 
-    public function get(string $id): ?Model\Image
+    public function get(string $id): ?Image
     {
         $statement = $this->pdo->prepare('
             select * from Image where id = :id
@@ -23,7 +23,7 @@ class Image
 
         $object = $statement->fetch();
         return $object
-            ? (new Model\Image())
+            ? (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
                 ->setDescription($object->description)

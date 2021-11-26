@@ -2,13 +2,46 @@
 
 namespace App\Form;
 
+use App\Filters\ArrayFilter;
 use App\Form\Form;
 use App\Filters\ToInt;
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits, Date};
+use App\Model\{Author, Entry, Image};
+use DateTime;
 
 class EntryForm extends Form
 {
+    public function getModel(): Entry
+    {
+        $values = $this->inputFilter->getValues();
+
+        return (new Entry())
+            ->setId($values['id'])
+            ->setTitle($values['title'])
+            ->setFrom(new DateTime($values['from']))
+            ->setTo(new DateTime($values['to']))
+            ->setCreated($values['created'] ? new DateTime($values['created']) : null)
+            ->setAffected(new DateTime($values['affected']))
+            ->setBodyIs($values['body_is'])
+            ->setBodyEn($values['body_en'])
+            ->setOrientation($values['orientation'])
+            ->setType($values['type'])
+            ->setAuthors(array_map(function ($author) {
+                return (new Author())
+                    ->setId($author);
+            }, $values['authors']))
+            ->setGallery(array_map(function ($image) {
+                return (new Image)
+                    ->setId($image);
+            }, $values['gallery']))
+            ->setPosters(array_map(function ($image) {
+                return (new Image)
+                    ->setId($image);
+            }, $values['posters']))
+            ;
+    }
+
     public function getInputFilterSpecification(): array
     {
         return [
@@ -89,6 +122,36 @@ class EntryForm extends Form
                 'name' => 'type',
                 'required' => true,
                 'allow_empty' => false,
+            ],
+            'authors' => [
+                'name' => 'type',
+                'required' => false,
+                'allow_empty' => true,
+                'filters' => [
+                    [
+                        'name' => ArrayFilter::class
+                    ],
+                ],
+            ],
+            'posters' => [
+                'name' => 'type',
+                'required' => false,
+                'allow_empty' => true,
+                'filters' => [
+                    [
+                        'name' => ArrayFilter::class
+                    ],
+                ],
+            ],
+            'gallery' => [
+                'name' => 'type',
+                'required' => false,
+                'allow_empty' => true,
+                'filters' => [
+                    [
+                        'name' => ArrayFilter::class
+                    ],
+                ],
             ],
             'affected' => [
                 'name' => 'affected',

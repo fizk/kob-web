@@ -7,15 +7,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
-use App\Service\Entry;
+use App\Service\EntryService;
 use DateTime;
 
 class HomePageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Entry $entry;
+    private EntryService $entry;
 
-    public function __construct(Entry $entry, TemplateRendererInterface $template)
+    public function __construct(EntryService $entry, TemplateRendererInterface $template)
     {
         $this->entry    = $entry;
         $this->template = $template;
@@ -28,7 +28,7 @@ class HomePageHandler implements RequestHandlerInterface
         $list = $this->entry->fetchCurrent(new DateTime(), $language);
         $list = count($list) > 0
             ? $list
-            : $this->entry->fetchLatestByType(Entry::PROJECT, $language);
+            : $this->entry->fetchLatestByType(EntryService::PROJECT, $language);
         $next = $this->entry->fetchAfter(new DateTime(), $language);
 
         return new HtmlResponse(

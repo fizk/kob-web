@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Model;
 
-abstract class AbstractAuthor extends Author
+abstract class AbstractAuthor extends AuthorService
 {
     public function __construct()
     {
@@ -29,7 +29,7 @@ abstract class AbstractAuthor extends Author
         return [];
     }
 
-    public function save(array $data): int
+    public function save(Model\Author $data): int
     {
         return 0;
     }

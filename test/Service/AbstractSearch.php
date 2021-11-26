@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-abstract class AbstractSearch extends Search
+abstract class AbstractSearch extends SearchService
 {
     public function __construct()
     {

@@ -18,7 +18,7 @@ class AuthorsPageHandlerTest extends TestCase
         $request = (new ServerRequest())->withUri(new Uri('/listamenn'));
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function fetchList(): array
@@ -40,7 +40,7 @@ class AuthorsPageHandlerTest extends TestCase
         $request = (new ServerRequest())->withUri(new Uri('/authors'));
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function fetchList(): array

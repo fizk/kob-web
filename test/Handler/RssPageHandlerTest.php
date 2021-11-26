@@ -20,7 +20,7 @@ class RssPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry {
                     public function fetchFeed(): array {
                         return [];

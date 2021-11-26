@@ -23,18 +23,18 @@
             {% endif %}
         </header>
         <aside class="entry__aside">
-            {% if entry.current.poster %}
-            <img class="entry__poster" src="/img/640x/{{entry.current.poster.name}}" />
+            {% if entry.current.posters|length > 0 %}
+            <img class="entry__poster" src="/img/640x/{{entry.current.posters[0].name}}" />
             {% endif %}
             <ul class="gallery">
                 {% for image in entry.current.gallery %}
                 {% if image.width > image.height %}
                 <li class="gallery__item--landscape">
-                    <img src="{{ path('asset', {size: '200x', name: image.name}) }}" class="gallery__image" />
+                    <img src="{{ path('asset', {size: '200x', name: image.name}) }}" loading="lazy" class="gallery__image" />
                 </li>
                 {% else %}
                 <li class="gallery__item--portraid">
-                    <img src="{{ path('asset', {size: 'x320', name: image.name}) }}" class="gallery__image" />
+                    <img src="{{ path('asset', {size: 'x320', name: image.name}) }}" loading="lazy" class="gallery__image" />
                 </li>
                 {% endif %}
                 {% endfor %}

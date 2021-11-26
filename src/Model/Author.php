@@ -9,8 +9,8 @@ class Author implements JsonSerializable
 {
     private ?int $id = null;
     private string $name;
-    private DateTime $created;
-    private DateTime $affected;
+    private ?DateTime $created = null;
+    private ?DateTime $affected = null;
     private ?int $order = null;
     private array $entries = [];
 
@@ -36,24 +36,24 @@ class Author implements JsonSerializable
         return $this->name;
     }
 
-    public function setCreated(DateTime $created): self
+    public function setCreated(?DateTime $created): self
     {
         $this->created = $created;
         return $this;
     }
 
-    public function getCreated(): DateTime
+    public function getCreated(): ?DateTime
     {
         return $this->created;
     }
 
-    public function setAffected(DateTime $affected): self
+    public function setAffected(?DateTime $affected): self
     {
         $this->affected = $affected;
         return $this;
     }
 
-    public function getAffected(): DateTime
+    public function getAffected(): ?DateTime
     {
         return $this->affected;
     }
@@ -85,8 +85,8 @@ class Author implements JsonSerializable
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'created' => $this->created,
-            'affected' => $this->affected,
+            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'affected' => $this->affected?->format('Y-m-d H:i:s'),
             'order' => $this->order,
             'entries' => $this->entries,
         ];

@@ -11,7 +11,7 @@ abstract class Form implements InputFilterProviderInterface
     private array $data = [];
     private ?bool $valid = null;
     private Factory $factory;
-    private InputFilterInterface $inputFilter;
+    protected InputFilterInterface $inputFilter;
 
     public function __construct()
     {
@@ -28,6 +28,8 @@ abstract class Form implements InputFilterProviderInterface
     {
         return $this->inputFilter->getValues();
     }
+
+    abstract public function getModel();
 
     public function isValid(): bool
     {

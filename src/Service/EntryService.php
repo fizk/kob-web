@@ -1,12 +1,11 @@
 <?php
 namespace App\Service;
 
-
-use App\Model;
+use App\Model\{Entry, Entries};
 use PDO;
 use DateTime;
 
-class Entry
+class EntryService
 {
     use EntryTrait;
 
@@ -27,15 +26,17 @@ class Entry
      * posters
      * gallery
      */
-    public function get(string $id): ?Model\Entry
+    public function get(string $id): ?Entry
     {
         $statement = $this->pdo->prepare('select * from `Entry` where id = :id');
         $statement->execute(['id' => $id]);
 
         $entry = $statement->fetch();
-        if (!$entry) return null;
+        if (!$entry) {
+            return null;
+        }
 
-        return (new Model\Entry())
+        return (new Entry())
             ->setId($entry->id)
             ->setTitle($entry->title)
             ->setFrom(new DateTime($entry->from))
@@ -48,7 +49,7 @@ class Entry
             ->setBody(null)
             ->setOrientation($entry->orientation)
             ->setAuthors($this->fetchAuthors($entry->id))
-            ->setPoster($this->fetchPosters($entry->id))
+            ->setPosters($this->fetchPosters($entry->id))
             ->setGallery($this->fetchGallery($entry->id))
             ;
     }
@@ -62,7 +63,7 @@ class Entry
      * posters
      * gallery
      */
-    public function fetch(string $id, string $lang = 'is'): ?Model\Entries
+    public function fetch(string $id, string $lang = 'is'): ?Entries
     {
         $statement = $this->pdo->prepare(
             $lang === 'is'
@@ -86,12 +87,14 @@ class Entry
                 $result['previous'] = $item;
             }
         }
-        if (!$result['current']) return null;
+        if (!$result['current']) {
+            return null;
+        }
 
-        $entries = new Model\Entries();
+        $entries = new Entries();
 
         if ($result['current']) {
-            $entries->setCurrent((new Model\Entry())
+            $entries->setCurrent((new Entry())
                 ->setId($result['current']->id)
                 ->setTitle($result['current']->title)
                 ->setFrom(new DateTime($result['current']->from))
@@ -104,13 +107,12 @@ class Entry
                 ->setBody($result['current']->body)
                 ->setOrientation($result['current']->orientation)
                 ->setAuthors($this->fetchAuthors($result['current']->id))
-                ->setPoster($this->fetchPosters($result['current']->id))
+                ->setPosters($this->fetchPosters($result['current']->id))
                 ->setGallery($this->fetchGallery($result['current']->id)));
-
         }
 
         if ($result['previous']) {
-            $entries->setPrevious((new Model\Entry())
+            $entries->setPrevious((new Entry())
                 ->setId($result['previous']->id)
                 ->setTitle($result['previous']->title)
                 ->setFrom(new DateTime($result['previous']->from))
@@ -123,12 +125,12 @@ class Entry
                 ->setBody($result['previous']->body)
                 ->setOrientation($result['previous']->orientation)
                 ->setAuthors($this->fetchAuthors($result['previous']->id))
-                ->setPoster($this->fetchPosters($result['previous']->id))
+                ->setPosters($this->fetchPosters($result['previous']->id))
                 ->setGallery($this->fetchGallery($result['previous']->id)));
         }
 
         if ($result['next']) {
-            $entries->setNext((new Model\Entry())
+            $entries->setNext((new Entry())
                 ->setId($result['next']->id)
                 ->setTitle($result['next']->title)
                 ->setFrom(new DateTime($result['next']->from))
@@ -141,7 +143,7 @@ class Entry
                 ->setBody($result['next']->body)
                 ->setOrientation($result['next']->orientation)
                 ->setAuthors($this->fetchAuthors($result['next']->id))
-                ->setPoster($this->fetchPosters($result['next']->id))
+                ->setPosters($this->fetchPosters($result['next']->id))
                 ->setGallery($this->fetchGallery($result['next']->id)));
         }
 
@@ -167,7 +169,7 @@ class Entry
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -180,7 +182,7 @@ class Entry
                 ->setBody($item->body)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -204,7 +206,7 @@ class Entry
         $statement->execute(['type' => $type]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -217,7 +219,7 @@ class Entry
                 ->setBody($item->body)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -247,7 +249,7 @@ class Entry
         }
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -260,7 +262,7 @@ class Entry
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -281,7 +283,7 @@ class Entry
         $statement->execute([]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -294,7 +296,7 @@ class Entry
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -319,7 +321,7 @@ class Entry
         $statement->execute(['type' => $type]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -332,7 +334,7 @@ class Entry
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -356,7 +358,7 @@ class Entry
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -369,7 +371,7 @@ class Entry
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id))
+                ->setPosters($this->fetchPosters($item->id))
                 ->setGallery($this->fetchGallery($item->id));
         }, $statement->fetchAll());
     }
@@ -387,7 +389,7 @@ class Entry
         $statement->execute([]);
 
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -400,7 +402,7 @@ class Entry
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id));
+                ->setPosters($this->fetchPosters($item->id));
         }, $statement->fetchAll());
     }
 
@@ -427,7 +429,7 @@ class Entry
         $statement = $this->pdo->prepare('select * from `Entry` order by `from` desc');
         $statement->execute();
         return array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -447,8 +449,21 @@ class Entry
     /**
      * Save an entry.
      */
-    public function save(array $data): int
+    public function save(Entry $entry): int
     {
+        $data = $entry->jsonSerialize();
+        $authors = $data['authors'];
+        $posters = $data['posters'];
+        $gallery = $data['gallery'];
+
+        unset($data['body']);
+        unset($data['authors']);
+        unset($data['posters']);
+        unset($data['gallery']);
+
+        if (!$data['created']) {
+            unset($data['created']);
+        }
 
         $columns = implode(',', array_map(function ($i) {
             return " `{$i}`";
@@ -464,11 +479,19 @@ class Entry
         $statement = $this->pdo->prepare("
           INSERT INTO `Entry` ({$columns}) VALUES ({$values})
           on duplicate key update {$update};
-          ");
+        ");
 
         $statement->execute($data);
+        $id = $entry->getId()
+            ? $entry->getId()
+            : $this->pdo->lastInsertId();
 
-        return $this->pdo->lastInsertId();
+        $this->attachAuthors($id, $authors);
+        $this->attachImages($id, $posters, 1);
+        $this->attachImages($id, $gallery, 2);
+
+
+        return $id;
     }
 
     /**
@@ -476,7 +499,6 @@ class Entry
      */
     public function attachAuthors(string $id, array $authors)
     {
-
         $deleteStatement = $this->pdo->prepare('delete from Entry_has_Author where entry_id = :id');
         $deleteStatement->execute(['id' => $id]);
 
@@ -485,7 +507,11 @@ class Entry
         ');
 
         foreach ($authors as $count => $author) {
-            $insertStatement->execute(['entry' => $id, 'author' => $author, 'order' => $count]);
+            $insertStatement->execute([
+                'entry' => $id,
+                'author' => $author->getId(),
+                'order' => $count
+            ]);
         }
     }
 
@@ -515,7 +541,7 @@ class Entry
         foreach ($images as $count => $image) {
             $insertStatement->execute([
                 'entry_id' => $entryId,
-                'image_id' => $image,
+                'image_id' => $image->getId(),
                 'type' => $type,
                 'order' => $count
             ]);

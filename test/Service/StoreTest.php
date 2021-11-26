@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-use App\Model;
+use App\Model\{Store, Author, Image};
 use DateTime;
 use PDO;
 
@@ -18,8 +18,8 @@ class StoreTest extends TestCase
 
     public function testGet()
     {
-        $service = new Store($this->pdo);
-        $expected = (new Model\Store())
+        $service = new StoreService($this->pdo);
+        $expected = (new Store())
             ->setId(1)
             ->setTitle('title 1')
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -35,22 +35,22 @@ class StoreTest extends TestCase
 
     public function testFetch()
     {
-        $service = new Store($this->pdo);
-        $expected = (new Model\Store())
+        $service = new StoreService($this->pdo);
+        $expected = (new Store())
             ->setId(2)
             ->setTitle('title 2')
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
             ->setBodyIs('is')
             ->setBodyEn('en')
-            ->setAuthors([(new Model\Author)
+            ->setAuthors([(new Author)
                 ->setId(1)
                 ->setName('author 1')
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
                 ->setOrder(1)
             ])
-            ->setGallery([(new Model\Image())
+            ->setGallery([(new Image())
                 ->setId(1)
                 ->setName('name1')
                 ->setSize(0)
@@ -69,9 +69,9 @@ class StoreTest extends TestCase
 
     public function testFetchAllIS()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
         $expected = [
-            (new Model\Store())
+            (new Store())
                 ->setId(1)
                 ->setTitle('title 1')
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -79,7 +79,7 @@ class StoreTest extends TestCase
                 ->setBodyIs('is')
                 ->setBodyEn('en')
                 ->setBody('is'),
-            (new Model\Store())
+            (new Store())
                 ->setId(2)
                 ->setTitle('title 2')
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -88,7 +88,7 @@ class StoreTest extends TestCase
                 ->setBodyEn('en')
                 ->setBody('is')
                 ->setAuthors([
-                    (new Model\Author)
+                    (new Author)
                         ->setId(1)
                         ->setName('author 1')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -96,7 +96,7 @@ class StoreTest extends TestCase
                         ->setOrder(1)
                 ])
                 ->setGallery([
-                    (new Model\Image())
+                    (new Image())
                         ->setId(1)
                         ->setName('name1')
                         ->setSize(0)
@@ -114,9 +114,9 @@ class StoreTest extends TestCase
 
     public function testFetchAll()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
         $expected = [
-            (new Model\Store())
+            (new Store())
                 ->setId(1)
                 ->setTitle('title 1')
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -124,7 +124,7 @@ class StoreTest extends TestCase
                 ->setBodyIs('is')
                 ->setBodyEn('en')
                 ->setBody('en'),
-            (new Model\Store())
+            (new Store())
                 ->setId(2)
                 ->setTitle('title 2')
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -133,7 +133,7 @@ class StoreTest extends TestCase
                 ->setBodyEn('en')
                 ->setBody('en')
                 ->setAuthors([
-                    (new Model\Author)
+                    (new Author)
                         ->setId(1)
                         ->setName('author 1')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -141,7 +141,7 @@ class StoreTest extends TestCase
                         ->setOrder(1)
                 ])
                 ->setGallery([
-                    (new Model\Image())
+                    (new Image())
                         ->setId(1)
                         ->setName('name1')
                         ->setSize(0)
@@ -159,7 +159,7 @@ class StoreTest extends TestCase
 
     public function testFetchNotFound()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
         $expected = null;
 
         $actual = $service->fetch('2745582');
@@ -169,7 +169,7 @@ class StoreTest extends TestCase
 
     public function testGetNotFound()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
         $expected = null;
 
         $actual = $service->get('123456789');
@@ -179,7 +179,7 @@ class StoreTest extends TestCase
 
     public function testUpdate()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
 
         $service->save([
             'id' => '1',
@@ -218,7 +218,7 @@ class StoreTest extends TestCase
 
     public function testSave()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
 
         $id = $service->save([
             'title' => 'title three',
@@ -264,7 +264,7 @@ class StoreTest extends TestCase
 
     public function testDeleteNotFound()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
 
         $count = $service->delete('12345678');
 
@@ -296,7 +296,7 @@ class StoreTest extends TestCase
     }
     public function testDelete()
     {
-        $service = new Store($this->pdo);
+        $service = new StoreService($this->pdo);
 
         $count = $service->delete('1');
 

@@ -39,9 +39,9 @@
                     <li class="entries__list-item">
                         <article class="entries">
                             <aside class="entries__aside">
-                                {% if item.poster %}
+                                {% if item.posters|length > 0 %}
                                     <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
-                                        <img class="entries__poster" src="{{ path('asset', {size: '300x300', name: item.poster.name}) }}" />
+                                        <img class="entries__poster" src="{{ path('asset', {size: '300x300', name: item.posters[0].name}) }}" />
                                     </a>
                                 {% else %}
                                     <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">

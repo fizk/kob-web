@@ -7,7 +7,7 @@ use Imagine\Image\ImageInterface;
 use Imagine\Imagick\Imagine;
 use Psr\Http\Message\UploadedFileInterface;
 
-class Asset
+class AssetService
 {
     private string $cache;
     private string $htdocs;
@@ -81,7 +81,7 @@ class Asset
             mkdir($this->cache);
         }
 
-        $name = Asset::fileName(
+        $name = AssetService::fileName(
             $value->getClientFilename(),
             'jpg'
         );

@@ -10,8 +10,8 @@ class Store implements JsonSerializable
 {
     private ?int $id = null;
     private string $title;
-    private DateTime $created;
-    private DateTime $affected;
+    private ?DateTime $created = null;
+    private ?DateTime $affected = null;
     private ?string $body = null;
     private string $body_is;
     private string $body_en;
@@ -40,23 +40,23 @@ class Store implements JsonSerializable
         return $this;
     }
 
-    public function getCreated(): DateTime
+    public function getCreated(): ?DateTime
     {
         return $this->created;
     }
 
-    public function setCreated(DateTime $created): self
+    public function setCreated(?DateTime $created): self
     {
         $this->created = $created;
         return $this;
     }
 
-    public function getAffected(): DateTime
+    public function getAffected(): ?DateTime
     {
         return $this->affected;
     }
 
-    public function setAffected(DateTime $affected): self
+    public function setAffected(?DateTime $affected): self
     {
         $this->affected = $affected;
         return $this;
@@ -122,8 +122,8 @@ class Store implements JsonSerializable
         return [
             'id' => $this->id = null,
             'title' => $this->title,
-            'created' => $this->created?->format(DateTimeInterface::ISO8601),
-            'affected' => $this->affected?->format(DateTimeInterface::ISO8601),
+            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'affected' => $this->affected?->format('Y-m-d H:i:s'),
             'body' => $this->body = null,
             'body_is' => $this->body_is,
             'body_en' => $this->body_en,

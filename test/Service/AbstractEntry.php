@@ -6,7 +6,7 @@ namespace App\Service;
 use DateTime;
 use App\Model;
 
-abstract class AbstractEntry extends Entry
+abstract class AbstractEntry extends EntryService
 {
     public function __construct()
     {
@@ -17,7 +17,7 @@ abstract class AbstractEntry extends Entry
         return (new Model\Entry)
             ->setId(1)
             ->setTitle('title1')
-            ->setType(Entry::NEWS)
+            ->setType(EntryService::NEWS)
             ->setFrom(new DateTime())
             ->setOrientation('')
             ->setTo(new DateTime());
@@ -78,8 +78,9 @@ abstract class AbstractEntry extends Entry
         return [];
     }
 
-    public function save(array $data): int
+    public function save(Model\Entry $entry): int
     {
+        $i = 0;
         return 0;
     }
 

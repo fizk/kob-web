@@ -15,6 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use App\Router\RouterInterface;
 use App\Service;
 use App\Middleware;
+use App\Model;
 
 use function App\Router\dispatch;
 
@@ -50,7 +51,7 @@ class AuthorSavePageHandlerTest extends TestCase
         $serviceManager->setFactory(Service\Author::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function save(array $data): int
+                public function save(Model\Author $data): int
                 {
                     return 1;
                 }
@@ -62,7 +63,7 @@ class AuthorSavePageHandlerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(['/authors/1'], $response->getHeader('location'));
+        $this->assertEquals(['/listamenn/1'], $response->getHeader('location'));
     }
 
     public function testSaveAndRedirectError()
@@ -92,10 +93,10 @@ class AuthorSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function save(array $data): int
+                public function save(Model\Author $data): int
                 {
                     return 1;
                 }
@@ -138,10 +139,10 @@ class AuthorSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function save(array $data): int
+                public function save(Model\Author $data): int
                 {
                     return 1;
                 }
@@ -183,10 +184,10 @@ class AuthorSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
-                public function save(array $data): int
+                public function save(Model\Author $data): int
                 {
                     return 1;
                 }

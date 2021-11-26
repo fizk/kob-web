@@ -4,7 +4,8 @@ namespace App\Model;
 
 use JsonSerializable;
 
-class Entries implements JsonSerializable {
+class Entries implements JsonSerializable
+{
     private ?Entry $previous = null;
     private ?Entry $current = null;
     private ?Entry $next = null;

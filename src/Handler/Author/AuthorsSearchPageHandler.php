@@ -6,13 +6,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\Author;
+use App\Service\AuthorService;
 
 class AuthorsSearchPageHandler implements RequestHandlerInterface
 {
-    private Author $author;
+    private AuthorService $author;
 
-    public function __construct(Author $author)
+    public function __construct(AuthorService $author)
     {
         $this->author   = $author;
     }

@@ -2,10 +2,7 @@
 
 namespace App\Handler\Image;
 
-use App\Service\Asset;
-use Imagine\Image\Box;
-use Imagine\Image\ImageInterface;
-use Imagine\Imagick\Imagine;
+use App\Service\AssetService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -14,9 +11,9 @@ use Laminas\Diactoros\Stream;
 
 class AssetPageHandler implements RequestHandlerInterface
 {
-    private Asset $asset;
+    private AssetService $asset;
 
-    public function __construct(Asset $asset)
+    public function __construct(AssetService $asset)
     {
         $this->asset = $asset;
     }

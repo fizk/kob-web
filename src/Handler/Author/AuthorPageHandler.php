@@ -7,15 +7,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
 use App\Template\TemplateRendererInterface;
-use App\Service\Author;
+use App\Service\AuthorService;
 
 class AuthorPageHandler implements RequestHandlerInterface
 {
 
     private TemplateRendererInterface $template;
-    private Author $author;
+    private AuthorService $author;
 
-    public function __construct(Author $author, TemplateRendererInterface $template)
+    public function __construct(AuthorService $author, TemplateRendererInterface $template)
     {
         $this->author   = $author;
         $this->template = $template;

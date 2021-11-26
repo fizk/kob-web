@@ -27,7 +27,7 @@ class AuthorUpdatePageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function get(string $id): ?Model\Author
@@ -47,7 +47,7 @@ class AuthorUpdatePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Page::class, function () {
+        $serviceManager->setFactory(Service\PageService::class, function () {
             return new class extends Service\AbstracPage {};
         });
         $collection = $serviceManager->get(RouterInterface::class);

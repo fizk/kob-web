@@ -1,8 +1,7 @@
 <?php
 namespace App\Service;
 
-use App\Model\Author;
-use App\Model\Image;
+use App\Model\{Author, Image};
 use DateTime;
 
 trait EntryTrait
@@ -12,9 +11,9 @@ trait EntryTrait
      * to an Entry
      *
      * @param string $id
-     * @return \stdClass|null
+     * @return App\Model\Image[]
      */
-    private function fetchPosters(string $id): ?Image
+    private function fetchPosters(string $id): array
     {
         $posterStatement = $this->pdo->prepare('
             select I.*, EI.`type` from Entry_has_Image EI
@@ -23,19 +22,19 @@ trait EntryTrait
             order by EI.`order`;
         ');
         $posterStatement->execute(['id' => $id]);
-        $posters = $posterStatement->fetch();
-        return  $posters
-            ? (new Image())
-                ->setId($posters->id)
-                ->setName($posters->name)
-                ->setDescription($posters->description)
-                ->setSize($posters->size)
-                ->setWidth($posters->width)
-                ->setHeight($posters->height)
-                ->setOrder($posters->order ?? null)
-                ->setCreated(new DateTime($posters->created))
-                ->setAffected(new DateTime($posters->affected))
-            : null;
+
+        return array_map(function ($poster) {
+            return (new Image())
+                ->setId($poster->id)
+                ->setName($poster->name)
+                ->setDescription($poster->description)
+                ->setSize($poster->size)
+                ->setWidth($poster->width)
+                ->setHeight($poster->height)
+                ->setOrder($poster->order ?? null)
+                ->setCreated(new DateTime($poster->created))
+                ->setAffected(new DateTime($poster->affected));
+        }, $posterStatement->fetchAll());
     }
 
     /**
@@ -43,7 +42,7 @@ trait EntryTrait
      * to an Entry
      *
      * @param string $id
-     * @return \stdClass[]
+     * @return App\Model\Image[]
      */
     private function fetchGallery(string $id): array
     {
@@ -55,7 +54,7 @@ trait EntryTrait
         ');
         $galleryStatement->execute(['id' => $id]);
 
-        return array_map(function($object) {
+        return array_map(function ($object) {
             return (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
@@ -68,7 +67,6 @@ trait EntryTrait
                 ->setAffected(new DateTime($object->affected))
                 ;
         }, $galleryStatement->fetchAll());
-
     }
 
     /**
@@ -76,7 +74,7 @@ trait EntryTrait
      * to an Entry
      *
      * @param string $id
-     * @return \stdClass[]
+     * @return App\Model\Author[]
      */
     private function fetchAuthors(string $id): array
     {

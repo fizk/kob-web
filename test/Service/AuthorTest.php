@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-use App\Model;
+use App\Model\{Author, Entry, Image};
 use DateTime;
 use PDO;
 
@@ -18,8 +18,8 @@ class AuthorTest extends TestCase
 
     public function testGet()
     {
-        $service = new Author($this->pdo);
-        $expected = (new Model\Author())
+        $service = new AuthorService($this->pdo);
+        $expected = (new Author())
             ->setId(1)
             ->setName('author 1')
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
@@ -32,43 +32,43 @@ class AuthorTest extends TestCase
 
     public function testFetch()
     {
-        $service = new Author($this->pdo);
-        $expected = (new Model\Author())
+        $service = new AuthorService($this->pdo);
+        $expected = (new Author())
             ->setId(1)
             ->setName('author 1')
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
             ->setEntries([
-                (new Model\Entry())
+                (new Entry())
                 ->setId(1)
                 ->setTitle('show #1')
                 ->setFrom(new DateTime('2001-06-01'))
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(Entry::PROJECT)
+                ->setType(EntryService::PROJECT)
                 ->setBodyIs('is')
                 ->setBodyEn('en')
                 ->setOrientation('')
                 ->setAuthors([
-                    (new Model\Author())
+                    (new Author())
                         ->setId(1)
                         ->setName('author 1')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00')),
-                    (new Model\Author())
+                    (new Author())
                         ->setId(2)
                         ->setName('author 2')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00')),
                     ])
-                    ->setPoster(
-                        (new Model\Image())
+                    ->setPosters([
+                        (new Image())
                             ->setId(1)
                             ->setName('name1')
                             ->setCreated(new DateTime('2001-01-01 00:00:00'))
                             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                    )
+                    ])
 
             ])
             ;
@@ -80,7 +80,7 @@ class AuthorTest extends TestCase
 
     public function testFetchError()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
         $actual = $service->fetch('1234567');
 
         $this->assertNull($actual);
@@ -88,133 +88,133 @@ class AuthorTest extends TestCase
 
     public function testFetchList()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
         $expected = [
-            (new Model\Author())
+            (new Author())
                 ->setId(1)
                 ->setName('author 1')
                 ->setCreated(new DateTime('2001-01-01'))
                 ->setAffected(new DateTime('2001-01-01'))
                 ->setEntries([
-                    (new Model\Entry())
+                    (new Entry())
                     ->setId(1)
                     ->setTitle('show #1')
                     ->setFrom(new DateTime('2001-06-01'))
                     ->setTo(new DateTime('2001-07-01'))
                     ->setCreated(new DateTime('2001-01-01 00:00:00'))
                     ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                    ->setType(Entry::PROJECT)
+                    ->setType(EntryService::PROJECT)
                     ->setBodyIs('is')
                     ->setBodyEn('en')
                     ->setOrientation('')
                     ->setAuthors([
-                        (new Model\Author())
+                        (new Author())
                         ->setId(1)
                         ->setName('author 1')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00')),
-                        (new Model\Author())
+                        (new Author())
                         ->setId(2)
                         ->setName('author 2')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00')),
                     ])
-                    ->setPoster(
-                        (new Model\Image())
+                    ->setPosters([
+                        (new Image())
                         ->setId(1)
                         ->setName('name1')
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                    ),
+                    ]),
                 ]),
-            (new Model\Author())
+            (new Author())
                 ->setId(2)
                 ->setName('author 2')
                 ->setCreated(new DateTime('2001-01-01'))
                 ->setAffected(new DateTime('2001-01-01'))
                 ->setEntries([
-                    (new Model\Entry())
+                    (new Entry())
                         ->setId(1)
                         ->setTitle('show #1')
                         ->setFrom(new DateTime('2001-06-01'))
                         ->setTo(new DateTime('2001-07-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(Entry::PROJECT)
+                        ->setType(EntryService::PROJECT)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
                         ->setAuthors([
-                            (new Model\Author())
+                            (new Author())
                                 ->setId(1)
                                 ->setName('author 1')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00')),
-                            (new Model\Author())
+                            (new Author())
                                 ->setId(2)
                                 ->setName('author 2')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00')),
                         ])
-                        ->setPoster(
-                            (new Model\Image())
+                        ->setPosters([
+                            (new Image())
                                 ->setId(1)
                                 ->setName('name1')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ),
-                    (new Model\Entry())
+                        ]),
+                    (new Entry())
                         ->setId(4)
                         ->setTitle('show #4')
                         ->setFrom(new DateTime('2010-01-15'))
                         ->setTo(new DateTime('2010-02-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(Entry::SHOW)
+                        ->setType(EntryService::SHOW)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
-                        ->setPoster(
-                            (new Model\Image())
+                        ->setPosters([
+                            (new Image())
                                 ->setId(1)
                                 ->setName('name1')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        )
+                        ])
                         ->setAuthors([
-                            (new Model\Author())
+                            (new Author())
                                 ->setId(2)
                                 ->setName('author 2')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
                         ]),
-                    (new Model\Entry())
+                    (new Entry())
                         ->setId(6)
                         ->setTitle('show #6')
                         ->setFrom(new DateTime('2020-01-01'))
                         ->setTo(new DateTime('2020-01-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(Entry::PROJECT)
+                        ->setType(EntryService::PROJECT)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
-                        ->setPoster(
-                            (new Model\Image())
+                        ->setPosters([
+                            (new Image())
                                 ->setId(1)
                                 ->setName('name1')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        )
+                        ])
                         ->setAuthors([
-                            (new Model\Author())
+                            (new Author())
                                 ->setId(2)
                                 ->setName('author 2')
                                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
                         ]),
             ]),
-            (new Model\Author())
+            (new Author())
                 ->setId(3)
                 ->setName('author 3')
                 ->setCreated(new DateTime('2001-01-01'))
@@ -227,21 +227,21 @@ class AuthorTest extends TestCase
 
     public function testFetchAffected()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
         $actual = $service->fetchAffected();
         $this->assertCount(3, $actual);
     }
 
     public function testUpdate()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
 
-        $service->save([
-            'id' => '1',
-            'name' => 'author one',
-            'created' => '2001-01-01',
-            'affected' => '2001-01-01',
-        ]);
+        $service->save((new Author())
+            ->setId(1)
+            ->setName('author one')
+            ->setCreated(new DateTime('2001-01-01'))
+            ->setAffected(new DateTime('2001-01-01'))
+        );
 
         $expected = [
             (object)[
@@ -273,13 +273,13 @@ class AuthorTest extends TestCase
 
     public function testSave()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
 
-        $id = $service->save([
-            'name' => 'author new',
-            'created' => '2001-01-01',
-            'affected' => '2001-01-01',
-        ]);
+        $id = $service->save((new Author())
+                ->setName('author new')
+                ->setCreated(new DateTime('2001-01-01'))
+                ->setAffected(new DateTime('2001-01-01'))
+            );
 
         $expected = [
             (object)[
@@ -317,7 +317,7 @@ class AuthorTest extends TestCase
 
     public function testDelete()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
 
         $count = $service->delete('1');
 
@@ -346,7 +346,7 @@ class AuthorTest extends TestCase
 
     public function testDeleteNotFound()
     {
-        $service = new Author($this->pdo);
+        $service = new AuthorService($this->pdo);
 
         $count = $service->delete('12345678');
 
@@ -425,7 +425,7 @@ class AuthorTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -437,7 +437,7 @@ class AuthorTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -450,7 +450,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -462,7 +462,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -474,7 +474,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-01-31',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::SHOW,
+                    'type' => EntryService::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -487,7 +487,7 @@ class AuthorTest extends TestCase
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => Entry::PROJECT,
+                    'type' => EntryService::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',

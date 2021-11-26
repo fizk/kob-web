@@ -12,91 +12,43 @@
     <meta property="og:image" content="/images/poster.jpg" />
 {% endblock %}
 
-{% block language_switch %}
-    {% if language == 'is' %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('list', {year: year}) }}">English</a></li>
-    {% else %}
-        <li class="app__nav-list-item"><a class="app__nav-link" href="{{ path('listi', {year: year}) }}">Íslenska</a></li>
-    {% endif %}
-{% endblock %}
 
 {% block content %}
-    <main class="app__main">
-        <div class="entries__header">
-            <div class="entries__header-space"></div>
-            <div class="entries__header-logo">
-                {% include '@partials/header.html.twig' %}
-                <h2 class="entries__title">{{ year }}</h2>
-            </div>
-        </div>
-
-        <div class="entries__container">
-            {#<div class="entries__years-list">#}
-                {#<ul class="entries__years">#}
-                    {#{% for item in entry_years %}#}
-                        {#<li class="entries__years-item">#}
-                            {#{% if year == item.year %}#}
-                                {#<span class="entries__years-year">{{ item.year }}</span>#}
-                            {#{% else %}#}
-                                {#<a class="entries__years-link" href="{{ path(language == 'is' ? 'listi' : 'list', {year: item.year}) }}">{{ item.year }}</a>#}
-                            {#{% endif %}#}
-                        {#</li>#}
-                    {#{% endfor %}#}
-                {#</ul>#}
-            {#</div>#}
-            <ul class="entries__list">
-            {% for item in list %}
-            <li class="entries__list-item">
-                <article class="entries">
-                    <aside class="entries__aside">
-                        {% if item.poster %}
-                            <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
-                                <img class="entries__poster" src="{{ path('asset', {size: '300x300', name: item.poster.name}) }}" />
-                            </a>
-                            {% else %}
-                            <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}">
-                                <div class="entries__poster-placeholder"></div>
-                            </a>
-                        {% endif %}
-                    </aside>
-                    <div class="entries__body">
-                        <ul class="entries__primary-caption">
-                            {% if item.type == 'show' %}
-                            {% for author in item.authors %}
-                                <li class="entries__primary-caption-item">
-                                    <h3 class="entries__primary-caption-text">
-                                        <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
-                                        {{ author.name }}
-                                        </a>
-                                    </h3>
-                                </li>
-                            {% endfor %}
-                            {% else %}
-                                <li class="entries__primary-caption-item">
-                                    <h3 class="entries__primary-caption-text">
-                                        <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
-                                        {{ item.title }}
-                                        </a>
-                                    </h3>
-                                </li>
-                            {% endif %}
-                        </ul>
-                        {% if item.type == 'show' or item.type == 'proj' %}
-                            <time class="entries__time">{{ item.from|date(language|default('is'), false) }} - {{ item.to|date(language|default('is')) }}</time>
-                        {% endif %}
-
-                        {% if item.type == 'show' %}
-                            <h3 class="entries__secondary-caption-text">
-                                <a href="{{ path(language == 'is' ? 'syning' : 'entry', {id: item.title|slug(item.id)}) }}" class="entries__link">
-                                {{ item.title }}
-                                </a>
-                            </h3>
-                        {% endif %}
-                    </div>
-                </article>
-            </li>
-            {% endfor %}
-        </ul>
-        </div>
-    </main>
+    <ul class="entries">
+        {% for item in list %}
+        <li class="entries__item">
+            <article class="entries__article">
+                <header class="entries__header">
+                    <h2 class="entries__title">
+                        <a href="{{ selectPath(['syning', 'entry'], language == 'is', {id: item.title|slug(item.id)}) }}" class="entries__link">
+                            {{item.title}}
+                        </a>
+                    </h2>
+                    {% if item.type == 'news' %}
+                        <time>{{item.from|date(language)}}</time>
+                    {% else %}
+                        <time>{{item.from|date(language)}}</time> | <time>{{item.to|date(language)}}</time>
+                    {% endif %}
+                </header>
+                <main class="entries__content">
+                    <ul class="entries__authors">
+                    {% for author in item.authors %}
+                        <li>
+                            <a href="{{selectPath(['listamadur', 'author'], language == 'is', {id: author.id})}}" class="entries__link">{{author.name}}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </main>
+                <aside class="entries__aside">
+                    {% if item.posters|length > 0 %}
+                        <img class="entries__poster" src="{{path('asset', {size: '200x200', name: item.posters[0].name})}}" loading="lazy" width="200" height="200" />
+                    {% else %}
+                        <img class="entries__poster" src="#" width="200" height="200" loading="lazy" />
+                    {% endif %}
+                </aside>
+                <footer class="entries__footer"></footer>
+            </article>
+        </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

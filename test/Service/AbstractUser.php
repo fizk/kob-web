@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Model;
 
-abstract class AbstractUser extends User
+abstract class AbstractUser extends UserService
 {
     public function __construct()
     {

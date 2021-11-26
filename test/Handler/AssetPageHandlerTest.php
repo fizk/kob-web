@@ -20,7 +20,7 @@ class AssetPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Asset::class, function () {
+        $serviceManager->setFactory(Service\AssetService::class, function () {
             return new class extends Service\AbstracAsset
             {
             };
@@ -41,7 +41,7 @@ class AssetPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Asset::class, function () {
+        $serviceManager->setFactory(Service\AssetService::class, function () {
             return new class extends Service\AbstracAsset
             {
                 public function get(string $size, string $name)

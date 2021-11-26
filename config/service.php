@@ -22,36 +22,36 @@ return [
     'factories'  => [
         Handler\Image\AssetPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Image\AssetPageHandler(
-                $container->get(Service\Asset::class)
+                $container->get(Service\AssetService::class)
             );
         },
         Handler\Image\ImageSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Image\ImageSavePageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(Service\Image::class),
-                $container->get(Service\Asset::class),
+                $container->get(Service\ImageService::class),
+                $container->get(Service\AssetService::class),
             );
         },
         Handler\Image\ImageUpdatePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Image\ImageUpdatePageHandler(
-                $container->get(Service\Image::class)
+                $container->get(Service\ImageService::class)
             );
         },
         Handler\HomePageHandler::class => function (ContainerInterface $container) {
             return new Handler\HomePageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Entry\EntryPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\EntryPageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Entry\EntryUpdatePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\EntryUpdatePageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
@@ -64,61 +64,61 @@ return [
             return new Handler\Entry\EntrySavePageHandler(
                 $container->get(RouterInterface::class),
                 $container->get(TemplateRendererInterface::class),
-                $container->get(Service\Entry::class),
-                $container->get(Service\Search::class)
+                $container->get(Service\EntryService::class),
+                $container->get(Service\SearchService::class)
             );
         },
         Handler\Entry\EntryDeletePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\EntryDeletePageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(Service\Entry::class)
+                $container->get(Service\EntryService::class)
             );
         },
         Handler\Entry\EntriesPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\EntriesPageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Entry\ProjectsPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Entry\ProjectsPageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Store\StoreUpdatePageHandler::class => function(ContainerInterface $container) {
             return (new Handler\Store\StoreUpdatePageHandler(
-                $container->get(Service\Store::class),
+                $container->get(Service\StoreService::class),
                 $container->get(TemplateRendererInterface::class)
             ));
         },
         Handler\Author\AuthorsPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorsPageHandler(
-                $container->get(Service\Author::class),
+                $container->get(Service\AuthorService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Author\AuthorPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorPageHandler(
-                $container->get(Service\Author::class),
+                $container->get(Service\AuthorService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Author\AuthorsSearchPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorsSearchPageHandler(
-                $container->get(Service\Author::class)
+                $container->get(Service\AuthorService::class)
             );
         },
         Handler\Page\ManifestoPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\ManifestoPageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(Service\Page::class),
+                $container->get(Service\PageService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\Page\StorePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\StorePageHandler(
-                $container->get(Service\Store::class),
+                $container->get(Service\StoreService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
@@ -126,7 +126,7 @@ return [
             return new Handler\Store\StoreSavePageHandler(
                 $container->get(RouterInterface::class),
                 $container->get(TemplateRendererInterface::class),
-                $container->get(Service\Store::class)
+                $container->get(Service\StoreService::class)
             );
         },
         Handler\Store\StoreCreatePageHandler::class => function (ContainerInterface $container) {
@@ -137,19 +137,19 @@ return [
         Handler\Store\StoreDeletePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Store\StoreDeletePageHandler (
                 $container->get(RouterInterface::class),
-                $container->get(Service\Store::class)
+                $container->get(Service\StoreService::class)
             );
         },
         Handler\Page\SupportersPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\SupportersPageHandler(
-                $container->get(Service\Page::class),
+                $container->get(Service\PageService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\DashboardPageHandler::class => function (ContainerInterface $container) {
             return new Handler\DashboardPageHandler(
-                $container->get(Service\Entry::class),
-                $container->get(Service\Author::class),
+                $container->get(Service\EntryService::class),
+                $container->get(Service\AuthorService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
@@ -184,7 +184,7 @@ return [
         },
         Handler\Author\AuthorUpdatePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorUpdatePageHandler(
-                $container->get(Service\Author::class),
+                $container->get(Service\AuthorService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
@@ -192,7 +192,7 @@ return [
             return new Handler\Author\AuthorSavePageHandler(
                 $container->get(RouterInterface::class),
                 $container->get(TemplateRendererInterface::class),
-                $container->get(Service\Author::class)
+                $container->get(Service\AuthorService::class)
             );
         },
         Handler\Author\AuthorCreatePageHandler::class => function (ContainerInterface $container) {
@@ -203,24 +203,24 @@ return [
         Handler\Author\AuthorDeletePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Author\AuthorDeletePageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(Service\Author::class)
+                $container->get(Service\AuthorService::class)
             );
         },
         Handler\User\UsersPageHandler::class => function (ContainerInterface $container) {
             return new Handler\User\UsersPageHandler(
-                $container->get(Service\User::class),
+                $container->get(Service\UserService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\User\UsersCreatePageHandler::class => function (ContainerInterface $container) {
             return new Handler\User\UsersCreatePageHandler(
-                $container->get(Service\User::class),
+                $container->get(Service\UserService::class),
                 $container->get(RouterInterface::class),
             );
         },
         Handler\User\UsersDeletePageHandler::class => function (ContainerInterface $container) {
             return new Handler\User\UsersDeletePageHandler(
-                $container->get(Service\User::class),
+                $container->get(Service\UserService::class),
                 $container->get(RouterInterface::class),
             );
         },
@@ -228,29 +228,29 @@ return [
         Handler\Page\PageSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\PageSavePageHandler(
                 $container->get(RouterInterface::class),
-                $container->get(Service\Page::class)
+                $container->get(Service\PageService::class)
             );
         },
         Handler\Page\PageUpdatePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\PageUpdatePageHandler(
-                $container->get(Service\Page::class),
+                $container->get(Service\PageService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\SearchPageHandler::class => function (ContainerInterface $container) {
             return new Handler\SearchPageHandler(
-                $container->get(Service\Search::class),
+                $container->get(Service\SearchService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
         Handler\ApiSearchPageHandler::class => function (ContainerInterface $container) {
             return new Handler\ApiSearchPageHandler(
-                $container->get(Service\Search::class)
+                $container->get(Service\SearchService::class)
             );
         },
         Handler\Page\RssPageHandler::class => function (ContainerInterface $container) {
             return new Handler\Page\RssPageHandler(
-                $container->get(Service\Entry::class),
+                $container->get(Service\EntryService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },
@@ -279,7 +279,7 @@ return [
         Middleware\MenuMiddleware::class => function (ContainerInterface $container) {
             return new Middleware\MenuMiddleware(
                 $container->get(TemplateRendererInterface::class),
-                $container->get(Service\Entry::class)
+                $container->get(Service\EntryService::class)
             );
         },
         Middleware\AuthenticationMiddleware::class => function (ContainerInterface $container) {
@@ -290,18 +290,21 @@ return [
         Middleware\AdminMenuMiddleware::class => function (ContainerInterface $container) {
             return new Middleware\AdminMenuMiddleware(
                 $container->get(TemplateRendererInterface::class),
-                $container->get(Service\Page::class)
+                $container->get(Service\PageService::class)
             );
+        },
+        Middleware\AdditionalDatesMiddleware::class => function (ContainerInterface $container) {
+            return new Middleware\AdditionalDatesMiddleware();
         },
 
         PasswordAuthAdapter::class => function (ContainerInterface $container) {
             return new PasswordAuthAdapter(
-                $container->get(Service\User::class)
+                $container->get(Service\UserService::class)
             );
         },
         FacebookAuthAdapter::class => function (ContainerInterface $container) {
             return new FacebookAuthAdapter(
-                $container->get(Service\User::class),
+                $container->get(Service\UserService::class),
                 getenv('FB_ID') ?: '2085720918322296',
                 getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8',
                 getenv('FB_REDIRECT') ?: 'http://localhost/login'
@@ -314,29 +317,29 @@ return [
             return new Mezzio\Helper\BodyParams\BodyParamsMiddleware();
         },
 
-        Service\Entry::class => function (ContainerInterface $container) {
-            return new Service\Entry($container->get(PDO::class));
+        Service\EntryService::class => function (ContainerInterface $container) {
+            return new Service\EntryService($container->get(PDO::class));
         },
-        Service\Store::class => function (ContainerInterface $container) {
-            return new Service\Store($container->get(PDO::class));
+        Service\StoreService::class => function (ContainerInterface $container) {
+            return new Service\StoreService($container->get(PDO::class));
         },
-        Service\User::class => function (ContainerInterface $container) {
-            return new Service\User($container->get(PDO::class));
+        Service\UserService::class => function (ContainerInterface $container) {
+            return new Service\UserService($container->get(PDO::class));
         },
-        Service\Author::class => function (ContainerInterface $container) {
-            return new Service\Author($container->get(PDO::class));
+        Service\AuthorService::class => function (ContainerInterface $container) {
+            return new Service\AuthorService($container->get(PDO::class));
         },
-        Service\Page::class => function (ContainerInterface $container) {
-            return new Service\Page($container->get(PDO::class));
+        Service\PageService::class => function (ContainerInterface $container) {
+            return new Service\PageService($container->get(PDO::class));
         },
-        Service\Image::class => function (ContainerInterface $container) {
-            return new Service\Image($container->get(PDO::class));
+        Service\ImageService::class => function (ContainerInterface $container) {
+            return new Service\ImageService($container->get(PDO::class));
         },
-        Service\Search::class => function (ContainerInterface $container) {
-            return new Service\Search($container->get(Client::class));
+        Service\SearchService::class => function (ContainerInterface $container) {
+            return new Service\SearchService($container->get(Client::class));
         },
-        Service\Asset::class => function (ContainerInterface $container) {
-            return new Service\Asset('./image-cache/');
+        Service\AssetService::class => function (ContainerInterface $container) {
+            return new Service\AssetService('./image-cache/');
         },
 
         PDO::class => function (ContainerInterface $container) {

@@ -46,7 +46,7 @@ class Authors extends HTMLElement {
             </template>
             <template id="author-list-item">
                 <li draggable="true">
-                    <input type="hidden" name="author[]">
+                    <input type="hidden">
                     <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon--text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -75,6 +75,7 @@ class Authors extends HTMLElement {
     static get observedAttributes() { return ['url']; }
 
     connectedCallback() {
+        !this.hasAttribute('type') && this.setAttribute('type', 'authors[]');
         this.shadowRoot.querySelector('input').addEventListener('input', this.handleSearch);
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', () => {
             Array.from(this.children).filter(item => (
@@ -169,6 +170,7 @@ class Authors extends HTMLElement {
         const authorItemCloneElement = template.content.cloneNode(true);
         authorItemCloneElement.querySelector('li').dataset.entry = true;
         authorItemCloneElement.querySelector('input').value = item.id;
+        authorItemCloneElement.querySelector('input').name = this.getAttribute('type');
         authorItemCloneElement.querySelector('span').innerText = item.name;
         return authorItemCloneElement;
     }
@@ -244,9 +246,9 @@ class ImageUpload extends HTMLElement {
             </template>
             <slot></slot>
             <li class="add">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon--text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon--text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
             </li>
         `;
         this.handleUpload = this.handleUpload.bind(this);

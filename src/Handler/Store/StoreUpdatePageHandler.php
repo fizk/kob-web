@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
-use App\Service\Store;
+use App\Service\StoreService;
 
 class StoreUpdatePageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Store $store;
+    private StoreService $store;
 
-    public function __construct(Store $store, TemplateRendererInterface $template)
+    public function __construct(StoreService $store, TemplateRendererInterface $template)
     {
         $this->store    = $store;
         $this->template = $template;

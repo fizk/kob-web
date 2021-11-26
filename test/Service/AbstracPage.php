@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Model;
 
-abstract class AbstracPage extends Page
+abstract class AbstracPage extends PageService
 {
     public function __construct()
     {

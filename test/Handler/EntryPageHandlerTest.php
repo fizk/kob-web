@@ -21,7 +21,7 @@ class EntryPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry
             {
                 public function fetch(string $id, $lang = 'is'): Model\Entries
@@ -45,7 +45,7 @@ class EntryPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry
             {
                 public function fetch(string $id, $lang = 'is'): Model\Entries
@@ -69,7 +69,7 @@ class EntryPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry {
                 public function fetch(string $id, string $lang = 'is'): ?Model\Entries
                 {
@@ -92,7 +92,7 @@ class EntryPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry {
                 public function fetch(string $id, string $lang = 'is'): ?Model\Entries
                 {

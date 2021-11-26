@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-use App\Model;
+use App\Model\{Author, Image, Store};
 use PDO;
 use DateTime;
 
-class Store
+class StoreService
 {
     private PDO $pdo;
 
@@ -15,7 +15,7 @@ class Store
         $this->pdo = $pdo;
     }
 
-    public function get(int $id): ?Model\Store
+    public function get(int $id): ?Store
     {
         $statement = $this->pdo->prepare('
             select * from Store where id = :id
@@ -23,7 +23,7 @@ class Store
         $statement->execute(['id' => $id]);
         $store = $statement->fetch();
         return $store
-            ? (new Model\Store)
+            ? (new Store)
             ->setId($store->id)
             ->setTitle($store->title)
             ->setCreated(new DateTime($store->created))
@@ -59,7 +59,7 @@ class Store
             $authorsStatement->execute(['id' => $store->id]);
             $galleryStatement->execute(['id' => $store->id]);
 
-            return (new Model\Store)
+            return (new Store)
                 ->setId($store->id)
                 ->setTitle($store->title)
                 ->setCreated(new DateTime($store->created))
@@ -68,7 +68,7 @@ class Store
                 ->setBodyEn($store->body_en)
                 ->setBody($store->body)
                 ->setAuthors(array_map(function ($object) {
-                    return (new Model\Author)
+                    return (new Author)
                         ->setId($object->id)
                         ->setName($object->name)
                         ->setCreated(new DateTime($object->created))
@@ -76,7 +76,7 @@ class Store
                         ->setOrder($object->order ?? null);
                 }, $authorsStatement->fetchAll()))
                 ->setGallery(array_map(function ($object) {
-                    return (new Model\Image())
+                    return (new Image())
                         ->setId($object->id)
                         ->setName($object->name)
                         ->setDescription($object->description)
@@ -90,7 +90,7 @@ class Store
         }, $statement->fetchAll());
     }
 
-    public function fetch(int $id): ?Model\Store
+    public function fetch(int $id): ?Store
     {
         $statement = $this->pdo->prepare('
             select * from Store where id = :id
@@ -98,7 +98,9 @@ class Store
         $statement->execute(['id' => $id]);
         $store = $statement->fetch();
 
-        if (!$store) return null;
+        if (!$store) {
+            return null;
+        }
 
         $authorsStatement = $this->pdo->prepare('
             select A.*, SA.order
@@ -116,7 +118,7 @@ class Store
         $authorsStatement->execute(['id' => $store->id]);
         $galleryStatement->execute(['id' => $store->id]);
 
-        return (new Model\Store)
+        return (new Store)
             ->setId($store->id)
             ->setTitle($store->title)
             ->setCreated(new DateTime($store->created))
@@ -124,15 +126,15 @@ class Store
             ->setBodyIs($store->body_is)
             ->setBodyEn($store->body_en)
             ->setAuthors(array_map(function ($object) {
-                return (new Model\Author)
+                return (new Author)
                     ->setId($object->id)
                     ->setName($object->name)
                     ->setCreated(new DateTime($object->created))
                     ->setAffected(new DateTime($object->affected))
                     ->setOrder($object->order ?? null);
             }, $authorsStatement->fetchAll()))
-            ->setGallery(array_map(function($object) {
-                return (new Model\Image())
+            ->setGallery(array_map(function ($object) {
+                return (new Image())
                     ->setId($object->id)
                     ->setName($object->name)
                     ->setDescription($object->description)

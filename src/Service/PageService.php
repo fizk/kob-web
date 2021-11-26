@@ -1,11 +1,11 @@
 <?php
 namespace App\Service;
 
+use App\Model\{Image, Page};
 use PDO;
-use App\Model;
 use DateTime;
 
-class Page
+class PageService
 {
     private PDO $pdo;
 
@@ -14,14 +14,16 @@ class Page
         $this->pdo = $pdo;
     }
 
-    public function get(string $id): ?Model\Page
+    public function get(string $id): ?Page
     {
         $entryStatement = $this->pdo->prepare('select * from `Manifesto` where id = :id');
         $entryStatement->execute(['id' => $id]);
 
         $page =  $entryStatement->fetch();
 
-        if (!$page) return null;
+        if (!$page) {
+            return null;
+        }
 
         $galleryStatement = $this->pdo->prepare('
             select I.* from `Manifesto_has_Image` MI
@@ -30,13 +32,13 @@ class Page
         ');
         $galleryStatement->execute(['id' => $id]);
 
-        return (new Model\Page)
+        return (new Page)
             ->setId($page->id)
             ->setType($page->type)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
-            ->setGallery(array_map(function($item) {
-                return (new Model\Image())
+            ->setGallery(array_map(function ($item) {
+                return (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
                     ->setDescription($item->description)
@@ -47,7 +49,6 @@ class Page
                     ->setCreated(new DateTime($item->created))
                     ->setAffected(new DateTime($item->affected));
             }, $galleryStatement->fetchAll()));
-
     }
 
     public function fetch(): array
@@ -55,8 +56,8 @@ class Page
         $entryStatement = $this->pdo->prepare('select * from `Manifesto`');
         $entryStatement->execute([]);
 
-        return array_map(function($item) {
-            return (new Model\Page)
+        return array_map(function ($item) {
+            return (new Page)
                 ->setId($item->id)
                 ->setType($item->type)
                 ->setBodyIs($item->body_is)
@@ -64,7 +65,7 @@ class Page
         }, $entryStatement->fetchAll());
     }
 
-    public function getByType($type, $lang = 'is'): ?Model\Page
+    public function getByType($type, $lang = 'is'): ?Page
     {
         $entryStatement = $this->pdo->prepare(
             $lang === 'is'
@@ -84,14 +85,14 @@ class Page
         ');
         $galleryStatement->execute(['id' => $page->id]);
 
-        return (new Model\Page)
+        return (new Page)
             ->setId($page->id)
             ->setType($page->type)
             ->setBody($page->body)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
             ->setGallery(array_map(function ($item) {
-                return (new Model\Image())
+                return (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
                     ->setDescription($item->description)

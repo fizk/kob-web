@@ -29,7 +29,7 @@ class LoginSubmitPageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $body = $request->getParsedBody();
-        $this->authAdapter->setCredentials($body['username'], $body['password']);
+        $this->authAdapter->setCredentials($body['email'], $body['password']);
         $result = $this->authService->authenticate();
 
         if ($result->isValid()) {

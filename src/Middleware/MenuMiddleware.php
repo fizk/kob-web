@@ -6,14 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use App\Template\TemplateRendererInterface;
-use App\Service\Entry;
+use App\Service\EntryService;
 
 class MenuMiddleware implements MiddlewareInterface
 {
     private TemplateRendererInterface $templateRenderer;
-    private Entry $entry;
+    private EntryService $entry;
 
-    public function __construct(TemplateRendererInterface $template, Entry $entry)
+    public function __construct(TemplateRendererInterface $template, EntryService $entry)
     {
         $this->templateRenderer = $template;
         $this->entry = $entry;

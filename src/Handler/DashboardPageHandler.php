@@ -7,15 +7,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
-use App\Service\{Entry, Author};
+use App\Service\{EntryService, AuthorService};
 
 class DashboardPageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Entry $entry;
-    private Author $author;
+    private EntryService $entry;
+    private AuthorService $author;
 
-    public function __construct(Entry $entry, Author $author, TemplateRendererInterface $template)
+    public function __construct(EntryService $entry, AuthorService $author, TemplateRendererInterface $template)
     {
         $this->entry    = $entry;
         $this->author   = $author;

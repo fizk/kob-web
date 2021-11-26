@@ -19,7 +19,7 @@ class LoginSubmitPageHandlerTest extends TestCase
     public function testLoginSuccess()
     {
         $request = (new ServerRequest())
-            ->withParsedBody(['username' => '', 'password' => ''])
+            ->withParsedBody(['email' => '', 'password' => ''])
             ->withUri(new Uri('/login'))
             ->withMethod('POST');
 
@@ -73,7 +73,7 @@ class LoginSubmitPageHandlerTest extends TestCase
     public function testLoginFail()
     {
         $request = (new ServerRequest())
-            ->withParsedBody(['username' => '', 'password' => ''])
+            ->withParsedBody(['email' => '', 'password' => ''])
             ->withUri(new Uri('/login'))
             ->withMethod('POST');
 

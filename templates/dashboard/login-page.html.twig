@@ -48,8 +48,8 @@
         <a href="https://www.facebook.com/v8.0/dialog/oauth?client_id={{ fb_id }}&redirect_uri={{ fb_redirect }}"  class="btn btn-primary btn-lg btn-block"  role="button">Login via Facebook</a>
         <form method="post" action="{{ path('login-submit') }}" class="form-signin">
             <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-            <label for="username" class="sr-only">User name</label>
-            <input type="text" id="username" class="form-control" placeholder="User name" name="username" required autofocus>
+            <label for="email" class="sr-only">User name</label>
+            <input type="email" id="email" class="form-control" placeholder="Email" name="email" required autofocus>
             <label for="password" class="sr-only">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
 

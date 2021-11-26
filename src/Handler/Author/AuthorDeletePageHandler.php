@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
-use App\Service\Author;
+use App\Service\AuthorService;
 
 class AuthorDeletePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
-    private Author $author;
+    private AuthorService $author;
 
-    public function __construct(RouterInterface $router, Author $author)
+    public function __construct(RouterInterface $router, AuthorService $author)
     {
         $this->router = $router;
         $this->author  = $author;

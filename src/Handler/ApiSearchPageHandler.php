@@ -6,13 +6,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\Search;
+use App\Service\SearchService;
 
 class ApiSearchPageHandler implements RequestHandlerInterface
 {
-    private Search $search;
+    private SearchService $search;
 
-    public function __construct(Search $search)
+    public function __construct(SearchService $search)
     {
         $this->search    = $search;
     }

@@ -1,11 +1,11 @@
 <?php
 namespace App\Service;
 
+use App\Model\{Entry, Author};
 use PDO;
-use App\Model;
 use DateTime;
 
-class Author
+class AuthorService
 {
     use EntryTrait;
 
@@ -19,7 +19,7 @@ class Author
     /**
      * Get on Author in its basic form
      */
-    public function get(string $id): ?Model\Author
+    public function get(string $id): ?Author
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
@@ -27,7 +27,7 @@ class Author
         $statement->execute(['id' => $id]);
         $author = $statement->fetch();
         return $author
-            ? (new Model\Author)
+            ? (new Author)
                 ->setId($author->id)
                 ->setName($author->name)
                 ->setCreated(new DateTime($author->created))
@@ -39,7 +39,7 @@ class Author
      * Fetch one Author and all the Entries assosiated
      * with that person
      */
-    public function fetch(string $id): ?Model\Author
+    public function fetch(string $id): ?Author
     {
         $statement = $this->pdo->prepare('
             select * from Author where id = :id
@@ -47,9 +47,11 @@ class Author
         $statement->execute(['id' => $id]);
         $item = $statement->fetch();
 
-        if (!$item) return null;
+        if (!$item) {
+            return null;
+        }
 
-        $author = (new Model\Author)
+        $author = (new Author)
             ->setId($item->id)
             ->setName($item->name)
             ->setCreated(new DateTime($item->created))
@@ -67,7 +69,7 @@ class Author
         $item->entries = $entriesStatement->fetchAll();
 
         $author->setEntries(array_map(function ($item) {
-            return (new Model\Entry())
+            return (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -79,7 +81,7 @@ class Author
                 ->setBodyEn($item->body_en)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPoster($this->fetchPosters($item->id));
+                ->setPosters($this->fetchPosters($item->id));
             return $item;
         }, $item->entries));
 
@@ -101,13 +103,13 @@ class Author
 
         return array_map(function ($author) use ($entriesStatement) {
             $entriesStatement->execute(['id' => $author->id]);
-            return (new Model\Author)
+            return (new Author)
                 ->setId($author->id)
                 ->setName($author->name)
                 ->setCreated(new DateTime($author->created))
                 ->setAffected(new DateTime($author->affected))
-                ->setEntries(array_map(function($item) {
-                    return (new Model\Entry())
+                ->setEntries(array_map(function ($item) {
+                    return (new Entry())
                         ->setId($item->id)
                         ->setTitle($item->title)
                         ->setFrom(new DateTime($item->from))
@@ -119,7 +121,7 @@ class Author
                         ->setBodyEn($item->body_en)
                         ->setOrientation($item->orientation)
                         ->setAuthors($this->fetchAuthors($item->id))
-                        ->setPoster($this->fetchPosters($item->id))
+                        ->setPosters($this->fetchPosters($item->id))
                     ;
                 }, $entriesStatement->fetchAll()));
         }, $list);
@@ -133,7 +135,7 @@ class Author
         $statement->execute([]);
 
         return array_map(function ($author) {
-            return (new Model\Author)
+            return (new Author)
                 ->setId($author->id)
                 ->setName($author->name)
                 ->setCreated(new DateTime($author->created))
@@ -141,8 +143,15 @@ class Author
         }, $statement->fetchAll());
     }
 
-    public function save(array $data): int
+    public function save(Author $author): int
     {
+        $data = $author->jsonSerialize();
+        unset($data['entries']);
+        unset($data['order']);
+
+        if (!$data['created']) {
+            unset($data['created']);
+        }
 
         $columns = implode(',', array_map(function ($i) {
             return " `{$i}`";
@@ -156,9 +165,9 @@ class Author
         }, array_keys($data)));
 
         $statement = $this->pdo->prepare("
-          INSERT INTO `Author` ({$columns}) VALUES ({$values})
-          on duplicate key update {$update};
-          ");
+            INSERT INTO `Author` ({$columns}) VALUES ({$values})
+            on duplicate key update {$update};
+        ");
 
         $statement->execute($data);
 

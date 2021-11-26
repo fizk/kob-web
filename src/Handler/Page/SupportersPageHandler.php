@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
-use App\Service\Page;
+use App\Service\PageService;
 
 class SupportersPageHandler implements RequestHandlerInterface
 {
     private TemplateRendererInterface $template;
-    private Page $page;
+    private PageService $page;
 
-    public function __construct(Page $page, TemplateRendererInterface $template)
+    public function __construct(PageService $page, TemplateRendererInterface $template)
     {
         $this->page = $page;
         $this->template  = $template;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Auth;
 
-use App\Service\User;
+use App\Service\UserService;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Result;
 
@@ -10,10 +10,10 @@ class FacebookAuthAdapter implements AdapterInterface
     private string $id;
     private string $redirect;
     private string $secret;
-    private User $user;
+    private UserService $user;
     private string $code;
 
-    public function __construct(User $user, string $id, string $secret, string $redirect)
+    public function __construct(UserService $user, string $id, string $secret, string $redirect)
     {
         $this->user = $user;
         $this->id = $id;

@@ -7,15 +7,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
-use App\Service\Page;
+use App\Service\PageService;
 use App\Form\PageForm;
 
 class PageSavePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
-    private Page $page;
+    private PageService $page;
 
-    public function __construct(RouterInterface $router, Page $page)
+    public function __construct(RouterInterface $router, PageService $page)
     {
         $this->router    = $router;
         $this->page = $page;

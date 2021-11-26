@@ -48,7 +48,7 @@ class PageSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Page::class, function () {
+        $serviceManager->setFactory(Service\PageService::class, function () {
             return new class extends Service\AbstracPage {};
         });
         $collection = $serviceManager->get(RouterInterface::class);

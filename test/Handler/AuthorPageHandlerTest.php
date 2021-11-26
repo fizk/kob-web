@@ -21,7 +21,7 @@ class AuthorPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function fetch(string $id): ?Model\Author
@@ -47,7 +47,7 @@ class AuthorPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function fetch(string $id): ?Model\Author
@@ -73,7 +73,7 @@ class AuthorPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Author::class, function () {
+        $serviceManager->setFactory(Service\AuthorService::class, function () {
             return new class extends Service\AbstractAuthor
             {
                 public function fetch(string $id): ?Model\Author

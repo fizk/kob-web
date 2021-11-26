@@ -16,6 +16,8 @@ use App\Router\RouterInterface;
 use App\Middleware;
 use App\Service;
 use App\Model;
+use Exception;
+
 use function App\Router\dispatch;
 
 class EntrySavePageHandlerTest extends TestCase
@@ -29,6 +31,9 @@ class EntrySavePageHandlerTest extends TestCase
                 'to' => '2001-01-01',
                 'type' => 'show',
                 'orientation' => 'landscape',
+                'authors' => [1,2,3],
+                'gallery' => [1,2,3],
+                'posters' => [1,2,3],
             ])
             ->withUri(new Uri('/update/entry'))
             ->withMethod('POST');
@@ -52,10 +57,26 @@ class EntrySavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Entry::class, function () {
+        $serviceManager->setFactory(Service\EntryService::class, function () {
             return new class extends Service\AbstractEntry{
-                public function save(array $data): int
+                public function save(Model\Entry $entry): int
                 {
+                    $gallery = $entry->getGallery();
+                    array_walk($gallery, function(Model\Image $image) {
+                        $id = $image->getId();
+                        if (!$id) throw new Exception();
+                    });
+                    $posters = $entry->getPosters();
+                    array_walk($posters, function(Model\Image $image) {
+                        $id = $image->getId();
+                        if (!$id) throw new Exception();
+                    });
+                    $authors = $entry->getAuthors();
+                    array_walk($authors, function(Model\Author $author) {
+                        $id = $author->getId();
+                        if (!$id) throw new Exception();
+                    });
+
                     return 2;
                 }
                 public function get(string $id): ?Model\Entry
@@ -64,7 +85,7 @@ class EntrySavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Search::class, function () {
+        $serviceManager->setFactory(Service\SearchService::class, function () {
             return new class extends Service\AbstractSearch {
                 public function save($item): bool
                 {
@@ -78,9 +99,8 @@ class EntrySavePageHandlerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(['/shows/2'], $response->getHeader('location'));
+        $this->assertEquals(['/syningar/2'], $response->getHeader('location'));
     }
-
 
     public function testSaveError()
     {
@@ -114,11 +134,12 @@ class EntrySavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Entry::class, function () {
+        $serviceManager->setFactory(Service\EntryService::class, function () {
             return new class extends Service\AbstractEntry
             {
-                public function save(array $data): int
+                public function save(Model\Entry $entry): int
                 {
+                    $i = 0;
                     return 2;
                 }
                 public function get(string $id): ?Model\Entry
@@ -127,7 +148,7 @@ class EntrySavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Search::class, function () {
+        $serviceManager->setFactory(Service\SearchService::class, function () {
             return new class extends Service\AbstractSearch
             {
                 public function save($item): bool

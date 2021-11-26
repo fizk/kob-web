@@ -3,7 +3,7 @@ namespace App\Service;
 
 use Psr\Http\Message\UploadedFileInterface;
 
-abstract class AbstracAsset extends Asset
+abstract class AbstracAsset extends AssetService
 {
     private $resource;
     public function __construct()

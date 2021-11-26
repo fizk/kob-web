@@ -20,7 +20,7 @@ class EntriesPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry{};
         });
         $collection = $serviceManager->get(RouterInterface::class);
@@ -38,7 +38,7 @@ class EntriesPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(\App\Service\Entry::class, function () {
+        $serviceManager->setFactory(\App\Service\EntryService::class, function () {
             return new class extends AbstractEntry{};
         });
         $collection = $serviceManager->get(RouterInterface::class);

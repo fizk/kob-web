@@ -14,12 +14,16 @@ class Date extends AbstractExtension
             new TwigFilter('datetime', [$this, 'datetime']),
             new TwigFilter('year', [$this, 'year']),
             new TwigFilter('RFC822', [$this, 'RFC822']),
+            new TwigFilter('isoDate', [$this, 'isoDate']),
+            new TwigFilter('isoDateTime', [$this, 'isoDateTime']),
         ];
     }
 
     public function date(?DateTime $date = null, $language = 'is', $year = true)
     {
-        if (!$date) return '';
+        if (!$date) {
+            return '';
+        }
         $currentLocale = setlocale(LC_ALL, 0);
         setlocale(LC_TIME, $language == 'is' ? 'is_IS.utf8' : 'en_GB.utf8');
         $string = strftime('%e.%B %Y', $date->getTimestamp());
@@ -30,6 +34,16 @@ class Date extends AbstractExtension
     public function datetime(DateTime $date, $language = 'is', $year = true)
     {
         return $date->format('Y m d H:m');
+    }
+
+    public function isoDate(DateTime $date)
+    {
+        return $date->format('Y-m-d');
+    }
+
+    public function isoDateTime(DateTime $date)
+    {
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function year(DateTime $date): string

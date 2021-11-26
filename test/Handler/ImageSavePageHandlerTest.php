@@ -30,7 +30,7 @@ class ImageSavePageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Image::class, function () {
+        $serviceManager->setFactory(Service\ImageService::class, function () {
             return new class extends Service\AbstractImage {
                 public function save(array $data): int
                 {
@@ -38,7 +38,7 @@ class ImageSavePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Asset::class, function () {
+        $serviceManager->setFactory(Service\AssetService::class, function () {
             return new class extends Service\AbstracAsset
             {
                 public function save(UploadedFileInterface $value): array

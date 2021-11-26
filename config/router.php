@@ -342,6 +342,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Entry\EntrySavePageHandler::class
             ],
             'new-entry'
@@ -363,6 +364,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Entry\EntrySavePageHandler::class
             ],
             'save-entry'
@@ -396,6 +398,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Store\StoreSavePageHandler::class
             ],
             'new-store'
@@ -417,6 +420,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Store\StoreSavePageHandler::class
             ],
             'save-store'
@@ -450,6 +454,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Author\AuthorSavePageHandler::class
             ],
             'save-author'
@@ -471,6 +476,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Author\AuthorSavePageHandler::class
             ],
             'new-author'
@@ -504,6 +510,7 @@ return [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\Page\PageSavePageHandler::class
             ],
             'new-manifesto'
@@ -538,6 +545,7 @@ return [
                 Middleware\AuthenticationMiddleware::class,
                 Middleware\AdminMenuMiddleware::class,
                 BodyParamsMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
                 Handler\User\UsersCreatePageHandler::class
             ],
             'new-user'

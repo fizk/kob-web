@@ -6,15 +6,15 @@ use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
 use App\Router\RouterInterface;
-use App\Service\{Asset, Image};
+use App\Service\{AssetService, ImageService};
 
 class ImageSavePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
-    private Image $image;
-    private Asset $asset;
+    private ImageService $image;
+    private AssetService $asset;
 
-    public function __construct(RouterInterface $router, Image $image, Asset $asset)
+    public function __construct(RouterInterface $router, ImageService $image, AssetService $asset)
     {
         $this->router   = $router;
         $this->image    = $image;

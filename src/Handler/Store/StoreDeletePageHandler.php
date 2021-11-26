@@ -7,14 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
-use App\Service\Store;
+use App\Service\StoreService;
 
 class StoreDeletePageHandler implements RequestHandlerInterface
 {
     private RouterInterface $router;
-    private Store $store;
+    private StoreService $store;
 
-    public function __construct(RouterInterface $router, Store $store)
+    public function __construct(RouterInterface $router, StoreService $store)
     {
         $this->router = $router;
         $this->store  = $store;

@@ -4,11 +4,24 @@ namespace App\Form;
 
 use App\Form\Form;
 use App\Filters\ToInt;
+use App\Model\Page;
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits};
 
 class PageForm extends Form
 {
+    public function getModel(): Page
+    {
+        $values = $this->inputFilter->getValues();
+
+        return (new Page())
+            ->setId($values['id'])
+            ->setType($values['type'])
+            ->setBodyIs($values['body_is'])
+            ->setBodyEn($values['body_en'])
+            ;
+    }
+
     public function getInputFilterSpecification(): array
     {
         return [

@@ -2,8 +2,9 @@
 namespace App\Service;
 
 use Elasticsearch\Client;
+use App\Model\Entry;
 
-class Search
+class SearchService
 {
     private Client $client;
 
@@ -112,23 +113,21 @@ class Search
         ];
     }
 
-    public function save($item): bool
+    public function save(Entry $item): bool
     {
-        $item = (array) $item;
-
         try {
             $this->client->update([
                 'index' => 'kob_entry',
-                'id' => $item['id'],
-                'body' => ['doc'  => $item],
+                'id' => $item->getId(),
+                'body' => ['doc'  => json_encode($item)],
             ]);
             return true;
         } catch (\Exception $e) {
             try {
                 $this->client->index([
                     'index' => 'kob_entry',
-                    'id' => $item['id'],
-                    'body' => $item,
+                    'id' => $item->getId(),
+                    'body' => json_encode($item),
                 ]);
                 return true;
             } catch (\Exception $e) {

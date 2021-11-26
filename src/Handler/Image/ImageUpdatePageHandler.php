@@ -2,20 +2,17 @@
 
 namespace App\Handler\Image;
 
-use Imagine\Image\ImageInterface;
-use Imagine\Imagick\Imagine;
-use Imagine\Image\Box;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\Image;
+use App\Service\ImageService;
 
 class ImageUpdatePageHandler implements RequestHandlerInterface
 {
-    private Image $image;
+    private ImageService $image;
 
-    public function __construct(Image $image)
+    public function __construct(ImageService $image)
     {
         $this->image    = $image;
     }

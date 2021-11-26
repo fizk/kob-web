@@ -46,7 +46,7 @@ class ImageUpdatePageHandlerTest extends TestCase
                 }
             };
         });
-        $serviceManager->setFactory(Service\Image::class, function () {
+        $serviceManager->setFactory(Service\ImageService::class, function () {
             return new class extends Service\AbstractImage{};
         });
         $collection = $serviceManager->get(RouterInterface::class);

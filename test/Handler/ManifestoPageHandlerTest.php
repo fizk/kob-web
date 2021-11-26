@@ -21,7 +21,7 @@ class ManifestoPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Page::class, function () {
+        $serviceManager->setFactory(Service\PageService::class, function () {
             return new class extends Service\AbstracPage {
                 public function getByType($type, $lang = 'is'): ?Model\Page
                 {
@@ -44,7 +44,7 @@ class ManifestoPageHandlerTest extends TestCase
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setFactory(Service\Page::class, function () {
+        $serviceManager->setFactory(Service\PageService::class, function () {
             return new class extends Service\AbstracPage {
                 public function getByType($type, $lang = 'is'): ?Model\Page
                 {
