@@ -2,12 +2,11 @@
 
 namespace App\Handler\Author;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Service\AuthorService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{HtmlResponse};
 
 class AuthorUpdatePageHandler implements RequestHandlerInterface
 {

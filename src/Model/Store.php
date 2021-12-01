@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use DateTime;
-use DateTimeInterface;
 use JsonSerializable;
 
 class Store implements JsonSerializable

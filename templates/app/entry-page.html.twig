@@ -9,7 +9,7 @@
                 {% for author in entry.current.authors %}
                 <li>
                     <h2 class="entry__author">
-                        <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], language == 'is', {id: author.id})}}">
+                        <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], language == 'is', {id: author.name|slug(author.id)})}}">
                             {{author.name}}
                         </a>
                     </h2>

@@ -2,12 +2,11 @@
 
 namespace App\Handler;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Service\{EntryService, AuthorService};
+use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{HtmlResponse};
 
 class DashboardPageHandler implements RequestHandlerInterface
 {

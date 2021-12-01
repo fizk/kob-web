@@ -3,11 +3,10 @@
 namespace App\Handler\User;
 
 use App\Router\RouterInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Service\UserService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
-use App\Service\UserService;
 
 class UsersDeletePageHandler implements RequestHandlerInterface
 {

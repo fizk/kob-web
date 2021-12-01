@@ -3,12 +3,11 @@
 namespace App\Handler\Login;
 
 use App\Auth\PasswordAuthAdapter;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Router\RouterInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{RedirectResponse};
 use Laminas\Authentication\AuthenticationServiceInterface;
-use App\Router\RouterInterface;
 
 class LoginSubmitPageHandler implements RequestHandlerInterface
 {

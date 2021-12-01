@@ -13,9 +13,6 @@ class UserService
         $this->pdo = $pdo;
     }
 
-    /**
-     * Get one User
-     */
     public function get(string $id): ?User
     {
         $statement = $this->pdo->prepare(
@@ -34,9 +31,6 @@ class UserService
             : null;
     }
 
-    /**
-     * Get all Users
-     */
     public function fetch(): array
     {
         $statement = $this->pdo->prepare('select * from `User`');
@@ -52,9 +46,6 @@ class UserService
         }, $statement->fetchAll());
     }
 
-    /**
-     * Save a User.
-     */
     public function save(array $data): int
     {
         $columns = implode(',', array_map(function ($i) {
@@ -78,9 +69,6 @@ class UserService
         return $this->pdo->lastInsertId();
     }
 
-    /**
-     * Delete a User.
-     */
     public function delete(string $id): int
     {
         $statement = $this->pdo->prepare('delete from `User` where id = :id');
@@ -88,9 +76,6 @@ class UserService
         return $statement->rowCount();
     }
 
-    /**
-     * Get user by emails
-     */
     public function fetchByEmail(string $email): ?User
     {
         $statement = $this->pdo->prepare('
@@ -111,10 +96,7 @@ class UserService
             : null;
     }
 
-    /**
-     * Get user by username and password
-     */
-    public function fetchByCredentials($email, $password): ?User
+    public function fetchByCredentials(string $email, string $password): ?User
     {
         $statement = $this->pdo->prepare('
           select * from `User` where `email` = :email and `password` = :password

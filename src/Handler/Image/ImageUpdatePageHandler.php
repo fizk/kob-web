@@ -2,11 +2,10 @@
 
 namespace App\Handler\Image;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Service\ImageService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\ImageService;
 
 class ImageUpdatePageHandler implements RequestHandlerInterface
 {

@@ -18,7 +18,7 @@
                 {% for author in item.authors %}
                     <li>
                         <h2 class="entry__author">
-                            <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], false, {id: author.id})}}">{{author.name}}</a>
+                            <a class="entry__author-link" href="{{selectPath(['listamadur', 'author'], false, {id: author.name|slug(author.id)})}}">{{author.name}}</a>
                         </h2>
                     </li>
                 {% endfor %}

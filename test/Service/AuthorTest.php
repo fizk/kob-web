@@ -46,7 +46,7 @@ class AuthorTest extends TestCase
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBodyIs('is')
                 ->setBodyEn('en')
                 ->setOrientation('')
@@ -103,7 +103,7 @@ class AuthorTest extends TestCase
                     ->setTo(new DateTime('2001-07-01'))
                     ->setCreated(new DateTime('2001-01-01 00:00:00'))
                     ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                    ->setType(EntryService::PROJECT)
+                    ->setType(Entry::PROJECT)
                     ->setBodyIs('is')
                     ->setBodyEn('en')
                     ->setOrientation('')
@@ -140,7 +140,7 @@ class AuthorTest extends TestCase
                         ->setTo(new DateTime('2001-07-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(EntryService::PROJECT)
+                        ->setType(Entry::PROJECT)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
@@ -170,7 +170,7 @@ class AuthorTest extends TestCase
                         ->setTo(new DateTime('2010-02-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(EntryService::SHOW)
+                        ->setType(Entry::SHOW)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
@@ -195,7 +195,7 @@ class AuthorTest extends TestCase
                         ->setTo(new DateTime('2020-01-01'))
                         ->setCreated(new DateTime('2001-01-01 00:00:00'))
                         ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                        ->setType(EntryService::PROJECT)
+                        ->setType(Entry::PROJECT)
                         ->setBodyIs('is')
                         ->setBodyEn('en')
                         ->setOrientation('')
@@ -425,7 +425,7 @@ class AuthorTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -437,7 +437,7 @@ class AuthorTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -450,7 +450,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -462,7 +462,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -474,7 +474,7 @@ class AuthorTest extends TestCase
                     'to' => '2010-01-31',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -487,7 +487,7 @@ class AuthorTest extends TestCase
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',

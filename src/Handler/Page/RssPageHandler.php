@@ -2,12 +2,11 @@
 
 namespace App\Handler\Page;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{XmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Service\EntryService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{XmlResponse};
 
 class RssPageHandler implements RequestHandlerInterface
 {

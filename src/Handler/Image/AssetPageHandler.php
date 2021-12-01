@@ -3,8 +3,7 @@
 namespace App\Handler\Image;
 
 use App\Service\AssetService;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{TextResponse, EmptyResponse};
 use Laminas\Diactoros\Stream;

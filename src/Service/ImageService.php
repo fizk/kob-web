@@ -35,9 +35,10 @@ class ImageService
             : null;
     }
 
-
-    public function save(array $data): int
+    public function save(Image $image): int
     {
+        $data = $image->jsonSerialize();
+        unset($data['order']);
 
         $columns = implode(',', array_map(function ($i) {
             return " `{$i}`";

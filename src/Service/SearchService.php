@@ -1,8 +1,8 @@
 <?php
 namespace App\Service;
 
-use Elasticsearch\Client;
 use App\Model\Entry;
+use Elasticsearch\Client;
 
 class SearchService
 {

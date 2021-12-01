@@ -5,9 +5,9 @@ namespace App\Form;
 use App\Filters\ArrayFilter;
 use App\Form\Form;
 use App\Filters\ToInt;
+use App\Model\{Author, Entry, Image};
 use Laminas\Filter\ToNull;
 use Laminas\Validator\{Digits, Date};
-use App\Model\{Author, Entry, Image};
 use DateTime;
 
 class EntryForm extends Form

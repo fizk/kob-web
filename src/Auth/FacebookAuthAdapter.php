@@ -7,14 +7,16 @@ use Laminas\Authentication\Result;
 
 class FacebookAuthAdapter implements AdapterInterface
 {
+    private string $url;
     private string $id;
     private string $redirect;
     private string $secret;
     private UserService $user;
     private string $code;
 
-    public function __construct(UserService $user, string $id, string $secret, string $redirect)
+    public function __construct(string $url, UserService $user, string $id, string $secret, string $redirect)
     {
+        $this->url = $url;
         $this->user = $user;
         $this->id = $id;
         $this->redirect = $redirect;
@@ -35,7 +37,7 @@ class FacebookAuthAdapter implements AdapterInterface
     public function authenticate()
     {
         $url = implode('', [
-            "https://graph.facebook.com/v8.0/oauth/access_token?",
+            "{$this->url}/oauth/access_token?",
             "client_id=" . $this->id,
             "&redirect_uri=" . $this->redirect,
             "&client_secret=" . $this->secret,
@@ -44,8 +46,12 @@ class FacebookAuthAdapter implements AdapterInterface
 
         $access = (array) json_decode(file_get_contents($url));
 
+        if (!array_key_exists('access_token', $access)) {
+            return new Result(Result::FAILURE_CREDENTIAL_INVALID, null, ['"access_token" not found in response']);
+        }
+
         $url = implode('', [
-            "https://graph.facebook.com/v8.0/me?access_token=",
+            "{$this->url}/me?access_token=",
             $access['access_token'],
             "&fields=last_name%2Cemail%2Cfirst_name%2Cid&method=get",
             "&pretty=0&sdk=joey&suppress_http_code=1"
@@ -53,17 +59,19 @@ class FacebookAuthAdapter implements AdapterInterface
 
         $response = (array) json_decode(file_get_contents($url));
 
+        if (!array_key_exists('email', $response)) {
+            return new Result(Result::FAILURE_CREDENTIAL_INVALID, null, ['"email" not found in response']);
+        }
+
         $userProperties = $this->user->fetchByEmail($response['email']);
         if ($userProperties) {
             return new Result(Result::SUCCESS, [
-                'name' => $userProperties->name,
-                'id' => $userProperties->id,
-                'email' => $userProperties->email,
+                'name' => $userProperties->getName(),
+                'id' => $userProperties->getId(),
+                'email' => $userProperties->getEmail(),
             ]);
         }
 
-        return new Result(Result::FAILURE_CREDENTIAL_INVALID, [
-            'name' => $this->username
-        ]);
+        return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, null, []);
     }
 }

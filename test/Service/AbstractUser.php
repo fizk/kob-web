@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-use App\Model;
+use App\Model\User;
 
 abstract class AbstractUser extends UserService
 {
@@ -19,12 +19,12 @@ abstract class AbstractUser extends UserService
         return 0;
     }
 
-    public function fetchByEmail($email): ?Model\User
+    public function fetchByEmail($email): ?User
     {
         return null;
     }
 
-    public function fetchByCredentials($name, $password): ?Model\User
+    public function fetchByCredentials(string $name, string $password): ?User
     {
         return null;
     }

@@ -2,15 +2,13 @@
 
 namespace App\Handler\Author;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{RedirectResponse, JsonResponse, HtmlResponse};
 use App\Router\RouterInterface;
 use App\Template\TemplateRendererInterface;
 use App\Service\AuthorService;
 use App\Form\AuthorForm;
-use DateTime;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Laminas\Diactoros\Response\{RedirectResponse, JsonResponse, HtmlResponse};
 
 class AuthorSavePageHandler implements RequestHandlerInterface
 {

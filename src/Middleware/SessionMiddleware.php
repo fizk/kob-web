@@ -1,12 +1,12 @@
 <?php
 namespace App\Middleware;
 
+use App\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Authentication\AuthenticationServiceInterface;
-use App\Template\TemplateRendererInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {

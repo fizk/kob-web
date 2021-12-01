@@ -2,12 +2,11 @@
 
 namespace App\Handler\User;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
 use App\Template\TemplateRendererInterface;
 use App\Service\UserService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{HtmlResponse};
 
 class UsersPageHandler implements RequestHandlerInterface
 {

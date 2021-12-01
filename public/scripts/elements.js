@@ -289,7 +289,7 @@ class ImageUpload extends HTMLElement {
         const previewTemplate = this.shadowRoot.getElementById('image-preview-template');
         const previewElement = previewTemplate.content.cloneNode(true);
         previewElement.querySelector('li').dataset.entry = json[0].id;
-        previewElement.querySelector('img').src = json[0].thumb;
+        previewElement.querySelector('img').src = `${this.getAttribute('url')}/${json[0].name}`;
         previewElement.querySelector('input').value = json[0].id;
         previewElement.querySelector('input').name = this.getAttribute('type');
 
@@ -298,6 +298,7 @@ class ImageUpload extends HTMLElement {
 
     connectedCallback() {
         !this.hasAttribute('upload-url') && this.setAttribute('upload-url', '/image');
+        !this.hasAttribute('url') && this.setAttribute('url', '/img/100x100');
 
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', () => {
             Array.from(this.children).filter(child => (

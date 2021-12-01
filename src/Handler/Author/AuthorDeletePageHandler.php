@@ -2,12 +2,11 @@
 
 namespace App\Handler\Author;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
 use App\Service\AuthorService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{RedirectResponse};
 
 class AuthorDeletePageHandler implements RequestHandlerInterface
 {

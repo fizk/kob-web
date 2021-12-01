@@ -2,11 +2,10 @@
 
 namespace App\Handler;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Service\SearchService;
+use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\SearchService;
 
 class ApiSearchPageHandler implements RequestHandlerInterface
 {

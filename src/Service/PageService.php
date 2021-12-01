@@ -129,8 +129,11 @@ class PageService
         return [];
     }
 
-    public function save(array $data): int
+    public function save(Page $page): int
     {
+        $data = $page->jsonSerialize();
+        unset($data['body']);
+        unset($data['gallery']);
 
         $columns = implode(',', array_map(function ($i) {
             return " `{$i}`";
@@ -146,7 +149,7 @@ class PageService
         $statement = $this->pdo->prepare("
           INSERT INTO `Manifesto` ({$columns}) VALUES ({$values})
           on duplicate key update {$update};
-          ");
+        ");
 
         $statement->execute($data);
 

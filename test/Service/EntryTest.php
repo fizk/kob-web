@@ -26,7 +26,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('is')
             ->setBodyEn('en')
             ->setOrientation('')
@@ -73,7 +73,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2010-02-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -85,7 +85,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -123,7 +123,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::SHOW)
+                ->setType(Entry::SHOW)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -145,7 +145,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2010-02-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -157,7 +157,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2010-01-31'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::SHOW)
+                ->setType(Entry::SHOW)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -169,7 +169,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2010-02-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::SHOW)
+                ->setType(Entry::SHOW)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -213,7 +213,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2020-01-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBody('is')
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -241,7 +241,7 @@ class EntryTest extends TestCase
                 ]),
         ];
 
-        $actual = $service->fetchLatestByType(EntryService::PROJECT, 'is');
+        $actual = $service->fetchLatestByType(Entry::PROJECT, 'is');
 
         $this->assertEquals($expected, $actual);
     }
@@ -269,7 +269,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::PROJECT)
+                ->setType(Entry::PROJECT)
                 ->setBody(null)
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -307,7 +307,7 @@ class EntryTest extends TestCase
                 ->setTo(new DateTime('2001-07-01'))
                 ->setCreated(new DateTime('2001-01-01 00:00:00'))
                 ->setAffected(new DateTime('2001-01-01 00:00:00'))
-                ->setType(EntryService::SHOW)
+                ->setType(Entry::SHOW)
                 ->setBody(null)
                 ->setBodyIs('is')
                 ->setBodyEn('en')
@@ -328,7 +328,7 @@ class EntryTest extends TestCase
     public function testByType()
     {
         $service = new EntryService($this->pdo);
-        $expected = $service->fetchByType(EntryService::PROJECT);
+        $expected = $service->fetchByType(Entry::PROJECT);
         $this->assertCount(3, $expected);
     }
 
@@ -376,7 +376,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('<is>')
             ->setBodyEn('<en>')
             ->setOrientation('');
@@ -391,7 +391,7 @@ class EntryTest extends TestCase
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => '<is>',
                 'body_en' => '<en>',
                 'orientation' => '',
@@ -403,7 +403,7 @@ class EntryTest extends TestCase
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -415,7 +415,7 @@ class EntryTest extends TestCase
                 'to' => '2010-02-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -427,7 +427,7 @@ class EntryTest extends TestCase
                 'to' => '2010-02-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -439,7 +439,7 @@ class EntryTest extends TestCase
                 'to' => '2010-01-31',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -451,7 +451,7 @@ class EntryTest extends TestCase
                 'to' => '2020-01-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -474,7 +474,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('<is>')
             ->setBodyEn('<en>')
             ->setOrientation('');
@@ -489,7 +489,7 @@ class EntryTest extends TestCase
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -501,7 +501,7 @@ class EntryTest extends TestCase
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -513,7 +513,7 @@ class EntryTest extends TestCase
                 'to' => '2010-02-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -525,7 +525,7 @@ class EntryTest extends TestCase
                 'to' => '2010-02-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -537,7 +537,7 @@ class EntryTest extends TestCase
                 'to' => '2010-01-31',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::SHOW,
+                'type' => Entry::SHOW,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -549,7 +549,7 @@ class EntryTest extends TestCase
                 'to' => '2020-01-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => 'is',
                 'body_en' => 'en',
                 'orientation' => '',
@@ -561,7 +561,7 @@ class EntryTest extends TestCase
                 'to' => '2001-07-01',
                 'created' => '2001-01-01 00:00:00',
                 'affected' => '2001-01-01 00:00:00',
-                'type' => EntryService::PROJECT,
+                'type' => Entry::PROJECT,
                 'body_is' => '<is>',
                 'body_en' => '<en>',
                 'orientation' => '',
@@ -584,7 +584,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('<is>')
             ->setBodyEn('<en>')
             ->setOrientation('')
@@ -639,7 +639,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('<is>')
             ->setBodyEn('<en>')
             ->setOrientation('')
@@ -710,7 +710,7 @@ class EntryTest extends TestCase
             ->setTo(new DateTime('2001-07-01'))
             ->setCreated(new DateTime('2001-01-01 00:00:00'))
             ->setAffected(new DateTime('2001-01-01 00:00:00'))
-            ->setType(EntryService::PROJECT)
+            ->setType(Entry::PROJECT)
             ->setBodyIs('<is>')
             ->setBodyEn('<en>')
             ->setOrientation('')
@@ -809,7 +809,7 @@ class EntryTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -821,7 +821,7 @@ class EntryTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -834,7 +834,7 @@ class EntryTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -846,7 +846,7 @@ class EntryTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -858,7 +858,7 @@ class EntryTest extends TestCase
                     'to' => '2010-01-31',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -871,7 +871,7 @@ class EntryTest extends TestCase
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',

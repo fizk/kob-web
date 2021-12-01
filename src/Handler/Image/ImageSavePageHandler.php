@@ -2,30 +2,24 @@
 
 namespace App\Handler\Image;
 
+use App\Model\Image;
+use App\Service\{AssetService, ImageService};
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Router\RouterInterface;
-use App\Service\{AssetService, ImageService};
+use DateTime;
 
 class ImageSavePageHandler implements RequestHandlerInterface
 {
-    private RouterInterface $router;
     private ImageService $image;
     private AssetService $asset;
 
-    public function __construct(RouterInterface $router, ImageService $image, AssetService $asset)
+    public function __construct(ImageService $image, AssetService $asset)
     {
-        $this->router   = $router;
         $this->image    = $image;
         $this->asset    = $asset;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     * @todo safe filename
-     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $files = $request->getUploadedFiles();
@@ -33,25 +27,19 @@ class ImageSavePageHandler implements RequestHandlerInterface
         $result = array_map(function ($file) {
             $response = $this->asset->save($file);
 
-            $fileMetadate = [
-                'name' => $response['name'],
-                'description' => null,
-                'height' => $response['height'],
-                'width' => $response['width'],
-                'created' => (new \DateTime())->format('Y-m-d H:i:s'),
-                'affected' => (new \DateTime())->format('Y-m-d H:i:s'),
-            ];
+            $image = (new Image())
+                ->setName($response['name'])
+                ->setDescription(null)
+                ->setHeight($response['height'])
+                ->setWidth($response['width'])
+                ->setSize($file->getSize())
+                ->setCreated(new DateTime())
+                ->setAffected(new DateTime())
+                ;
 
-            $id = $this->image->save($fileMetadate);
+            $id = $this->image->save($image);
 
-            return array_merge($fileMetadate, [
-                'id' => $id,
-                'size' => $file->getSize(),
-                'thumb' => $this->router->generateUri('asset', [
-                    'name' => $response['name'],
-                    'size' => '100x100'
-                ]),
-            ]);
+            return $image->setId($id);
         }, $files);
 
         return (new JsonResponse(array_values($result), 201));

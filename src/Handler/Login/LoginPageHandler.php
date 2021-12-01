@@ -2,11 +2,10 @@
 
 namespace App\Handler\Login;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Template\TemplateRendererInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
-use App\Template\TemplateRendererInterface;
 
 class LoginPageHandler implements RequestHandlerInterface
 {

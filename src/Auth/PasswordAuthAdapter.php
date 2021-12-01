@@ -16,10 +16,11 @@ class PasswordAuthAdapter implements AdapterInterface
         $this->user = $user;
     }
 
-    public function setCredentials(string $email, string $password)
+    public function setCredentials(string $email, string $password): self
     {
         $this->email = $email;
         $this->password = $password;
+        return $this;
     }
 
     /**
@@ -38,8 +39,6 @@ class PasswordAuthAdapter implements AdapterInterface
             ]);
         }
 
-        return new Result(Result::FAILURE_CREDENTIAL_INVALID, [
-            'email' => $this->email
-        ]);
+        return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, []);
     }
 }

@@ -31,7 +31,7 @@
                     {% for author in list %}
                         <li class="author-list__item">
                             <h3 class="author-list__author">
-                            <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.id}) }}" class="author-list__author-link">
+                            <a href="{{ path(language|default('is') == 'is' ? 'listamadur' : 'author', {id: author.name|slug(author.id)}) }}" class="author-list__author-link">
                                 {{ author.name }}
                             </a>
                             </h3>

@@ -22,6 +22,10 @@ class Entry implements JsonSerializable
     private array $posters = [];
     private array $gallery = [];
 
+    const SHOW = 'show';
+    const NEWS = 'news';
+    const PROJECT = 'proj';
+
     public function getId(): ?int
     {
         return $this->id;

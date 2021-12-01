@@ -2,11 +2,10 @@
 
 namespace App\Handler\Author;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Service\AuthorService;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{JsonResponse};
-use App\Service\AuthorService;
 
 class AuthorsSearchPageHandler implements RequestHandlerInterface
 {

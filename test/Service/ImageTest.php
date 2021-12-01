@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use HJerichen\DBUnit\Dataset\Dataset;
 use HJerichen\DBUnit\Dataset\DatasetArray;
 use HJerichen\DBUnit\MySQLTestCaseTrait;
-use App\Model\Image;
+use App\Model\{Image, Entry};
 use DateTime;
 use PDO;
 
@@ -39,16 +39,17 @@ class ImageTest extends TestCase
     {
         $service = new ImageService($this->pdo);
 
-        $service->save([
-            'id' => '1',
-            'name' => 'name one',
-            'description' => null,
-            'size' => 0,
-            'width' => 0,
-            'height' => 0,
-            'created' => '2001-01-01 00:00:00',
-            'affected' => '2001-01-01 00:00:00',
-        ]);
+        $service->save(
+            (new Image())
+                ->setId(1)
+                ->setName('name one')
+                ->setDescription(null)
+                ->setWidth(0)
+                ->setHeight(0)
+                ->setSize(0)
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00')
+        ));
 
         $expected = [
             (object)[
@@ -84,7 +85,7 @@ class ImageTest extends TestCase
     {
         $service = new ImageService($this->pdo);
 
-        $id = $service->updateDescription('1', 'new description', new DateTime('2020-01-01'));
+        $service->updateDescription('1', 'new description', new DateTime('2020-01-01'));
 
         $expected = [
             (object)[
@@ -120,15 +121,16 @@ class ImageTest extends TestCase
     {
         $service = new ImageService($this->pdo);
 
-        $id = $service->save([
-            'name' => 'name new',
-            'description' => null,
-            'size' => 0,
-            'width' => 0,
-            'height' => 0,
-            'created' => '2001-01-01 00:00:00',
-            'affected' => '2001-01-01 00:00:00',
-        ]);
+        $id = $service->save(
+            (new Image())
+                ->setName('name new')
+                ->setDescription('new description')
+                ->setWidth(0)
+                ->setHeight(0)
+                ->setSize(0)
+                ->setCreated(new DateTime('2001-01-01 00:00:00'))
+                ->setAffected(new DateTime('2001-01-01 00:00:00'))
+        );
 
         $expected = [
             (object)[
@@ -154,7 +156,7 @@ class ImageTest extends TestCase
             (object)[
                 'id' => $id,
                 'name' => 'name new',
-                'description' => null,
+                'description' => 'new description',
                 'size' => 0,
                 'width' => 0,
                 'height' => 0,
@@ -216,7 +218,7 @@ class ImageTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -228,7 +230,7 @@ class ImageTest extends TestCase
                     'to' => '2001-07-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -241,7 +243,7 @@ class ImageTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -253,7 +255,7 @@ class ImageTest extends TestCase
                     'to' => '2010-02-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -265,7 +267,7 @@ class ImageTest extends TestCase
                     'to' => '2010-01-31',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::SHOW,
+                    'type' => Entry::SHOW,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',
@@ -278,7 +280,7 @@ class ImageTest extends TestCase
                     'to' => '2020-01-01',
                     'created' => '2001-01-01',
                     'affected' => '2001-01-01',
-                    'type' => EntryService::PROJECT,
+                    'type' => Entry::PROJECT,
                     'body_is' => 'is',
                     'body_en' => 'en',
                     'orientation' => '',

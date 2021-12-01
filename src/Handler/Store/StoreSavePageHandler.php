@@ -2,14 +2,13 @@
 
 namespace App\Handler\Store;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse, RedirectResponse};
 use App\Router\RouterInterface;
 use App\Template\TemplateRendererInterface;
-use App\Service\{StoreService};
-use App\Form\{StoreForm};
+use App\Service\StoreService;
+use App\Form\StoreForm;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{HtmlResponse, RedirectResponse};
 use DateTime;
 
 class StoreSavePageHandler implements RequestHandlerInterface

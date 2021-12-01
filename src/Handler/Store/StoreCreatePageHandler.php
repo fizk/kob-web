@@ -2,11 +2,11 @@
 
 namespace App\Handler\Store;
 
+use App\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\{HtmlResponse};
-use App\Template\TemplateRendererInterface;
 
 class StoreCreatePageHandler implements RequestHandlerInterface
 {

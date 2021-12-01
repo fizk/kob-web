@@ -85,12 +85,13 @@ class PageTest extends TestCase
     {
         $service = new PageService($this->pdo);
 
-        $service->save([
-            'id' => '1',
-            'type' => 'type1',
-            'body_is' => 'updated is',
-            'body_en' => 'updated en',
-        ]);
+        $service->save(
+            (new Page())
+                ->setId(1)
+                ->setType('type1')
+                ->setBodyIs('updated is')
+                ->setBodyEn('updated en')
+         );
 
         $expected = [
             (object)[
@@ -124,11 +125,12 @@ class PageTest extends TestCase
     {
         $service = new PageService($this->pdo);
 
-        $id = $service->save([
-            'type' => 'new',
-            'body_is' => 'is',
-            'body_en' => 'en',
-        ]);
+        $id = $service->save(
+            (new Page())
+                ->setType('new')
+                ->setBodyIs('is')
+                ->setBodyEn('en')
+         );
 
         $expected = [
             (object)[

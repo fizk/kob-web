@@ -2,9 +2,8 @@
 
 namespace App\Service;
 
-use Imagine\Image\Box;
-use Imagine\Image\ImageInterface;
 use Imagine\Imagick\Imagine;
+use Imagine\Image\{ImageInterface, Box};
 use Psr\Http\Message\UploadedFileInterface;
 
 class AssetService
@@ -18,9 +17,6 @@ class AssetService
         $this->htdocs = $htdocs;
     }
 
-    /**
-     * @return resource|null
-     */
     public function get(string $size, string $name) /* : ?resource */
     {
         if (!file_exists($this->cache . $name)) {

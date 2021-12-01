@@ -9,10 +9,6 @@ class EntryService
 {
     use EntryTrait;
 
-    const SHOW = 'show';
-    const NEWS = 'news';
-    const PROJECT = 'proj';
-
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -154,10 +150,7 @@ class EntryService
      * Fetch entries where the `from` is smaller then $date and `to` is bigger
      * that $date.
      *
-     * Current entry includes:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
     public function fetchCurrent(DateTime $date, string $language = 'is'): array
     {
@@ -191,12 +184,9 @@ class EntryService
      * Fetch latest entry (biggest `from` date) that is of `type` $type.
      * The result is returned as an array with one (or zero) item(s)
      *
-     * Current entry includes:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
-    public function fetchLatestByType(string $type = self::SHOW, string $language = 'is'): array
+    public function fetchLatestByType(string $type = Entry::SHOW, string $language = 'is'): array
     {
         $statement = $this->pdo->prepare(
             $language == 'is'
@@ -228,10 +218,7 @@ class EntryService
      * Fetch all entries. If year provided,
      * only these entries are included.
      *
-     * Entries include:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
     public function fetchList(?string $year = null): array
     {
@@ -270,10 +257,7 @@ class EntryService
     /**
      * Fetch 20 newest entries. This is mostly for the RSS feed.
      *
-     * Entries include:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
     public function fetchFeed(): array
     {
@@ -305,10 +289,7 @@ class EntryService
      * Fetch all entries of a specific type, like:
      * news, show, project...
      *
-     * Entries include:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
     public function fetchByType(string $type): array
     {
@@ -343,10 +324,7 @@ class EntryService
      * Fetch entries that are valid after a give date and are not NEWS,
      * in a given language.
      *
-     * Entries include:
-     * authors
-     * posters
-     * gallery
+     * @return App\Model\Entry[]
      */
     public function fetchAfter(DateTime $date, string $language = 'is'): array
     {
@@ -379,6 +357,8 @@ class EntryService
     /**
      * Fetch 6 most recently affected entries.
      * Mostly for the Dashboard.
+     *
+     * @return App\Model\Entry[]
      */
     public function fetchAffected(): array
     {
@@ -423,6 +403,8 @@ class EntryService
 
     /**
      * Fetch all entries.
+     *
+     * @return App\Model\Entry[]
      */
     public function fetchAll(): array
     {
@@ -495,9 +477,19 @@ class EntryService
     }
 
     /**
+     * Delete an entry.
+     */
+    public function delete(string $id): int
+    {
+        $statement = $this->pdo->prepare('delete from `Entry` where id = :id');
+        $statement->execute(['id' => $id]);
+        return $statement->rowCount();
+    }
+
+    /**
      * Attach an array of AuthorIDs to an entry.
      */
-    public function attachAuthors(string $id, array $authors)
+    private function attachAuthors(string $id, array $authors)
     {
         $deleteStatement = $this->pdo->prepare('delete from Entry_has_Author where entry_id = :id');
         $deleteStatement->execute(['id' => $id]);
@@ -526,7 +518,7 @@ class EntryService
      * @param array $images
      * @param int $type
      */
-    public function attachImages(string $entryId, array $images, int $type = 1)
+    private function attachImages(string $entryId, array $images, int $type = 1)
     {
         $deleteStatement = $this->pdo->prepare(
             'delete from Entry_has_Image where entry_id = :entry_id and type = :type'
@@ -546,18 +538,5 @@ class EntryService
                 'order' => $count
             ]);
         }
-    }
-
-    /**
-     * Delete an entry.
-     *
-     * @param string $id
-     * @return int affected rows
-     */
-    public function delete(string $id): int
-    {
-        $statement = $this->pdo->prepare('delete from `Entry` where id = :id');
-        $statement->execute(['id' => $id]);
-        return $statement->rowCount();
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Handler\Page;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{RedirectResponse};
 use App\Router\RouterInterface;
 use App\Service\PageService;
 use App\Form\PageForm;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\{RedirectResponse};
 
 class PageSavePageHandler implements RequestHandlerInterface
 {
@@ -30,7 +29,7 @@ class PageSavePageHandler implements RequestHandlerInterface
         $form->setData(array_merge($post, ['id' => $id]));
 
         if ($form->isValid()) {
-            $this->page->save($form->getData());
+            $this->page->save($form->getModel());
             $this->page->attachImages($id, isset($post['gallery']) ? $post['gallery'] : []);
 
             return new RedirectResponse($this->router->generateUri('about'));

@@ -27,7 +27,6 @@ return [
         },
         Handler\Image\ImageSavePageHandler::class => function (ContainerInterface $container) {
             return new Handler\Image\ImageSavePageHandler(
-                $container->get(RouterInterface::class),
                 $container->get(Service\ImageService::class),
                 $container->get(Service\AssetService::class),
             );
@@ -304,6 +303,7 @@ return [
         },
         FacebookAuthAdapter::class => function (ContainerInterface $container) {
             return new FacebookAuthAdapter(
+                'https://graph.facebook.com/v8.0',
                 $container->get(Service\UserService::class),
                 getenv('FB_ID') ?: '2085720918322296',
                 getenv('FB_SECRET') ?: '813a22630cace0901074dd8ad5188cb8',

@@ -6,10 +6,10 @@ use JsonSerializable;
 
 class Page implements JsonSerializable
 {
-    private ?int $id;
+    private ?int $id = null;
     private string $type;
-    private string $body_is;
-    private string $body_en;
+    private ?string $body_is = null;
+    private ?string $body_en = null;
     private ?string $body = null;
     private ?array $gallery = [];
 
@@ -37,23 +37,23 @@ class Page implements JsonSerializable
     }
 
 
-    public function getBodyIs(): string
+    public function getBodyIs(): ?string
     {
         return $this->body_is;
     }
 
-    public function setBodyIs(string $body): self
+    public function setBodyIs(?string $body): self
     {
         $this->body_is = $body;
         return $this;
     }
 
-    public function getBodyEn(): string
+    public function getBodyEn(): ?string
     {
         return $this->body_en;
     }
 
-    public function setBodyEn(string $body): self
+    public function setBodyEn(?string $body): self
     {
         $this->body_en = $body;
         return $this;
@@ -86,7 +86,6 @@ class Page implements JsonSerializable
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'body' => $this->body,
             'body_is' => $this->body_is,
             'body_en' => $this->body_en,
             'body' => $this->body,

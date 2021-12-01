@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-use App\Model;
+use App\Model\Page;
 
 abstract class AbstracPage extends PageService
 {
@@ -9,7 +9,7 @@ abstract class AbstracPage extends PageService
     {
     }
 
-    public function get(string $id): ?Model\Page
+    public function get(string $id): ?Page
     {
         return null;
     }
@@ -19,7 +19,7 @@ abstract class AbstracPage extends PageService
         return [];
     }
 
-    public function getByType($type, $lang = 'is'): ?Model\Page
+    public function getByType($type, $lang = 'is'): ?Page
     {
         return null;
     }
@@ -29,7 +29,7 @@ abstract class AbstracPage extends PageService
         return [];
     }
 
-    public function save(array $data): int
+    public function save(Page $data): int
     {
         return 0;
     }
