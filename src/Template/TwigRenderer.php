@@ -17,7 +17,10 @@ class TwigRenderer implements TemplateRendererInterface
     public function __construct(string $path, bool $debug = false, string $cache = null)
     {
         $this->loader = new FilesystemLoader($path);
-        $this->twig = new Environment($this->loader, ['debug' => $debug]);
+        $this->twig = new Environment($this->loader, [
+            'debug' => $debug,
+            'auto_reload' => $cache ? true : false
+        ]);
 
         if ($debug) {
             $this->twig->addExtension(new \Twig\Extension\DebugExtension());
@@ -57,5 +60,10 @@ class TwigRenderer implements TemplateRendererInterface
     {
         $this->twig->addExtension($ext);
         return $this;
+    }
+
+    public function loadTemplate(string $fn)
+    {
+        $this->twig->load($fn);
     }
 }

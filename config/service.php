@@ -421,6 +421,5 @@ return [
                 ->addExtension(new Filters\Date())
                 ->addExtension(new Filters\Path($container->get(RouterInterface::class)));
         }
-        // Filters\ClassModifiers::class => Factory\ClassModifiersFactory::class
     ],
 ];

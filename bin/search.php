@@ -12,8 +12,8 @@ $serviceManager = new ServiceManager(require './config/service.php');
 $client = $serviceManager->get(\Elasticsearch\Client::class);
 $pdo = $serviceManager->get(\PDO::class);
 
-$entryModel = new \App\Service\Entry($pdo);
-$search = new \App\Service\Search($client);
+$entryModel = new \App\Service\EntryService($pdo);
+$search = new \App\Service\SearchService($client);
 
 foreach ($entryModel->fetchAll() as $item) {
     $entry = $entryModel->get((string) $item->id);

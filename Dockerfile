@@ -113,3 +113,7 @@ COPY --chown=www-data:www-data ./public ./html
 COPY --from=assets --chown=www-data:www-data /app/styles.css /var/www/html/styles/styles.css
 COPY --chown=www-data:www-data ./src ./src
 COPY --chown=www-data:www-data ./templates ./templates
+
+RUN if [ "$ENV" != "development" ] ; then \
+    ./bin/precompile.sh; \
+fi ;
