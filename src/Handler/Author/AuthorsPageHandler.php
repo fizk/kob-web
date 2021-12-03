@@ -1,11 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Handler\Author;
 
-use App\Template\TemplateRendererInterface;
 use App\Service\AuthorService;
-use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use App\Template\TemplateRendererInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Laminas\Diactoros\Response\{HtmlResponse};
 
 class AuthorsPageHandler implements RequestHandlerInterface
@@ -21,10 +21,8 @@ class AuthorsPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        return new HtmlResponse(
-            $this->template->render('app::authors-page', [
-                'list' => $this->author->fetchList()
-            ])
-        );
+        return new HtmlResponse($this->template->render('app::authors-page', [
+            'list' => $this->author->fetchList()
+        ]));
     }
 }

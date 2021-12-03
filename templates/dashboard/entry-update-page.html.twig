@@ -10,13 +10,13 @@
 {% block content %}
     <header>
         <h1 class="display-4">
-            {% if entry.id is defined %}
+            {% if entry.id %}
             Uppdate Entry
             {% else %}
             Create Entry
             {% endif %}
         </h1>
-        {% if entry.id is defined %}
+        {% if entry.id %}
         <p>
             You can also <a href="{{ path('delete-entry', {id: entry.id}) }}" class="btn btn-danger btn-sm">Delete</a>
             this Entry, just be careful, this can not be undone.
@@ -24,26 +24,30 @@
         {% endif %}
     </header>
     <section>
-        <form method="post" class="form" action="{{ entry.id is defined ? path('save-entry', {id: entry.id}) : path('new-entry', {}) }}">
+        {% if entry.id %}
+        <form method="post" class="form" action="{{ path('save-entry', {id: entry.id}) }}">
+        {% else %}
+        <form method="post" class="form" action="{{ path('new-entry', {}) }}">
+        {% endif %}
             <fieldset class="form-group form-group--start">
                 <div class="form__entry">
                     <div><label for="title">Title</label></div>
                     <div>
-                        <input type="text" name="title" class="form-control" id="title" aria-describedby="title" placeholder="Title" value="{{ entry.title is defined ? entry.title : null}}">
+                        <input type="text" name="title" class="form-control" id="title" aria-describedby="title" placeholder="Title" value="{{ entry.title }}">
                         {{ form.error('title', messages) }}
                     </div>
                 </div>
                 <div class="form__entry">
                     <div><label for="from">From</label></div>
                     <div>
-                        <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from|isoDate : null}}">
+                        <input type="date" name="from" class="form-control" id="from" aria-describedby="from" value="{{ entry.from is defined ? entry.from|isoDate : null}}" required>
                         {{ form.error('from', messages) }}
                     </div>
                 </div>
                 <div class="form__entry">
                     <div><label for="to">To</label></div>
                     <div>
-                        <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to|isoDate : null}}">
+                        <input type="date" name="to" class="form-control" id="to" aria-describedby="to" value="{{ entry.to is defined ? entry.to|isoDate : null}}" required>
                         {{ form.error('to', messages) }}
                     </div>
                 </div>
@@ -76,7 +80,7 @@
                 <div class="form__entry">
                     <div><label>Authors</label></div>
                     <div>
-                        <x-authors url="/api/author/search" type="authors[]">
+                        <x-authors save-url="/api/authors" search-url="/api/authors/search" type="authors[]">
                             {% if entry.authors is defined %}
                             {% for author in entry.authors %}
                                 <li data-entry>

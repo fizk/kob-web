@@ -126,3 +126,5 @@ public/img/*
 test/doc
 image-cache
 image-crop
+
+node_modules

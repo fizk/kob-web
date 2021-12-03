@@ -1,14 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Handler\Author;
 
+use App\Form\AuthorForm;
 use App\Router\RouterInterface;
 use App\Template\TemplateRendererInterface;
 use App\Service\AuthorService;
-use App\Form\AuthorForm;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
-use Laminas\Diactoros\Response\{RedirectResponse, JsonResponse, HtmlResponse};
+use Laminas\Diactoros\Response\{RedirectResponse, HtmlResponse};
 
 class AuthorSavePageHandler implements RequestHandlerInterface
 {
@@ -25,30 +25,22 @@ class AuthorSavePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $withHeaders = $request->getHeader('X-REQUESTED-WITH');
-        $language = $request->getAttribute('language', 'is');
         $data = $request->getParsedBody();
-
-        $form = new AuthorForm();
-        $form->setData($data);
+        $form = (new AuthorForm())->setData($data);
 
         if ($form->isValid()) {
             $model = $form->getModel();
             $createdId = $this->author->save($model);
 
-            return in_array('xmlhttprequest', $withHeaders)
-                ? new JsonResponse(['id' => $createdId,'name' => $model->getName(),])
-                : new RedirectResponse($this->router->generateUri(
-                    $language == 'is' ? 'listamadur' : 'author',
-                    ['id' => $createdId]
-                ));
+            return new RedirectResponse($this->router->generateUri(
+                $request->getAttribute('language', 'is') == 'is' ? 'listamadur' : 'author',
+                ['id' => $createdId]
+            ));
         }
 
-        return in_array('xmlhttprequest', $withHeaders)
-            ? new JsonResponse(['messages' => $form->getMessages(),], 400)
-            : new HtmlResponse($this->template->render('dashboard::author-update-page', [
-                'author' => $data,
-                'messages' => $form->getMessages()
-            ]), 400);
+        return new HtmlResponse($this->template->render('dashboard::author-update-page', [
+            'author' => $data,
+            'messages' => $form->getMessages()
+        ]), 400);
     }
 }

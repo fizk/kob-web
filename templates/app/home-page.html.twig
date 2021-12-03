@@ -31,7 +31,7 @@
             </header>
             <aside class="entry__aside">
                 {% if item.posters|length > 0 %}
-                <img class="entry__poster" alt="poster" src="/img/640x/{{item.posters[0].name}}" />
+                <img class="entry__poster" alt="poster" src="{{path('asset', {size:'640x', name:item.posters[0].name})}}" />
                 {% endif %}
                 <ul class="gallery">
                 {% for image in item.gallery %}

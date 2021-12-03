@@ -1,0 +1,29 @@
+{
+  "name": "kob-web",
+  "version": "1.0.0",
+  "description": "Kling&Bang Web is a simple CMS system for the Kling&Bang Gallery.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fizk/kob-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fizk/kob-web/issues"
+  },
+  "homepage": "https://github.com/fizk/kob-web#readme",
+  "devDependencies": {
+    "postcss": "^8.4.4",
+    "postcss-cli": "^9.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-preset-env": "^7.0.1"
+  }
+}

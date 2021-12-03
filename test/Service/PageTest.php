@@ -170,6 +170,7 @@ class PageTest extends TestCase
     {
         try {
             $this->getDatabase()->exec('SET foreign_key_checks=0');
+            $this->getDatabase()->exec('truncate table Author');
             $this->getDatabase()->exec('truncate table Image');
             $this->getDatabase()->exec('truncate table Manifesto_has_Image');
             $this->getDatabase()->exec('truncate table Manifesto');

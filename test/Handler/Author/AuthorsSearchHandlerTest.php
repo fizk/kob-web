@@ -11,13 +11,13 @@ use App\Router\RouterInterface;
 use App\Service;
 use function App\Router\dispatch;
 
-class AuthorsSearchPageHandlerTest extends TestCase
+class AuthorsSearchHandlerTest extends TestCase
 {
     public function testSearchForAuthor()
     {
         $request = (new ServerRequest())
             ->withQueryParams(['q' => 'search'])
-            ->withUri(new Uri('/api/author/search'));
+            ->withUri(new Uri('/api/authors/search'));
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);

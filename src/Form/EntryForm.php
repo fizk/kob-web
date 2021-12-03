@@ -17,7 +17,7 @@ class EntryForm extends Form
         $values = $this->inputFilter->getValues();
 
         return (new Entry())
-            ->setId($values['id'])
+            ->setId(isset($values['id']) ? (int)$values['id'] : null)
             ->setTitle($values['title'])
             ->setFrom(new DateTime($values['from']))
             ->setTo(new DateTime($values['to']))
@@ -29,15 +29,15 @@ class EntryForm extends Form
             ->setType($values['type'])
             ->setAuthors(array_map(function ($author) {
                 return (new Author())
-                    ->setId($author);
+                    ->setId((int)$author);
             }, $values['authors']))
             ->setGallery(array_map(function ($image) {
                 return (new Image)
-                    ->setId($image);
+                    ->setId((int)$image);
             }, $values['gallery']))
             ->setPosters(array_map(function ($image) {
                 return (new Image)
-                    ->setId($image);
+                    ->setId((int)$image);
             }, $values['posters']))
             ;
     }

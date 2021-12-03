@@ -21,11 +21,19 @@ class EntryPageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $result = [];
-        preg_match('/[0-9]*$/', $request->getAttribute('id'), $result);
-        $entry = $this->entry->fetch($result[0], $request->getAttribute('language', 'is'));
+        $entry = $this->entry->fetch(
+            $this->extractId($request->getAttribute('id')),
+            $request->getAttribute('language', 'is')
+        );
         return $entry
             ? new HtmlResponse($this->template->render('app::entry-page', ['entry' => $entry]))
             : new HtmlResponse($this->template->render('error::404'), 404);
+    }
+
+    private function extractId(string $slug)
+    {
+        $result = [];
+        preg_match('/[0-9]*$/', $slug, $result);
+        return $result[0];
     }
 }

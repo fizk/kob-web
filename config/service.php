@@ -103,8 +103,8 @@ return [
                 $container->get(TemplateRendererInterface::class)
             );
         },
-        Handler\Author\AuthorsSearchPageHandler::class => function (ContainerInterface $container) {
-            return new Handler\Author\AuthorsSearchPageHandler(
+        Handler\Api\AuthorsSearchHandler::class => function (ContainerInterface $container) {
+            return new Handler\Api\AuthorsSearchHandler (
                 $container->get(Service\AuthorService::class)
             );
         },
@@ -253,6 +253,15 @@ return [
                 $container->get(TemplateRendererInterface::class)
             );
         },
+
+
+
+        Handler\Api\AuthorSaveHandler::class => function (ContainerInterface $container) {
+            return new Handler\Api\AuthorSaveHandler (
+                $container->get(Service\AuthorService::class)
+            );
+        },
+
 
         Middleware\DetectLanguageMiddleware::class => function (ContainerInterface $container) {
             return new Middleware\DetectLanguageMiddleware(
@@ -408,6 +417,7 @@ return [
                 ->addDefaultParam('app', 'fb_redirect', $fbRedirect)
                 ->addExtension(new MarkdownExtension(new ParesDownAdapter()))
                 ->addExtension(new Filters\Slug())
+                ->addExtension(new Filters\Translate())
                 ->addExtension(new Filters\Date())
                 ->addExtension(new Filters\Path($container->get(RouterInterface::class)));
         }

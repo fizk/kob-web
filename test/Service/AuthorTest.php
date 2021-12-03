@@ -416,6 +416,7 @@ class AuthorTest extends TestCase
 
     protected function getDatasetForSetup(): Dataset
     {
+        $this->tearDown(); //@todo remove this...
         return new DatasetArray([
             'Entry' => [
                 [

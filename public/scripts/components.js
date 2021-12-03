@@ -376,7 +376,7 @@ class AuthorSelect extends HTMLElement {
 
     searchAuthor(inputEvent) {
         const value = inputEvent.target.value;
-        fetch(`/api/author/search?q=${inputEvent.target.value}`)
+        fetch(`/api/authors/search?q=${inputEvent.target.value}`)
             .then(response => response.json())
             .then(json => {
                 this.clearAuthEntries();

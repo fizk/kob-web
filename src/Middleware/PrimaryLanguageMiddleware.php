@@ -23,6 +23,11 @@ class PrimaryLanguageMiddleware implements MiddlewareInterface
             'language',
             'is'
         );
+        $this->templateRenderer->addDefaultParam(
+            TemplateRendererInterface::TEMPLATE_ALL,
+            'primary_language',
+            true
+        );
 
         return $handler->handle($request->withAttribute('language', 'is'));
     }

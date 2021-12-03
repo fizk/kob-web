@@ -22,7 +22,6 @@ class EntryDeletePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->entry->delete($request->getAttribute('id'));
-
         return new RedirectResponse($this->router->generateUri('update'));
     }
 }

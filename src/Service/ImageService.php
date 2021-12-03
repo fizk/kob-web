@@ -35,6 +35,29 @@ class ImageService
             : null;
     }
 
+    public function fetch(array $ids): array
+    {
+        $ids = implode(', ', array_map(function ($id) {
+            return (int)$id;
+        }, $ids));
+        $statement = $this->pdo->prepare("
+            select * from Image where id in ({$ids})
+        ");
+        $statement->execute();
+
+        return array_map(function ($object) {
+            return (new Image())
+                ->setId($object->id)
+                ->setName($object->name)
+                ->setDescription($object->description)
+                ->setSize($object->size)
+                ->setWidth($object->width)
+                ->setHeight($object->height)
+                ->setCreated(new DateTime($object->created))
+                ->setAffected(new DateTime($object->affected));
+        }, $statement->fetchAll());
+    }
+
     public function save(Image $image): int
     {
         $data = $image->jsonSerialize();

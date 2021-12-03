@@ -1,3 +1,30 @@
+#
+# Assets Image
+#
+# Pre-Compile all assets
+# They will later be copied into the main image
+#
+
+FROM node:14-bullseye as assets
+
+WORKDIR /app
+
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
+COPY ./postcss.config.js ./postcss.config.js
+COPY ./public/styles/ ./public/styles/
+
+RUN npm install; \
+    ./node_modules/.bin/postcss ./public/styles/styles.css -o ./styles.css
+
+
+#
+# Main Image
+#
+# Builds the main PHP/Apache image
+# This images will then copy assets from previous build-steps
+#
+
 FROM php:8.0.12-apache-bullseye
 
 EXPOSE 80
@@ -9,7 +36,10 @@ RUN echo "memory_limit = 2048M\n \
 post_max_size = 2048M\n \
 upload_max_filesize = 2048M\n \
 date.timezone = Atlantic/Reykjavik\n \
-expose_php = Off \n" >> /usr/local/etc/php/php.ini
+expose_php = Off \n\n \
+opcache.enable=1\n \
+opcache.jit_buffer_size=100M\n \
+opcache.jit=1255" >> /usr/local/etc/php/php.ini
 
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -29,6 +59,7 @@ RUN apt-get update; \
         locales \
         locales-all; \
     docker-php-ext-install zip; \
+    docker-php-ext-install opcache; \
     docker-php-ext-install pdo_mysql; \
     docker-php-ext-install bcmath; \
     docker-php-ext-install sockets; \
@@ -59,6 +90,8 @@ COPY --chown=www-data:www-data ./composer.json ./composer.json
 COPY --chown=www-data:www-data ./composer.lock ./composer.lock
 
 RUN mkdir image-cache
+RUN mkdir -p data/cache
+RUN mkdir -p html/img
 
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --install-dir=/var/www --filename=composer --version=2.1.3
@@ -75,6 +108,8 @@ fi ;
 
 COPY --chown=www-data:www-data ./bin ./bin
 COPY --chown=www-data:www-data ./config ./config
+COPY --chown=www-data:www-data ./public/favicon ./html/favicon
 COPY --chown=www-data:www-data ./public ./html
+COPY --from=assets --chown=www-data:www-data /app/styles.css /var/www/html/styles/styles.css
 COPY --chown=www-data:www-data ./src ./src
 COPY --chown=www-data:www-data ./templates ./templates

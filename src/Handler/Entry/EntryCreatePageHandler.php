@@ -19,9 +19,7 @@ class EntryCreatePageHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return new HtmlResponse(
-            $this->template->render('dashboard::entry-update-page', [
-                'entry' => []
-            ])
+            $this->template->render('dashboard::entry-update-page', ['entry' => []])
         );
     }
 }

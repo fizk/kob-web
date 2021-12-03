@@ -1,10 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Handler\Author;
 
 use App\Template\TemplateRendererInterface;
-use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Laminas\Diactoros\Response\HtmlResponse;
 
 class AuthorCreatePageHandler implements RequestHandlerInterface

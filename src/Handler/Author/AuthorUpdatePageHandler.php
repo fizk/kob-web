@@ -1,12 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Handler\Author;
 
-use App\Template\TemplateRendererInterface;
 use App\Service\AuthorService;
-use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use App\Template\TemplateRendererInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class AuthorUpdatePageHandler implements RequestHandlerInterface
 {
@@ -21,11 +21,9 @@ class AuthorUpdatePageHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        //@todo author not found
-        return new HtmlResponse(
-            $this->template->render('dashboard::author-update-page', [
-                'author' => $this->author->get($request->getAttribute('id'))
-            ])
-        );
+        $author = $this->author->get($request->getAttribute('id'));
+        return $author
+            ? new HtmlResponse($this->template->render('dashboard::author-update-page', ['author' => $author]))
+            : new HtmlResponse($this->template->render('error::404'), 404);
     }
 }

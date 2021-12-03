@@ -23,6 +23,11 @@ class SecondaryLanguageMiddleware implements MiddlewareInterface
             'language',
             'en'
         );
+        $this->templateRenderer->addDefaultParam(
+            TemplateRendererInterface::TEMPLATE_ALL,
+            'primary_language',
+            false
+        );
 
         return $handler->handle($request->withAttribute('language', 'en'));
     }

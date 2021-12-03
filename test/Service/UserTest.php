@@ -201,6 +201,7 @@ class UserTest extends TestCase
         try {
             $this->getDatabase()->exec('SET foreign_key_checks=0');
             $this->getDatabase()->exec('truncate table User');
+            $this->getDatabase()->exec('truncate table Author');
         } finally {
             $this->getDatabase()->exec('SET foreign_key_checks=1');
         }

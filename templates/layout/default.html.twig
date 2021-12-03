@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         {% block meta %}{% endblock %}
-        <link rel="search" type="application/opensearchdescription+xml" href="{{ path(language|default('is') == 'is' ? 'leit' : 'search') }}?q=%s" title="Kling&amp;Bang">
+        <link rel="search" type="application/opensearchdescription+xml" href="{{ selectPath(['leit', 'search'], primary_language)}}?q=%s" title="Kling&amp;Bang">
         <link rel="shortcut icon" href="/favicon.ico">
         <link rel="icon" type="image/png" href="/favicon/favicon-32x32.png" sizes="32x32" />
         <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
@@ -17,10 +17,14 @@
         <header class="app_header">
             <ul class="navigation">
                 <li class="navigation__item">
-                    <a class="navigation__link" href="{{path('syningar')}}">Shows</a>
+                    <a class="navigation__link" href="{{path('syningar')}}">
+                        {{_(['Syningar', 'Shows'], primary_language)}}
+                    </a>
                 </li>
                 <li class="navigation__item">
-                    <a class="navigation__link" href="{{path('listamenn')}}">Artists</a>
+                    <a class="navigation__link" href="{{path('listamenn')}}">
+                        {{_(['Listamenn', 'Artists'], primary_language)}}
+                    </a>
                 </li>
                 <li class="navigation__item">
                     <a class="navigation__link" href="/">
@@ -133,32 +137,64 @@
         </main>
         <footer class="app__footer">
             <div class="app__footer-section">
-                <h4 class="app__footer-headline">Address</h4>
+                <h4 class="app__footer-headline">
+                    {{_(['Heimilisfang', 'Address'], primary_language)}}
+                </h4>
                 <ul class="app__footer-content">
                     <li class="app__footer-item">© Kling &amp; Bang</li>
-                    <li class="app__footer-item">Grandagarður 20</li>
+                    <li class="app__footer-item">
+                        <a href="https://www.google.com.au/maps/place/Kling+og+Bang/@64.1556389,-21.941386,17z/data=!4m5!3m4!1s0x48d674cd0ad7ec1d:0x8639bdf40995859e!8m2!3d64.1563149!4d-21.9391541"
+                            class="app__footer-link" target="_blank">Grandagarður 20</a>
+                    </li>
                     <li class="app__footer-item">101 Reykjavík</li>
                 </ul>
             </div>
             <div class="app__footer-section">
-                <h4 class="app__footer-headline">Opening hours</h4>
+                <h4 class="app__footer-headline">
+                    {{_(['Opnunartímar', 'Opening hours'], primary_language)}}
+                </h4>
                 <ul class="app__footer-content">
-                    <li class="app__footer-item">Mið - Sun: 12 – 18</li>
-                    <li class="app__footer-item">Fim: 12 – 21</li>
-                    <li class="app__footer-item">Mán/Þri: Lokað</li>
+                    <li class="app__footer-item">
+                        {{_(['Mið - Sun: 12 – 18', 'Wed - Sun: 12 - 18'], primary_language)}}
+                    </li>
+                    <li class="app__footer-item">
+                        {{_(['Fim: 12 – 21', 'Thu: 12 – 21'], primary_language)}}
+                    </li>
+                    <li class="app__footer-item">
+                        {{_(['Mán/Þri: Lokað', 'Mon/Tue: Closed'], primary_language)}}
+                    </li>
                 </ul>
             </div>
             <div class="app__footer-section">
                 <h4 class="app__footer-headline">&nbsp;</h4>
                 <ul class="app__footer-content">
-                    <li class="app__footer-item"><a class="app__footer-link" href="{{path('verslun')}}">Verk til sölu</a></li>
-                    <li class="app__footer-item"><a class="app__footer-link" href="">Listamenn</a></li>
-                    <li class="app__footer-item"><a class="app__footer-link" href="">Verkefni</a></li>
-                    <li class="app__footer-item"><a class="app__footer-link" href="">Um Kling &amp; Bang</a></li>
+                    <li class="app__footer-item">
+                        <a class="app__footer-link" href="{{selectPath(['verslun', 'store'], primary_language)}}">
+                            {{_(['Verk til sölu', 'For sale'], primary_language)}}
+                        </a>
+                    </li>
+                    <li class="app__footer-item">
+                        <a class="app__footer-link" href="{{selectPath(['listamenn', 'authors'], primary_language)}}">
+                            {{_(['Listamenn', 'Artists'], primary_language)}}
+                        </a>
+                    </li>
+                    <li class="app__footer-item">
+                        <a class="app__footer-link" href="{{selectPath(['verkefni', 'projects'], primary_language)}}">
+                            {{_(['Verkefni', 'Projects'], primary_language)}}
+                        </a>
+                    </li>
+                    <li class="app__footer-item">
+                        <a class="app__footer-link" href="{{selectPath(['um', 'about'], primary_language)}}">
+                            {{_(['Um Kling & Bang', 'About Kling & Bang'], primary_language)}}
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="app__footer-section">
-                <h4 class="app__footer-headline">Contact</h4>
+                <h4 class="app__footer-headline">
+                    {{_(['Samband', 'Contact'], primary_language)}}
+
+                </h4>
                 <ul class="app__footer-content">
                     <li class="app__footer-item"><a class="app__footer-link" href="">Facebook</a></li>
                     <li class="app__footer-item"><a class="app__footer-link" href="">Instagram</a></li>
@@ -166,6 +202,13 @@
                 </ul>
             </div>
         </footer>
+        <nav>
+            <ul>
+            {% for item in entry_years %}
+                <li><a href="{{selectPath(['listi', 'list'], primary_language, {year: item.year})}}">{{item.year}}</a></li>
+            {% endfor %}
+            </ul>
+        </nav>
         {#
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_tracking }}"></script>
         <script>

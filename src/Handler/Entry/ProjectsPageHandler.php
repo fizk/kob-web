@@ -2,16 +2,17 @@
 
 namespace App\Handler\Entry;
 
+use App\Model\Entry;
 use App\Template\TemplateRendererInterface;
 use App\Service\EntryService;
-use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
+use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class ProjectsPageHandler implements RequestHandlerInterface
 {
+    private EntryService $entry;
     private TemplateRendererInterface $template;
-    private $entry;
 
     public function __construct(EntryService $entry, TemplateRendererInterface $template)
     {
@@ -23,7 +24,7 @@ class ProjectsPageHandler implements RequestHandlerInterface
     {
         return new HtmlResponse(
             $this->template->render('app::projects-page', [
-                'list' => $this->entry->fetchByType('proj'),
+                'list' => $this->entry->fetchByType(Entry::PROJECT),
             ])
         );
     }

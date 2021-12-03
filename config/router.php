@@ -10,6 +10,7 @@ return [
             [
                 Middleware\DetectLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\HomePageHandler::class
             ],
             'heim'
@@ -21,6 +22,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\HomePageHandler::class
             ],
             'home'
@@ -32,6 +34,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'listi'
@@ -43,6 +46,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'list'
@@ -54,6 +58,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\ProjectsPageHandler::class
             ],
             'verkefni'
@@ -65,6 +70,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\ProjectsPageHandler::class
             ],
             'projects'
@@ -76,6 +82,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'syningar'
@@ -87,6 +94,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntriesPageHandler::class
             ],
             'entries'
@@ -98,6 +106,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntryPageHandler::class
             ],
             'syning'
@@ -109,6 +118,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Entry\EntryPageHandler::class
             ],
             'entry'
@@ -120,6 +130,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Author\AuthorsPageHandler::class
             ],
             'listamenn'
@@ -131,6 +142,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Author\AuthorsPageHandler::class
             ],
             'authors'
@@ -142,6 +154,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Author\AuthorPageHandler::class
             ],
             'listamadur'
@@ -153,6 +166,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Author\AuthorPageHandler::class
             ],
             'author'
@@ -164,6 +178,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\ManifestoPageHandler::class
             ],
             'um'
@@ -175,6 +190,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\ManifestoPageHandler::class
             ],
             'about'
@@ -186,6 +202,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\StorePageHandler::class
             ],
             'verslun'
@@ -197,6 +214,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\StorePageHandler::class
             ],
             'store'
@@ -208,6 +226,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\SupportersPageHandler::class
             ],
             'velunnarar'
@@ -219,6 +238,7 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\Page\SupportersPageHandler::class
             ],
             'supporters'
@@ -230,6 +250,7 @@ return [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\SearchPageHandler::class
             ],
             'leit'
@@ -241,11 +262,14 @@ return [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
+                Middleware\MenuMiddleware::class,
                 Handler\SearchPageHandler::class
             ],
             'search'
         ],
     ],
+
+    // - - - - - - - - - - - - - - - - - - - - - - - -
 
     '/rss' => [
         'GET' => [
@@ -296,19 +320,7 @@ return [
         ],
     ],
 
-    '/api/author/search' => [
-        'GET' => [
-            Handler\Author\AuthorsSearchPageHandler::class,
-            'author-search'
-        ],
-    ],
 
-    '/api/search' => [
-        'GET' => [
-            Handler\ApiSearchPageHandler::class,
-            'api-search'
-        ],
-    ],
 
     //
     //
@@ -561,6 +573,32 @@ return [
                 Handler\User\UsersDeletePageHandler::class
             ],
             'delete-user'
+        ],
+    ],
+
+    '/api/authors' => [
+        'POST' => [
+            [
+                Middleware\DetectLanguageMiddleware::class,
+                Middleware\AuthenticationMiddleware::class,
+                Middleware\AdditionalDatesMiddleware::class,
+                Handler\Api\AuthorSaveHandler::class
+            ],
+            'api-authors-save'
+        ]
+    ],
+
+    '/api/authors/search' => [
+        'GET' => [
+            Handler\Api\AuthorsSearchHandler::class,
+            'author-search'
+        ],
+    ],
+
+    '/api/search' => [
+        'GET' => [
+            Handler\ApiSearchPageHandler::class,
+            'api-search'
         ],
     ],
 ];

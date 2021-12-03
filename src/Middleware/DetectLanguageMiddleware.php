@@ -25,6 +25,11 @@ class DetectLanguageMiddleware implements MiddlewareInterface
             'language',
             $language
         );
+        $this->templateRenderer->addDefaultParam(
+            TemplateRendererInterface::TEMPLATE_ALL,
+            'primary_language',
+            $language === 'is'
+        );
 
         return $handler->handle($request->withAttribute('language', $language));
     }

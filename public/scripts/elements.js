@@ -72,10 +72,11 @@ class Authors extends HTMLElement {
         this.createEntry = this.createEntry.bind(this);
     }
 
-    static get observedAttributes() { return ['url']; }
-
     connectedCallback() {
         !this.hasAttribute('type') && this.setAttribute('type', 'authors[]');
+        !this.hasAttribute('save-url') && this.setAttribute('save-url', '/api/authors');
+        !this.hasAttribute('search-url') && this.setAttribute('search-url', '/api/authors/search');
+
         this.shadowRoot.querySelector('input').addEventListener('input', this.handleSearch);
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', () => {
             Array.from(this.children).filter(item => (
@@ -130,7 +131,7 @@ class Authors extends HTMLElement {
 
         const value = event.target.value;
 
-        const response = await fetch(`${this.getAttribute('url')}?q=${value}`);
+        const response = await fetch(`${this.getAttribute('search-url')}?q=${value}`);
         const items = await response.json();
 
         searchResultElement && (searchResultElement.innerText = '');
@@ -183,10 +184,9 @@ class Authors extends HTMLElement {
     async createEntry(value) {
         const form = new FormData();
         form.append('name', value);
-        const response = await fetch('/update/author', {
+        const response = await fetch(this.getAttribute('save-url'), {
             method: 'POST',
             body: form,
-            headers: {'X-REQUESTED-WITH': 'xmlhttprequest'}
         });
         return await response.json();
     }
