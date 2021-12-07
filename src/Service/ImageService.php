@@ -43,7 +43,8 @@ class ImageService
         ");
         $statement->execute();
 
-        return array_map(fn ($object) => (
+        return array_map(
+            fn ($object) => (
             (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
@@ -63,8 +64,8 @@ class ImageService
         $data = $image->jsonSerialize();
         unset($data['order']);
 
-        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
-        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $columns = implode(',', array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',', array_map(fn ($i) => " :{$i}", array_keys($data)));
         $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("

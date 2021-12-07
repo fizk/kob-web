@@ -149,8 +149,8 @@ class StoreService
 
     public function save(array $data): int
     {
-        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
-        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $columns = implode(',', array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',', array_map(fn ($i) => " :{$i}", array_keys($data)));
         $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("

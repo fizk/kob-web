@@ -161,7 +161,8 @@ class EntryService
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -197,7 +198,8 @@ class EntryService
         );
         $statement->execute(['type' => $type]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -239,7 +241,8 @@ class EntryService
             $statement->execute([]);
         }
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -272,7 +275,8 @@ class EntryService
         ');
         $statement->execute([]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -309,7 +313,8 @@ class EntryService
         ');
         $statement->execute(['type' => $type]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -345,7 +350,8 @@ class EntryService
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -380,7 +386,8 @@ class EntryService
         ');
         $statement->execute([]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -396,7 +403,8 @@ class EntryService
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
             ),
-            $statement->fetchAll());
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -423,7 +431,8 @@ class EntryService
     {
         $statement = $this->pdo->prepare('select * from `Entry` order by `from` desc');
         $statement->execute();
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
              (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
@@ -462,8 +471,8 @@ class EntryService
             unset($data['created']);
         }
 
-        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
-        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $columns = implode(',', array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',', array_map(fn ($i) => " :{$i}", array_keys($data)));
         $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("

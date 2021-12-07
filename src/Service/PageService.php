@@ -37,7 +37,8 @@ class PageService
             ->setType($page->type)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
-            ->setGallery(array_map(fn ($item) => (
+            ->setGallery(array_map(
+                fn ($item) => (
                 (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
@@ -58,7 +59,8 @@ class PageService
         $entryStatement = $this->pdo->prepare('select * from `Manifesto`');
         $entryStatement->execute([]);
 
-        return array_map(fn ($item) => (
+        return array_map(
+            fn ($item) => (
             (new Page)
                 ->setId($item->id)
                 ->setType($item->type)
@@ -95,7 +97,8 @@ class PageService
             ->setBody($page->body)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
-            ->setGallery(array_map(fn ($item) => (
+            ->setGallery(array_map(
+                fn ($item) => (
                 (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
@@ -108,8 +111,7 @@ class PageService
                     ->setAffected(new DateTime($item->affected))
                 ),
                 $galleryStatement->fetchAll()
-            )
-        );
+            ));
     }
 
     public function attachImages(string $id, array $images): array
@@ -142,8 +144,8 @@ class PageService
         unset($data['body']);
         unset($data['gallery']);
 
-        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
-        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $columns = implode(',', array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',', array_map(fn ($i) => " :{$i}", array_keys($data)));
         $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("

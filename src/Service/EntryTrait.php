@@ -23,7 +23,8 @@ trait EntryTrait
         ');
         $posterStatement->execute(['id' => $id]);
 
-        return array_map(fn ($poster) => (
+        return array_map(
+            fn ($poster) => (
             (new Image())
                 ->setId($poster->id)
                 ->setName($poster->name)
@@ -56,7 +57,8 @@ trait EntryTrait
         ');
         $galleryStatement->execute(['id' => $id]);
 
-        return array_map(fn ($object) => (
+        return array_map(
+            fn ($object) => (
             (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
@@ -90,7 +92,8 @@ trait EntryTrait
 
         $authorStatement->execute(['id' => $id]);
 
-        return array_map(fn ($object) => (
+        return array_map(
+            fn ($object) => (
             (new Author)
                 ->setId($object->id)
                 ->setName($object->name)
