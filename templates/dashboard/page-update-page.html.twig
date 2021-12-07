@@ -8,11 +8,11 @@
 
 {% block content %}
     <header>
-        <h1>Update "{{ manifesto.type }}" Page</h1>
+        <h1>Update "{{ page.type }}" Page</h1>
     </header>
     <section>
-        <form method="post" action="{{ path('new-manifesto', {id: manifesto.id}) }}">
-            <input type="hidden" name="type" value="{{ manifesto.type }}">
+        <form method="post" action="{{ path('new-page', {id: page.id}) }}">
+            <input type="hidden" name="type" value="{{ page.type }}">
             <div class="row">
                 <div class="col-3">
                     <template id="image-entry-template">
@@ -30,8 +30,8 @@
                     <label for="gallery">Gallery</label>
                     <file-uploader data-file-uploader-gallery>
                         <ul data-gallery class="image-list">
-                            {% if manifesto.gallery is defined %}
-                            {% for image in manifesto.gallery %}
+                            {% if page.gallery is defined %}
+                            {% for image in page.gallery %}
                             <li draggable="true">
                                 <image-display path="{{ path('update-image', {id: image.id}) }}" text="{{ image.description }}">
                                     <img class="card-img-top" draggable="false" slot="icon"
@@ -52,14 +52,14 @@
                     <div class="form-group">
                         <label for="body_is">Body Icelandic</label>
                         <textarea data-markdown class="form-control" id="body_is" name="body_is"
-                            rows="20">{{ manifesto.body_is is defined ? manifesto.body_is : null}}</textarea>
+                            rows="20">{{ page.bodyIs is defined ? page.bodyIs : null}}</textarea>
                         <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank"
                                 href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
                     </div>
                     <div class="form-group">
                         <label for="body_en">Body English</label>
                         <textarea data-markdown class="form-control" id="body_en" name="body_en"
-                            rows="20">{{ manifesto.body_en is defined ? manifesto.body_en : null}}</textarea>
+                            rows="20">{{ page.bodyEn is defined ? page.bodyEn : null}}</textarea>
                         <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank"
                                 href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
                     </div>
@@ -184,14 +184,14 @@
                     <div class="row">
                         <div class="col">
                             <h1 class="display-4">
-                                Update "{{ manifesto.type }}" Page
+                                Update "{{ page.type }}" Page
                             </h1>
                         </div>
 
                     </div>
                 </div>
-                <form method="post" action="{{ path('new-manifesto', {id: manifesto.id}) }}">
-                    <input type="hidden" name="type" value="{{ manifesto.type }}">
+                <form method="post" action="{{ path('new-page', {id: page.id}) }}">
+                    <input type="hidden" name="type" value="{{ page.type }}">
                     <div class="row">
                         <div class="col-3">
                             <template id="image-entry-template">
@@ -208,8 +208,8 @@
                             <label for="gallery">Gallery</label>
                             <file-uploader data-file-uploader-gallery>
                                 <ul data-gallery class="image-list">
-                                    {% if manifesto.gallery is defined %}
-                                        {% for image in manifesto.gallery %}
+                                    {% if page.gallery is defined %}
+                                        {% for image in page.gallery %}
                                             <li draggable="true">
                                                 <image-display path="{{ path('update-image', {id: image.id}) }}" text="{{ image.description }}">
                                                     <img class="card-img-top" draggable="false" slot="icon" src="{{ path('asset', {name: image.name, size: '250x100'}) }}" style="object-fit: cover" height="100" width="100" />
@@ -227,12 +227,12 @@
                         <div class="col-9">
                             <div class="form-group">
                                 <label for="body_is">Body Icelandic</label>
-                                <textarea data-markdown class="form-control" id="body_is" name="body_is" rows="20">{{ manifesto.body_is is defined ? manifesto.body_is : null}}</textarea>
+                                <textarea data-markdown class="form-control" id="body_is" name="body_is" rows="20">{{ page.body_is is defined ? page.body_is : null}}</textarea>
                                 <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
                             </div>
                             <div class="form-group">
                                 <label for="body_en">Body English</label>
-                                <textarea data-markdown class="form-control" id="body_en" name="body_en" rows="20">{{ manifesto.body_en is defined ? manifesto.body_en : null}}</textarea>
+                                <textarea data-markdown class="form-control" id="body_en" name="body_en" rows="20">{{ page.body_en is defined ? page.body_en : null}}</textarea>
                                 <small id="emailHelp" class="form-text text-muted">This field supports <a target="_blank" href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax">markdown</a></small>
                             </div>
                         </div>

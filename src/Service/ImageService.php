@@ -37,16 +37,14 @@ class ImageService
 
     public function fetch(array $ids): array
     {
-        $ids = implode(', ', array_map(function ($id) {
-            return (int)$id;
-        }, $ids));
+        $ids = implode(', ', array_map(fn ($id) => (int)$id, $ids));
         $statement = $this->pdo->prepare("
             select * from Image where id in ({$ids})
         ");
         $statement->execute();
 
-        return array_map(function ($object) {
-            return (new Image())
+        return array_map(fn ($object) => (
+            (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
                 ->setDescription($object->description)
@@ -54,8 +52,10 @@ class ImageService
                 ->setWidth($object->width)
                 ->setHeight($object->height)
                 ->setCreated(new DateTime($object->created))
-                ->setAffected(new DateTime($object->affected));
-        }, $statement->fetchAll());
+                ->setAffected(new DateTime($object->affected))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     public function save(Image $image): int
@@ -63,16 +63,9 @@ class ImageService
         $data = $image->jsonSerialize();
         unset($data['order']);
 
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
           INSERT INTO `Image` ({$columns}) VALUES ({$values})

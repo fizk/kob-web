@@ -24,7 +24,7 @@ abstract class AbstracPage extends PageService
         return null;
     }
 
-    public function attachImages(string $manifestoId, array $images): array
+    public function attachImages(string $id, array $images): array
     {
         return [];
     }

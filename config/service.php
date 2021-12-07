@@ -115,9 +115,10 @@ return [
                 $container->get(TemplateRendererInterface::class)
             );
         },
-        Handler\Page\StorePageHandler::class => function (ContainerInterface $container) {
-            return new Handler\Page\StorePageHandler(
+        Handler\Store\StorePageHandler::class => function (ContainerInterface $container) {
+            return new Handler\Store\StorePageHandler(
                 $container->get(Service\StoreService::class),
+                $container->get(Service\PageService::class),
                 $container->get(TemplateRendererInterface::class)
             );
         },

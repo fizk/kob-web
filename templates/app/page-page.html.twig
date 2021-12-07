@@ -25,7 +25,7 @@
         <article class="article">
             <aside class="article__aside">
                 <ul class="article__images">
-                    {% for image in manifesto.gallery %}
+                    {% for image in page.gallery %}
                         <li class="article__images-item">
                             <img class="article__image" src="{{ path('asset', {size: '600x', name: image.name}) }}"/>
                         </li>
@@ -35,11 +35,11 @@
             <div class="article__body">
                 {% include '@partials/header.html.twig' %}
                 {% if user_session %}
-                    <a class="entry__edit-button" href="{{ path('update-manifesto', {id: manifesto.id}) }}">edit</a>
+                    <a class="entry__edit-button" href="{{ path('update-page', {id: page.id}) }}">edit</a>
                 {% endif %}
                 <div class="article__body-text markdown-text">
                 {% markdown %}
-                    {{ manifesto.body|raw }}
+                    {{ page.body|raw }}
                 {% endmarkdown %}
                 </div>
             </div>

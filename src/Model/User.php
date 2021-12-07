@@ -7,9 +7,9 @@ use JsonSerializable;
 class User implements JsonSerializable
 {
     private ?int $id;
-    private string $name;
-    private ?string $password;
-    private ?string $email;
+    private ?string $name = null;
+    private ?string $password = null;
+    private string $email;
     private int $type;
 
     public function setId(?int $id): self
@@ -23,13 +23,13 @@ class User implements JsonSerializable
         return $this->id;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -45,13 +45,13 @@ class User implements JsonSerializable
         return $this->password;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }

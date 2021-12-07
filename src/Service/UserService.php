@@ -36,28 +36,22 @@ class UserService
         $statement = $this->pdo->prepare('select * from `User`');
         $statement->execute();
 
-        return array_map(function ($object) {
-            return (new User())
-                ->setId($object->id)
+        return array_map(fn ($object) => (
+            (new User())
+                ->setId((int)$object->id)
                 ->setName($object->name)
                 ->setPassword($object->password)
                 ->setEmail($object->email)
-                ->setType($object->type);
-        }, $statement->fetchAll());
+                ->setType($object->type)
+            ), $statement->fetchAll()
+        );
     }
 
     public function save(array $data): int
     {
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
           INSERT INTO `User` ({$columns}) VALUES ({$values})

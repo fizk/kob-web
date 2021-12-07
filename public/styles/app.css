@@ -11,6 +11,25 @@
     padding: 0;
 }
 
+
+.open {
+    padding-right: 200px;
+    transition: padding-right .2s;
+}
+.open .app_navigation {
+    transform: translateX(0);
+}
+
+.app_navigation {
+    right: 0;
+    background-color: pink;
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    transform: translateX(100%);
+    transition: transform linear .2s;
+}
+
 .app__footer {
     padding: var(--space-x);
     display: flex;

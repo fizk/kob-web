@@ -37,8 +37,8 @@ class PageService
             ->setType($page->type)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
-            ->setGallery(array_map(function ($item) {
-                return (new Image())
+            ->setGallery(array_map(fn ($item) => (
+                (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
                     ->setDescription($item->description)
@@ -47,8 +47,10 @@ class PageService
                     ->setHeight($item->height)
                     ->setOrder($item->order ?? null)
                     ->setCreated(new DateTime($item->created))
-                    ->setAffected(new DateTime($item->affected));
-            }, $galleryStatement->fetchAll()));
+                    ->setAffected(new DateTime($item->affected))
+                ),
+                $galleryStatement->fetchAll()
+            ));
     }
 
     public function fetch(): array
@@ -56,13 +58,15 @@ class PageService
         $entryStatement = $this->pdo->prepare('select * from `Manifesto`');
         $entryStatement->execute([]);
 
-        return array_map(function ($item) {
-            return (new Page)
+        return array_map(fn ($item) => (
+            (new Page)
                 ->setId($item->id)
                 ->setType($item->type)
                 ->setBodyIs($item->body_is)
-                ->setBodyEn($item->body_en);
-        }, $entryStatement->fetchAll());
+                ->setBodyEn($item->body_en)
+            ),
+            $entryStatement->fetchAll()
+        );
     }
 
     public function getByType($type, $lang = 'is'): ?Page
@@ -91,8 +95,8 @@ class PageService
             ->setBody($page->body)
             ->setBodyIs($page->body_is)
             ->setBodyEn($page->body_en)
-            ->setGallery(array_map(function ($item) {
-                return (new Image())
+            ->setGallery(array_map(fn ($item) => (
+                (new Image())
                     ->setId($item->id)
                     ->setName($item->name)
                     ->setDescription($item->description)
@@ -101,17 +105,20 @@ class PageService
                     ->setHeight($item->height)
                     ->setOrder($item->order ?? null)
                     ->setCreated(new DateTime($item->created))
-                    ->setAffected(new DateTime($item->affected));
-            }, $galleryStatement->fetchAll()));
+                    ->setAffected(new DateTime($item->affected))
+                ),
+                $galleryStatement->fetchAll()
+            )
+        );
     }
 
-    public function attachImages(string $manifestoId, array $images): array
+    public function attachImages(string $id, array $images): array
     {
 
         $deleteStatement = $this->pdo->prepare(
             'delete from `Manifesto_has_Image` where entry_id = :manifesto_id'
         );
-        $deleteStatement->execute(['manifesto_id' => $manifestoId]);
+        $deleteStatement->execute(['manifesto_id' => $id]);
 
         $insertStatement = $this->pdo->prepare('
             insert into Manifesto_has_Image (`image_id`, `entry_id`, `order`)
@@ -121,7 +128,7 @@ class PageService
         foreach ($images as $count => $image) {
             $insertStatement->execute([
                 'image_id' => $image,
-                'manifesto_id' => $manifestoId,
+                'manifesto_id' => $id,
                 'order' => $count
             ]);
         }
@@ -135,16 +142,9 @@ class PageService
         unset($data['body']);
         unset($data['gallery']);
 
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
           INSERT INTO `Manifesto` ({$columns}) VALUES ({$values})

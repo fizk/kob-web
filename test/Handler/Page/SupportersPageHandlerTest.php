@@ -18,7 +18,7 @@ class SupportersPageHandlerTest extends TestCase
     public function testFetchStoreIcelandic()
     {
         $request = (new ServerRequest())
-            ->withUri(new Uri('/vinir'));
+            ->withUri(new Uri('/velunnarar'));
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
@@ -41,7 +41,7 @@ class SupportersPageHandlerTest extends TestCase
     public function testFetchStoreEnglish()
     {
         $request = (new ServerRequest())
-            ->withUri(new Uri('/friends'));
+            ->withUri(new Uri('/supporters'));
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);

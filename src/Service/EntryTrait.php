@@ -23,8 +23,8 @@ trait EntryTrait
         ');
         $posterStatement->execute(['id' => $id]);
 
-        return array_map(function ($poster) {
-            return (new Image())
+        return array_map(fn ($poster) => (
+            (new Image())
                 ->setId($poster->id)
                 ->setName($poster->name)
                 ->setDescription($poster->description)
@@ -33,8 +33,10 @@ trait EntryTrait
                 ->setHeight($poster->height)
                 ->setOrder($poster->order ?? null)
                 ->setCreated(new DateTime($poster->created))
-                ->setAffected(new DateTime($poster->affected));
-        }, $posterStatement->fetchAll());
+                ->setAffected(new DateTime($poster->affected))
+            ),
+            $posterStatement->fetchAll()
+        );
     }
 
     /**
@@ -54,8 +56,8 @@ trait EntryTrait
         ');
         $galleryStatement->execute(['id' => $id]);
 
-        return array_map(function ($object) {
-            return (new Image())
+        return array_map(fn ($object) => (
+            (new Image())
                 ->setId($object->id)
                 ->setName($object->name)
                 ->setDescription($object->description)
@@ -65,8 +67,9 @@ trait EntryTrait
                 ->setOrder($object->order ?? null)
                 ->setCreated(new DateTime($object->created))
                 ->setAffected(new DateTime($object->affected))
-                ;
-        }, $galleryStatement->fetchAll());
+            ),
+            $galleryStatement->fetchAll()
+        );
     }
 
     /**
@@ -87,14 +90,15 @@ trait EntryTrait
 
         $authorStatement->execute(['id' => $id]);
 
-        return array_map(function ($object) {
-            return (new Author)
+        return array_map(fn ($object) => (
+            (new Author)
                 ->setId($object->id)
                 ->setName($object->name)
                 ->setCreated(new DateTime($object->created))
                 ->setAffected(new DateTime($object->affected))
                 ->setOrder($object->order ?? null)
-                ;
-        }, $authorStatement->fetchAll());
+            ),
+            $authorStatement->fetchAll()
+        );
     }
 }

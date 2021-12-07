@@ -68,8 +68,9 @@ class AuthorService
         $entriesStatement->execute(['id' => $item->id]);
         $item->entries = $entriesStatement->fetchAll();
 
-        $author->setEntries(array_map(function ($item) {
-            return (new Entry())
+        $author->setEntries(array_map(
+            fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -81,9 +82,10 @@ class AuthorService
                 ->setBodyEn($item->body_en)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPosters($this->fetchPosters($item->id));
-            return $item;
-        }, $item->entries));
+                ->setPosters($this->fetchPosters($item->id))
+            ),
+            $item->entries
+        ));
 
         return $author;
     }
@@ -134,13 +136,16 @@ class AuthorService
         ');
         $statement->execute([]);
 
-        return array_map(function ($author) {
-            return (new Author)
+        return array_map(
+            fn ($author) => (
+            (new Author)
                 ->setId($author->id)
                 ->setName($author->name)
                 ->setCreated(new DateTime($author->created))
-                ->setAffected(new DateTime($author->affected));
-        }, $statement->fetchAll());
+                ->setAffected(new DateTime($author->affected))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     public function save(Author $author): int
@@ -153,16 +158,9 @@ class AuthorService
             unset($data['created']);
         }
 
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',', array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',', array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
             INSERT INTO `Author` ({$columns}) VALUES ({$values})

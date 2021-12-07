@@ -6,6 +6,18 @@
 
 
 {% block content %}
+    <article>
+        <header>
+            {% if user_session %}
+            <a href="{{path('update-page', {id: page.id})}}">edit</a>
+            {% endif %}
+        </header>
+        <section>
+            {% markdown %}
+            {{ page.body|raw }}
+            {% endmarkdown %}
+        </section>
+    </article>
     <ul>
     {% for item in list %}
         <li>

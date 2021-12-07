@@ -23,8 +23,8 @@ class PageUpdatePageHandler implements RequestHandlerInterface
     {
         $id = $request->getAttribute('id');
         return new HtmlResponse(
-            $this->template->render('dashboard::manifesto-update-page', [
-                'manifesto' => $this->page->get($id)
+            $this->template->render('dashboard::page-update-page', [
+                'page' => $this->page->get($id)
             ])
         );
     }

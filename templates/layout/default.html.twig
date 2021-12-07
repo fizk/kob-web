@@ -17,13 +17,18 @@
         <header class="app_header">
             <ul class="navigation">
                 <li class="navigation__item">
-                    <a class="navigation__link" href="{{path('syningar')}}">
-                        {{_(['Syningar', 'Shows'], primary_language)}}
+                    <a class="navigation__link" href="{{selectPath(['syningar', 'entry'], primary_language)}}">
+                        {{_(['Sýningar', 'Shows'], primary_language)}}
                     </a>
                 </li>
                 <li class="navigation__item">
-                    <a class="navigation__link" href="{{path('listamenn')}}">
+                    <a class="navigation__link" href="{{selectPath(['listamenn', 'authors'], primary_language)}}">
                         {{_(['Listamenn', 'Artists'], primary_language)}}
+                    </a>
+                </li>
+                <li class="navigation__item">
+                    <a class="navigation__link" href="{{selectPath(['verkefni', 'projects'], primary_language)}}">
+                        {{_(['Verkefni', 'Projects'], primary_language)}}
                     </a>
                 </li>
                 <li class="navigation__item">
@@ -132,6 +137,14 @@
                 </li>
             </ul>
         </header>
+        <nav class="app_navigation">
+            <a href="#">X</a>
+            <ul>
+                {% for item in entry_years %}
+                <li><a href="{{selectPath(['listi', 'list'], primary_language, {year: item.year})}}">{{item.year}}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
         <main class="app_main">
         {% block content %}{% endblock %}
         </main>
@@ -174,18 +187,13 @@
                         </a>
                     </li>
                     <li class="app__footer-item">
-                        <a class="app__footer-link" href="{{selectPath(['listamenn', 'authors'], primary_language)}}">
-                            {{_(['Listamenn', 'Artists'], primary_language)}}
-                        </a>
-                    </li>
-                    <li class="app__footer-item">
-                        <a class="app__footer-link" href="{{selectPath(['verkefni', 'projects'], primary_language)}}">
-                            {{_(['Verkefni', 'Projects'], primary_language)}}
-                        </a>
-                    </li>
-                    <li class="app__footer-item">
                         <a class="app__footer-link" href="{{selectPath(['um', 'about'], primary_language)}}">
                             {{_(['Um Kling & Bang', 'About Kling & Bang'], primary_language)}}
+                        </a>
+                    </li>
+                    <li class="app__footer-item">
+                        <a class="app__footer-link" href="{{selectPath(['velunnarar', 'supporters'], primary_language)}}">
+                            {{_(['Velunnarar', 'Supporters'], primary_language)}}
                         </a>
                     </li>
                 </ul>
@@ -202,13 +210,7 @@
                 </ul>
             </div>
         </footer>
-        <nav>
-            <ul>
-            {% for item in entry_years %}
-                <li><a href="{{selectPath(['listi', 'list'], primary_language, {year: item.year})}}">{{item.year}}</a></li>
-            {% endfor %}
-            </ul>
-        </nav>
+
         {#
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_tracking }}"></script>
         <script>

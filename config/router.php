@@ -203,7 +203,7 @@ return [
                 Middleware\PrimaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
                 Middleware\MenuMiddleware::class,
-                Handler\Page\StorePageHandler::class
+                Handler\Store\StorePageHandler::class
             ],
             'verslun'
         ],
@@ -215,13 +215,13 @@ return [
                 Middleware\SecondaryLanguageMiddleware::class,
                 Middleware\SessionMiddleware::class,
                 Middleware\MenuMiddleware::class,
-                Handler\Page\StorePageHandler::class
+                Handler\Store\StorePageHandler::class
             ],
             'store'
         ],
     ],
 
-    '/vinir' => [
+    '/velunnarar' => [
         'GET' => [
             [
                 Middleware\PrimaryLanguageMiddleware::class,
@@ -233,7 +233,7 @@ return [
         ],
     ],
 
-    '/friends' => [
+    '/supporters' => [
         'GET' => [
             [
                 Middleware\SecondaryLanguageMiddleware::class,
@@ -507,7 +507,7 @@ return [
         ],
     ],
 
-    '/update/manifesto/{id}' => [
+    '/update/page/{id}' => [
         'GET' => [
             [
                 Middleware\DetectLanguageMiddleware::class,
@@ -515,7 +515,7 @@ return [
                 Middleware\AdminMenuMiddleware::class,
                 Handler\Page\PageUpdatePageHandler::class
             ],
-            'update-manifesto'
+            'update-page'
         ],
         'POST' => [
             [
@@ -525,7 +525,7 @@ return [
                 Middleware\AdditionalDatesMiddleware::class,
                 Handler\Page\PageSavePageHandler::class
             ],
-            'new-manifesto'
+            'new-page'
         ],
     ],
 

@@ -24,7 +24,7 @@ class SupportersPageHandler implements RequestHandlerInterface
         $entry = $this->page->getByType('supporters', $request->getAttribute('language', 'is'));
 
         return $entry
-            ? new HtmlResponse($this->template->render('app::supporters-page', ['manifesto' => $entry]))
+            ? new HtmlResponse($this->template->render('app::supporters-page', ['page' => $entry]))
             : new HtmlResponse($this->template->render('error::404'), 404);
     }
 }

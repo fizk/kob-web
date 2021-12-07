@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Handler\Page;
+namespace App\Handler\Store;
 
 use PHPUnit\Framework\TestCase;
 use Laminas\Diactoros\Response\HtmlResponse;

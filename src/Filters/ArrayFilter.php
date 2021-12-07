@@ -8,7 +8,7 @@ class ArrayFilter extends AbstractFilter
 {
     /**
      * @param  mixed $value
-     * @return int|mixed
+     * @return array
      */
     public function filter($value)
     {

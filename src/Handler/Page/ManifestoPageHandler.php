@@ -7,7 +7,7 @@ use App\Service\PageService;
 use App\Template\TemplateRendererInterface;
 use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\{HtmlResponse};
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class ManifestoPageHandler implements RequestHandlerInterface
 {
@@ -26,7 +26,7 @@ class ManifestoPageHandler implements RequestHandlerInterface
         $entry = $this->page->getByType('manifesto', $request->getAttribute('language', 'is'));
 
         return $entry
-            ? new HtmlResponse($this->template->render('app::manifesto-page', ['manifesto' => $entry]))
+            ? new HtmlResponse($this->template->render('app::page-page', ['page' => $entry]))
             : new HtmlResponse($this->template->render('error::404'), 404);
     }
 }

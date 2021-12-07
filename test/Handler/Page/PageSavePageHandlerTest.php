@@ -26,7 +26,7 @@ class PageSavePageHandlerTest extends TestCase
                 'body_is' => '',
                 'body_en' => '',
             ])
-            ->withUri(new Uri('/update/manifesto/1'))
+            ->withUri(new Uri('/update/page/1'))
             ->withMethod('POST');
 
         $serviceManager = new ServiceManager(require './config/service.php');

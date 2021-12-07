@@ -161,8 +161,8 @@ class EntryService
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -176,8 +176,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -195,8 +197,8 @@ class EntryService
         );
         $statement->execute(['type' => $type]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -210,8 +212,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -235,8 +239,8 @@ class EntryService
             $statement->execute([]);
         }
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -250,8 +254,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -266,8 +272,8 @@ class EntryService
         ');
         $statement->execute([]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -281,8 +287,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -301,8 +309,8 @@ class EntryService
         ');
         $statement->execute(['type' => $type]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -316,8 +324,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -335,8 +345,8 @@ class EntryService
         );
         $statement->execute(['date' => $date->format('Y-m-d')]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -350,8 +360,10 @@ class EntryService
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
                 ->setPosters($this->fetchPosters($item->id))
-                ->setGallery($this->fetchGallery($item->id));
-        }, $statement->fetchAll());
+                ->setGallery($this->fetchGallery($item->id))
+            ),
+            $statement->fetchAll()
+        );
     }
 
     /**
@@ -368,8 +380,8 @@ class EntryService
         ');
         $statement->execute([]);
 
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+            (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -382,8 +394,9 @@ class EntryService
                 ->setBody($item->body ?? null)
                 ->setOrientation($item->orientation)
                 ->setAuthors($this->fetchAuthors($item->id))
-                ->setPosters($this->fetchPosters($item->id));
-        }, $statement->fetchAll());
+                ->setPosters($this->fetchPosters($item->id))
+            ),
+            $statement->fetchAll());
     }
 
     /**
@@ -410,8 +423,8 @@ class EntryService
     {
         $statement = $this->pdo->prepare('select * from `Entry` order by `from` desc');
         $statement->execute();
-        return array_map(function ($item) {
-            return (new Entry())
+        return array_map(fn ($item) => (
+             (new Entry())
                 ->setId($item->id)
                 ->setTitle($item->title)
                 ->setFrom(new DateTime($item->from))
@@ -422,8 +435,10 @@ class EntryService
                 ->setBodyIs($item->body_is)
                 ->setBodyEn($item->body_en)
                 ->setBody($item->body ?? null)
-                ->setOrientation($item->orientation);
-        }, $statement->fetchAll());
+                ->setOrientation($item->orientation)
+            ),
+            $statement->fetchAll()
+        );
 
         return $statement->fetchAll();
     }
@@ -447,16 +462,9 @@ class EntryService
             unset($data['created']);
         }
 
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
           INSERT INTO `Entry` ({$columns}) VALUES ({$values})

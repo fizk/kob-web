@@ -67,16 +67,16 @@ class StoreService
                 ->setBodyIs($store->body_is)
                 ->setBodyEn($store->body_en)
                 ->setBody($store->body)
-                ->setAuthors(array_map(function ($object) {
-                    return (new Author)
+                ->setAuthors(array_map(fn ($object) => (
+                    (new Author)
                         ->setId($object->id)
                         ->setName($object->name)
                         ->setCreated(new DateTime($object->created))
                         ->setAffected(new DateTime($object->affected))
-                        ->setOrder($object->order ?? null);
-                }, $authorsStatement->fetchAll()))
-                ->setGallery(array_map(function ($object) {
-                    return (new Image())
+                        ->setOrder($object->order ?? null)
+                    ), $authorsStatement->fetchAll()))
+                ->setGallery(array_map(fn ($object) => (
+                    (new Image())
                         ->setId($object->id)
                         ->setName($object->name)
                         ->setDescription($object->description)
@@ -85,8 +85,8 @@ class StoreService
                         ->setHeight($object->height)
                         ->setOrder($object->order ?? null)
                         ->setCreated(new DateTime($object->created))
-                        ->setAffected(new DateTime($object->affected));
-                }, $galleryStatement->fetchAll()));
+                        ->setAffected(new DateTime($object->affected))
+                    ), $galleryStatement->fetchAll()));
         }, $statement->fetchAll());
     }
 
@@ -125,16 +125,16 @@ class StoreService
             ->setAffected(new DateTime($store->affected))
             ->setBodyIs($store->body_is)
             ->setBodyEn($store->body_en)
-            ->setAuthors(array_map(function ($object) {
-                return (new Author)
+            ->setAuthors(array_map(fn ($object) => (
+                (new Author)
                     ->setId($object->id)
                     ->setName($object->name)
                     ->setCreated(new DateTime($object->created))
                     ->setAffected(new DateTime($object->affected))
-                    ->setOrder($object->order ?? null);
-            }, $authorsStatement->fetchAll()))
-            ->setGallery(array_map(function ($object) {
-                return (new Image())
+                    ->setOrder($object->order ?? null)
+                ), $authorsStatement->fetchAll()))
+            ->setGallery(array_map(fn ($object) => (
+                (new Image())
                     ->setId($object->id)
                     ->setName($object->name)
                     ->setDescription($object->description)
@@ -143,22 +143,15 @@ class StoreService
                     ->setHeight($object->height)
                     ->setOrder($object->order ?? null)
                     ->setCreated(new DateTime($object->created))
-                    ->setAffected(new DateTime($object->affected));
-            }, $galleryStatement->fetchAll()));
+                    ->setAffected(new DateTime($object->affected))
+                ), $galleryStatement->fetchAll()));
     }
 
     public function save(array $data): int
     {
-        $columns = implode(',', array_map(function ($i) {
-            return " `{$i}`";
-        }, array_keys($data)));
-
-        $values = implode(',', array_map(function ($i) {
-            return " :{$i}";
-        }, array_keys($data)));
-        $update = implode(', ', array_map(function ($i) {
-            return "`{$i}` = :{$i}";
-        }, array_keys($data)));
+        $columns = implode(',',  array_map(fn ($i) => " `{$i}`", array_keys($data)));
+        $values =  implode(',',  array_map(fn ($i) => " :{$i}", array_keys($data)));
+        $update =  implode(', ', array_map(fn ($i) => "`{$i}` = :{$i}", array_keys($data)));
 
         $statement = $this->pdo->prepare("
           INSERT INTO `Store` ({$columns}) VALUES ({$values})

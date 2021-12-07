@@ -23,7 +23,7 @@ class PageUpdatePageHandlerTest extends TestCase
     public function test200OK()
     {
         $request = (new ServerRequest())
-            ->withUri(new Uri('/update/manifesto/1'));
+            ->withUri(new Uri('/update/page/1'));
 
         $serviceManager = new ServiceManager(require './config/service.php');
         $serviceManager->setAllowOverride(true);
